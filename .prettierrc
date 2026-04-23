@@ -1,11 +1,12 @@
 {
   "arrowParens": "always",
   "bracketSpacing": true,
+  "plugins": ["prettier-plugin-sort-json"],
   "printWidth": 120,
   "quoteProps": "as-needed",
   "semi": true,
+  "singleAttributePerLine": true,
   "singleQuote": false,
   "tabWidth": 2,
-  "trailingComma": "all",
-  "singleAttributePerLine": true
+  "trailingComma": "all"
 }
