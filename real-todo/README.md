@@ -16,9 +16,24 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Linting and Formatting
+### Prettier
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Format all files:**
+  ```bash
+  npm run format
+  ```
+- **Check formatting without making changes:**
+  ```bash
+  npm run format:check
+  ```
+
+### ESLint (Static Analysis)
+
+- **Run linting check:**
+  ```bash
+  npm run lint
+  ```
 
 ## Learn More
 
