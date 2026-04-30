@@ -11,10 +11,10 @@ export function AppLayout({ children }: AppLayoutProps) {
   return (
     <div className={styles.layout}>
       <Header />
-      <div className={styles.body}>
+      <main className={styles.main}>
         <Sidebar />
-        <main className={styles.main}>{children}</main>
-      </div>
+        <div className={styles.mainContent}>{children}</div>
+      </main>
     </div>
   );
 }

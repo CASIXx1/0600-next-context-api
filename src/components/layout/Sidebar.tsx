@@ -1,18 +1,34 @@
 import Link from "next/link";
+import styles from "./Sidebar.module.css";
 
 export function Sidebar() {
   return (
-    <aside>
+    <aside className={styles.sidebar}>
       <nav aria-label="Main navigation">
-        <ul>
+        <ul className={styles.menu}>
           <li>
-            <Link href="/">ダッシュボード</Link>
+            <Link
+              className={styles.link}
+              href="/"
+            >
+              ダッシュボード
+            </Link>
           </li>
           <li>
-            <Link href="/tasks">タスク</Link>
+            <Link
+              className={styles.link}
+              href="/tasks"
+            >
+              タスク
+            </Link>
           </li>
           <li>
-            <Link href="/projects">プロジェクト</Link>
+            <Link
+              className={styles.link}
+              href="/projects"
+            >
+              プロジェクト
+            </Link>
           </li>
         </ul>
       </nav>

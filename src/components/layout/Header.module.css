@@ -1,0 +1,45 @@
+.header {
+  display: flex;
+  min-height: var(--header-height);
+  align-items: center;
+  justify-content: space-between;
+  background: var(--primary-color);
+  color: var(--font-color-light);
+  padding: 0 var(--space-4);
+}
+
+.left {
+  display: flex;
+  align-items: center;
+}
+
+.left h1 {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.action,
+.avatarButton {
+  display: flex;
+  min-width: 28px;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 14px;
+}
+
+.avatarButton {
+  border-radius: 50%;
+  background: #e0e0e0;
+  color: var(--font-color-dark);
+  font-size: 9px;
+}

@@ -1,0 +1,24 @@
+.sidebar {
+  width: var(--sidebar-width);
+  height: 100%;
+  flex: 0 0 var(--sidebar-width);
+  background: var(--bg-color-light-2);
+}
+
+.menu {
+  padding-top: var(--space-6);
+}
+
+.link {
+  display: block;
+  padding: var(--space-4) var(--space-4) var(--space-4) var(--space-6);
+  color: var(--font-color-dark);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+}
+
+.link:hover {
+  background: #8fe3c740;
+}
