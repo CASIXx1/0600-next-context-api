@@ -1,11 +1,13 @@
 .header {
-  display: flex;
-  min-height: var(--header-height);
-  align-items: center;
-  justify-content: space-between;
   background: var(--primary-color);
   color: var(--font-color-light);
-  padding: 0 var(--space-4);
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4);
 }
 
 .left {
@@ -13,33 +15,122 @@
   align-items: center;
 }
 
-.left h1 {
+.logo {
+  margin-right: var(--space-6);
+}
+
+.logo h2 {
   font-size: 16px;
   font-weight: 700;
 }
 
-.actions {
+.right {
   display: flex;
   align-items: center;
-  gap: var(--space-4);
+  margin-right: var(--space-6);
 }
 
-.action,
+.menu {
+  display: flex;
+  align-items: center;
+  margin-right: var(--space-4);
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: var(--space-4);
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 24px;
+}
+
 .avatarButton {
   display: flex;
-  min-width: 28px;
+  width: 28px;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: #e0e0e0;
+  color: var(--font-color-dark);
+  font-size: 20px;
+}
+
+.userMenuContainer {
+  position: relative;
+}
+
+.userMenu {
+  position: absolute;
+  top: calc(100% + var(--space-3));
+  right: 0;
+  z-index: var(--z-index-popup);
+  min-width: 160px;
+  padding: var(--space-2) 0;
+  background: var(--bg-color-light);
+  box-shadow: var(--shadow-md);
+  color: var(--font-color-dark);
+}
+
+.userMenu button {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: var(--space-4);
+  text-align: left;
+}
+
+.userMenu button:hover {
+  background: var(--hover-color);
+}
+
+.userMenu .logoutButton {
+  color: var(--danger-color);
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-index-modal);
+  background: var(--overlay-color);
+}
+
+.taskFormModal {
+  width: min(640px, calc(100vw - var(--space-6)));
+  min-height: 240px;
+  margin: 8vh auto 0;
+  background: var(--bg-color-light);
+  box-shadow: var(--shadow-md);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4);
+}
+
+.modalHeader h2 {
+  color: var(--font-color-dark);
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.closeButton {
+  display: flex;
+  width: 28px;
   height: 28px;
   align-items: center;
   justify-content: center;
   border: 0;
   background: transparent;
-  color: inherit;
-  font-size: 14px;
-}
-
-.avatarButton {
-  border-radius: 50%;
-  background: #e0e0e0;
   color: var(--font-color-dark);
-  font-size: 9px;
+  font-size: 18px;
 }

@@ -66,7 +66,7 @@ body {
   flex-direction: column;
   color: var(--font-color-dark);
   background: var(--background-color);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
   font-weight: 300;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
