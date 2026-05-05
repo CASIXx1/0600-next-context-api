@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { IoAdd, IoClose, IoInformationCircle, IoLogOut, IoNotifications, IoPerson } from "react-icons/io5";
-import styles from "./Header.module.css";
+import styles from "./index.module.css";
 
 export function Header() {
   const [isTaskFormOpen, setIsTaskFormOpen] = useState(false);

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { AppLayout } from "@/src/components/layout/AppLayout";
+import { Layout } from "@/src/components/layout";
 import "./globals.css";
 
 const inter = Inter({
@@ -24,7 +24,7 @@ export default function RootLayout({
       className={inter.variable}
     >
       <body>
-        <AppLayout>{children}</AppLayout>
+        <Layout>{children}</Layout>
       </body>
     </html>
   );
