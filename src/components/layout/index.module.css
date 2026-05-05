@@ -1,0 +1,17 @@
+.layout {
+  min-height: 100vh;
+  background: var(--content-bg-color);
+}
+
+.main {
+  display: flex;
+  height: calc(100vh - var(--header-height));
+}
+
+.mainContent {
+  width: 100%;
+  height: 100%;
+  overflow: scroll;
+  background: var(--content-bg-color);
+  padding: var(--space-6);
+}
