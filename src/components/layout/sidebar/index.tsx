@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { IoChevronBack } from "react-icons/io5";
-import styles from "./Sidebar.module.css";
+import styles from "./index.module.css";
 
 export function Sidebar() {
   return (
