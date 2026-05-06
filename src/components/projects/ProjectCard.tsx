@@ -1,73 +1,75 @@
+import { IoCalendarClear, IoDocument, IoGitCommit } from "react-icons/io5";
 import type { Project } from "@/src/types/project";
+import styles from "./ProjectCard.module.css";
 
 type ProjectCardProps = {
   project: Project;
 };
 
 export function ProjectCard({ project }: ProjectCardProps) {
+  const color = project.color;
+
   return (
-    <article>
-      <h2>{project.name}</h2>
-      <dl>
-        <div>
-          <dt>ID</dt>
-          <dd>{project.id}</dd>
+    <article
+      className={styles.card}
+      style={{ borderLeftColor: color }}
+    >
+      <header className={styles.header}>
+        <h2
+          className={styles.title}
+          style={{ color }}
+        >
+          {project.name}
+        </h2>
+        <p className={styles.deadline}>
+          <IoCalendarClear
+            className={styles.deadlineIcon}
+            aria-hidden="true"
+            color={color}
+            size="10px"
+            style={{ color }}
+          />
+          <time dateTime={project.deadline}>{formatDate(project.deadline)}</time>
+        </p>
+      </header>
+
+      <div className={styles.body}>
+        <p className={styles.goal}>{project.goal}</p>
+        {project.shouldbe ? <p className={styles.shouldbe}>{project.shouldbe}</p> : null}
+      </div>
+
+      <footer className={styles.footer}>
+        <div className={styles.stats}>
+          <p className={styles.stat}>
+            <IoGitCommit
+              className={styles.icon}
+              aria-hidden="true"
+              color={color}
+              size="12px"
+              style={{ color }}
+            />
+            <span>{project.stats.kinds.milestone}</span>
+          </p>
+          <p className={styles.stat}>
+            <IoDocument
+              className={styles.icon}
+              aria-hidden="true"
+              color={color}
+              size="12px"
+              style={{ color }}
+            />
+            <span>{project.stats.kinds.task}</span>
+          </p>
         </div>
-        <div>
-          <dt>Slug</dt>
-          <dd>{project.slug}</dd>
-        </div>
-        <div>
-          <dt>Status</dt>
-          <dd>{project.status}</dd>
-        </div>
-        <div>
-          <dt>Color</dt>
-          <dd>{project.color}</dd>
-        </div>
-        <div>
-          <dt>Goal</dt>
-          <dd>{project.goal}</dd>
-        </div>
-        <div>
-          <dt>Shouldbe</dt>
-          <dd>{project.shouldbe || "未設定"}</dd>
-        </div>
-        <div>
-          <dt>Deadline</dt>
-          <dd>{project.deadline}</dd>
-        </div>
-        <div>
-          <dt>Created At</dt>
-          <dd>{project.createdAt}</dd>
-        </div>
-        <div>
-          <dt>Updated At</dt>
-          <dd>{project.updatedAt}</dd>
-        </div>
-        <div>
-          <dt>Stats Total</dt>
-          <dd>{project.stats.total}</dd>
-        </div>
-        <div>
-          <dt>Stats Kinds</dt>
-          <dd>
-            milestone: {project.stats.kinds.milestone}, task: {project.stats.kinds.task}, total:{" "}
-            {project.stats.kinds.total}
-          </dd>
-        </div>
-        <div>
-          <dt>Stats States</dt>
-          <dd>
-            scheduled: {project.stats.states.scheduled}, completed: {project.stats.states.completed}, archived:{" "}
-            {project.stats.states.archived}
-          </dd>
-        </div>
-        <div>
-          <dt>Milestones</dt>
-          <dd>{project.milestones.length} 件</dd>
-        </div>
-      </dl>
+      </footer>
     </article>
   );
+}
+
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat("ja-JP", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).format(new Date(value));
 }
