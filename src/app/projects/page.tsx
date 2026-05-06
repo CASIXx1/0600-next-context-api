@@ -1,5 +1,8 @@
 import { ProjectList } from "@/src/components/projects/ProjectList";
+import { getProjects } from "@/src/app/api/datastore";
 
-export default function ProjectsPage() {
-  return <ProjectList />;
+export default async function ProjectsPage() {
+  const projects = getProjects();
+
+  return <ProjectList projects={projects} />;
 }
