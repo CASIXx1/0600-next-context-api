@@ -1,5 +1,5 @@
 import { ProjectCard } from "./ProjectCard";
-import { Project } from "./projects";
+import type { Project } from "@/src/types/project";
 
 export function ProjectList({ projects }: { projects: Project[] }) {
   return (
