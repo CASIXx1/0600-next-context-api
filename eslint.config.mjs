@@ -20,6 +20,18 @@ const eslintConfig = defineConfig([
       "react-hooks/rules-of-hooks": "error",
     },
   },
+  {
+    files: ["**/*.{ts,tsx}"],
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+    rules: {
+      "@typescript-eslint/no-deprecated": "warn",
+    },
+  },
   prettierConfig,
   // Override default ignores of eslint-config-next.
   globalIgnores([
@@ -29,6 +41,7 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     "src/app/api/**",
+    ".junie/**",
   ]),
 ]);
 
