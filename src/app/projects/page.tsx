@@ -18,7 +18,7 @@ export default async function ProjectsPage() {
     <section className={styles.container}>
       <div className={styles.content}>
         <header className={styles.header}>
-          <h1 className={styles.title}>プロジェクト</h1>
+          <h2 className={styles.title}>プロジェクト</h2>
         </header>
 
         <div className={styles.body}>

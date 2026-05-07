@@ -1,8 +1,35 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { IoChevronBack } from "react-icons/io5";
+import type { Project } from "@/src/types/project";
+import { ProjectMenu } from "./ProjectMenu";
 import styles from "./index.module.css";
 
-export function Sidebar() {
+const menuItems = [
+  {
+    href: "/",
+    label: "ダッシュボード",
+  },
+  {
+    href: "/tasks",
+    label: "タスク",
+  },
+  {
+    href: "/projects",
+    label: "プロジェクト",
+  },
+];
+
+type SidebarProps = {
+  projects: Project[];
+};
+
+export function Sidebar({ projects }: SidebarProps) {
+  const pathname = usePathname();
+  const isProjectsPage = pathname.startsWith("/projects");
+
   return (
     <aside className={styles.sidebar}>
       <div className={styles.content}>
@@ -14,34 +41,34 @@ export function Sidebar() {
         <div className={styles.body}>
           <nav aria-label="Main navigation">
             <ul>
-              <li>
-                <Link
-                  className={styles.link}
-                  href="/"
-                >
-                  ダッシュボード
-                </Link>
-              </li>
-              <li>
-                <Link
-                  className={styles.link}
-                  href="/tasks"
-                >
-                  タスク
-                </Link>
-              </li>
-              <li>
-                <Link
-                  className={styles.link}
-                  href="/projects"
-                >
-                  プロジェクト
-                </Link>
-              </li>
+              {menuItems.map((item) => {
+                const isActive = isActivePath(pathname, item.href);
+
+                return (
+                  <li key={item.href}>
+                    <Link
+                      className={`${styles.link} ${isActive ? styles.activeLink : ""}`}
+                      href={item.href}
+                      aria-current={isActive ? "page" : undefined}
+                    >
+                      {item.label}
+                    </Link>
+                    {item.href === "/projects" && isProjectsPage ? <ProjectMenu projects={projects} /> : null}
+                  </li>
+                );
+              })}
             </ul>
           </nav>
         </div>
       </div>
     </aside>
   );
+}
+
+function isActivePath(pathname: string, href: string) {
+  if (href === "/") {
+    return pathname === "/";
+  }
+
+  return pathname === href || pathname.startsWith(`${href}/`);
 }

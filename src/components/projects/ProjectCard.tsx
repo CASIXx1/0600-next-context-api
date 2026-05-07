@@ -1,4 +1,6 @@
 import { IoCalendarClear, IoDocument, IoGitCommit } from "react-icons/io5";
+import { formatDate } from "@/src/lib/date/format";
+import { getProjectDisplayColor } from "@/src/lib/projects/color";
 import type { Project } from "@/src/types/project";
 import styles from "./ProjectCard.module.css";
 
@@ -7,7 +9,7 @@ type ProjectCardProps = {
 };
 
 export function ProjectCard({ project }: ProjectCardProps) {
-  const color = project.color;
+  const color = getProjectDisplayColor(project.color);
 
   return (
     <article
@@ -64,12 +66,4 @@ export function ProjectCard({ project }: ProjectCardProps) {
       </footer>
     </article>
   );
-}
-
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat("ja-JP", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  }).format(new Date(value));
 }

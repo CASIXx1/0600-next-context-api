@@ -41,3 +41,8 @@
 .link:hover {
   background: #8fe3c740;
 }
+
+.activeLink {
+  background: var(--hover-color);
+  font-weight: 700;
+}

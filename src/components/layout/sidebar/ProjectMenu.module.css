@@ -1,0 +1,33 @@
+.projectList {
+  margin: var(--space-5) 0 var(--space-4);
+}
+
+.projectItem {
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--space-2);
+  padding: var(--space-3) var(--space-6) var(--space-3) 64px;
+  color: var(--font-color-dark);
+}
+
+.projectDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.projectName {
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 300;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.projectDeadline {
+  color: var(--font-color-dark);
+  font-size: 10px;
+  font-weight: 300;
+  white-space: nowrap;
+}

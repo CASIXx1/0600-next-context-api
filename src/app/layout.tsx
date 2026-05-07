@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { getProjects } from "@/src/app/api/datastore";
 import { Layout } from "@/src/components/layout";
 import "./globals.css";
 
@@ -18,13 +19,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const projects = getProjects();
+
   return (
     <html
       lang="en"
       className={inter.variable}
     >
       <body>
-        <Layout>{children}</Layout>
+        <Layout projects={projects}>{children}</Layout>
       </body>
     </html>
   );
