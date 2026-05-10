@@ -19,6 +19,7 @@ description: この Next.js Turvo/Real TODO プロジェクトで作業すると
 - プロジェクト一覧やカードの UI は `src/components/projects` 配下に置く。
 - 小さなフロントエンド共通ヘルパーは `src/lib` 配下に置く。例: `src/lib/date/format.ts`、`src/lib/projects/color.ts`。
 - API/datastore のコードは `src/app/api` 配下に置く。UI 表示用のフォーマット処理は、API ドメインのロジックでない限り API model に混ぜない。
+- ユーザーから明示的な依頼がない限り、`src/app/api` 配下は変更しない。API レスポンスに不足がある場合も、まずフロントエンド側で吸収できる方法を検討する。
 
 ## デザイン再現の手順
 
@@ -40,7 +41,7 @@ description: この Next.js Turvo/Real TODO プロジェクトで作業すると
 
 ## 検証
 
-- コード編集後は `npm run lint` を実行する。
+- コード編集後は `npm run lint` と `npm run format` を実行する。
 - ルート、コンポーネント、TypeScript に影響する変更では `npm run build` を実行する。
 - build や dev server が sandbox のポート bind 制限で失敗した場合は、権限付きで再実行する。
 - 手動確認が必要なフロントエンド作業では `npm run dev` を起動し、ローカル URL を報告する。

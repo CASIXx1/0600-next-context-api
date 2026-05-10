@@ -1,18 +1,40 @@
+import { headers } from "next/headers";
 import { Pagination } from "@/src/components/pagination/Pagination";
 import { ProjectList } from "@/src/components/projects/ProjectList";
-import { getProjects } from "@/src/app/api/datastore";
+import type { Project } from "@/src/types/project";
 import styles from "./page.module.css";
 
 const PROJECTS_PER_PAGE = 10;
 
+type ProjectsResponse = {
+  data: Project[];
+  pageInfo: {
+    totalCount: number;
+    page: number;
+    limit: number;
+  };
+};
+
+async function fetchProjects() {
+  const headersList = await headers();
+  const host = headersList.get("host");
+  const protocol = headersList.get("x-forwarded-proto") ?? "http";
+  const response = await fetch(`${protocol}://${host}/api/v1/users/projects?page=1&limit=${PROJECTS_PER_PAGE}`, {
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch projects");
+  }
+
+  return response.json() as Promise<ProjectsResponse>;
+}
+
 export default async function ProjectsPage() {
-  const projects = getProjects();
-  const page = 1;
-  const total = projects.length;
-  const pageCount = Math.max(1, Math.ceil(total / PROJECTS_PER_PAGE));
-  const start = (page - 1) * PROJECTS_PER_PAGE;
-  const end = Math.min(page * PROJECTS_PER_PAGE, total);
-  const visibleProjects = projects.slice(start, end);
+  const { data: projects, pageInfo } = await fetchProjects();
+  const page = pageInfo.page;
+  const total = pageInfo.totalCount;
+  const pageCount = Math.max(1, Math.ceil(total / pageInfo.limit));
 
   return (
     <section className={styles.container}>
@@ -28,7 +50,7 @@ export default async function ProjectsPage() {
             </p>
           </div>
 
-          <ProjectList projects={visibleProjects} />
+          <ProjectList projects={projects} />
         </div>
 
         <footer className={styles.footer}>
