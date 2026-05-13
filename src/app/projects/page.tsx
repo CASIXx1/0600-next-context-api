@@ -1,4 +1,5 @@
 import { headers } from "next/headers";
+import { PaginationProvider } from "@/src/contexts/pagination";
 import { ProjectsProvider } from "@/src/contexts/projects";
 import { Pagination } from "@/src/components/pagination/Pagination";
 import { ProjectList } from "@/src/components/projects/ProjectList";
@@ -57,12 +58,14 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
           </ProjectsProvider>
         </div>
 
-        <footer className={styles.footer}>
-          <Pagination
-            page={page}
-            pageCount={pageCount}
-          />
-        </footer>
+        <PaginationProvider
+          page={page}
+          pageCount={pageCount}
+        >
+          <footer className={styles.footer}>
+            <Pagination />
+          </footer>
+        </PaginationProvider>
       </div>
     </section>
   );
