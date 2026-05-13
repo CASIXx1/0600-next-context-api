@@ -16,7 +16,7 @@ export function Pagination({ page, pageCount }: PaginationProps) {
     >
       <li>
         <button
-          className={styles.pageButton}
+          className={`${styles.pageButton} ${styles.arrowButton}`}
           type="button"
           aria-label="前のページ"
           disabled={page <= 1}
@@ -39,7 +39,7 @@ export function Pagination({ page, pageCount }: PaginationProps) {
 
       <li>
         <button
-          className={styles.pageButton}
+          className={`${styles.pageButton} ${styles.arrowButton}`}
           type="button"
           aria-label="次のページ"
           disabled={page >= pageCount}

@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { IoChevronBack } from "react-icons/io5";
+import { useState } from "react";
+import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import { ProjectMenu } from "./ProjectMenu";
 import styles from "./index.module.css";
 
@@ -23,17 +24,27 @@ const menuItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const isProjectsPage = pathname.startsWith("/projects");
 
   return (
-    <aside className={styles.sidebar}>
+    <aside className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ""}`}>
       <div className={styles.content}>
         <div className={styles.header}>
-          <span className={styles.toggle}>
-            <IoChevronBack aria-hidden="true" />
-          </span>
+          <button
+            className={styles.toggle}
+            type="button"
+            aria-label={isCollapsed ? "サイドバーを開く" : "サイドバーを閉じる"}
+            aria-expanded={!isCollapsed}
+            onClick={() => setIsCollapsed((current) => !current)}
+          >
+            {isCollapsed ? <IoChevronForward aria-hidden="true" /> : <IoChevronBack aria-hidden="true" />}
+          </button>
         </div>
-        <div className={styles.body}>
+        <div
+          className={styles.body}
+          hidden={isCollapsed}
+        >
           <nav aria-label="Main navigation">
             <ul>
               {menuItems.map((item) => {
