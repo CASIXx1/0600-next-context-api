@@ -17,9 +17,10 @@
   padding: var(--space-2);
 }
 
-.pageButton:disabled {
+.pageButton[aria-disabled="true"] {
   cursor: default;
   opacity: 1;
+  pointer-events: none;
 }
 
 .pageButton:hover {

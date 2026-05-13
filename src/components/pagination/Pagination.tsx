@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import styles from "./Pagination.module.css";
 
@@ -15,37 +16,37 @@ export function Pagination({ page, pageCount }: PaginationProps) {
       aria-label="ページネーション"
     >
       <li>
-        <button
+        <Link
           className={`${styles.pageButton} ${styles.arrowButton}`}
-          type="button"
           aria-label="前のページ"
-          disabled={page <= 1}
+          aria-disabled={page <= 1}
+          href={`/projects?page=${Math.max(1, page - 1)}`}
         >
           <IoChevronBack aria-hidden="true" />
-        </button>
+        </Link>
       </li>
 
       {pages.map((pageNumber) => (
         <li key={pageNumber}>
-          <button
+          <Link
             className={`${styles.pageButton} ${pageNumber === page ? styles.activePage : ""}`}
-            type="button"
             aria-current={pageNumber === page ? "page" : undefined}
+            href={`/projects?page=${pageNumber}`}
           >
             {pageNumber}
-          </button>
+          </Link>
         </li>
       ))}
 
       <li>
-        <button
+        <Link
           className={`${styles.pageButton} ${styles.arrowButton}`}
-          type="button"
           aria-label="次のページ"
-          disabled={page >= pageCount}
+          aria-disabled={page >= pageCount}
+          href={`/projects?page=${Math.min(pageCount, page + 1)}`}
         >
           <IoChevronForward aria-hidden="true" />
-        </button>
+        </Link>
       </li>
     </ul>
   );
