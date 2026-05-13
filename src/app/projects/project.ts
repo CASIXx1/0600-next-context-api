@@ -24,3 +24,12 @@ export type Project = {
   };
   milestones: string[];
 };
+
+export type ProjectsResponse = {
+  data: Project[];
+  pageInfo: {
+    totalCount: number;
+    page: number;
+    limit: number;
+  };
+};

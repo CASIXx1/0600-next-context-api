@@ -1,7 +1,7 @@
 import { IoCalendarClear, IoDocument, IoGitCommit } from "react-icons/io5";
 import { formatDate } from "@/src/lib/date/format";
 import { getProjectDisplayColor } from "@/src/lib/projects/color";
-import type { Project } from "@/src/types/project";
+import type { Project } from "./project";
 import styles from "./ProjectCard.module.css";
 
 type ProjectCardProps = {

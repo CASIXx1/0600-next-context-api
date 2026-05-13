@@ -2,19 +2,10 @@ import { headers } from "next/headers";
 import { ProjectsProvider } from "@/src/contexts/projects";
 import { Pagination } from "@/src/components/pagination/Pagination";
 import { ProjectList } from "@/src/components/projects/ProjectList";
-import type { Project } from "@/src/types/project";
+import type { ProjectsResponse } from "./project";
 import styles from "./page.module.css";
 
 const PROJECTS_PER_PAGE = 10;
-
-type ProjectsResponse = {
-  data: Project[];
-  pageInfo: {
-    totalCount: number;
-    page: number;
-    limit: number;
-  };
-};
 
 async function fetchProjects() {
   const headersList = await headers();

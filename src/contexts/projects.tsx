@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, type ReactNode } from "react";
-import type { Project } from "@/src/types/project";
+import type { Project } from "./project";
 
 const ProjectsContext = createContext<Project[] | null>(null);
 

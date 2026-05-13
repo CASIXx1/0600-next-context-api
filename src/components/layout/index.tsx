@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import type { Project } from "@/src/types/project";
 import { ProjectsProvider } from "@/src/contexts/projects";
+import type { Project } from "@/src/contexts/project";
 import styles from "./index.module.css";
 import { Header } from "./header";
 import { Sidebar } from "./sidebar";

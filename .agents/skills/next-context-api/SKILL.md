@@ -40,6 +40,12 @@ description: この Next.js Turvo/Real TODO プロジェクトで作業すると
 - 同じ値を渡す場合は、複数階層にまたがるかどうかに関係なく、props drilling ではなく Context API を使用する。
 - 一時的な値を増やすより、`src/app/globals.css` の既存 CSS 変数を優先する。
 
+## 型定義
+
+- 型は `src/types` のような汎用置き場へ集約せず、使うページ・コンポーネント・API 境界の近くに置く。
+- `project.ts` のように配置場所で文脈が明確なファイルでは、型名に `ProjectCardProject` や `SidebarProject` のような利用箇所名を重ねず、原則 `Project` のような自然な名前にする。
+- Context など複数箇所へ値を提供する境界では、コンポーネント専用の `Project` 型を import alias で合成しない。Context 自身の近くに提供データの型を別で定義し、各コンポーネントは構造的に必要な subset を受け取る。
+
 ## 検証
 
 - コード編集後は `npm run lint` と `npm run format` を実行する。
