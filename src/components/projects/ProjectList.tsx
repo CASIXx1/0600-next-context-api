@@ -1,8 +1,12 @@
+"use client";
+
 import { ProjectCard } from "./ProjectCard";
-import type { Project } from "@/src/types/project";
+import { useProjects } from "@/src/contexts/projects";
 import styles from "./ProjectList.module.css";
 
-export function ProjectList({ projects }: { projects: Project[] }) {
+export function ProjectList() {
+  const projects = useProjects();
+
   return (
     <ul className={styles.list}>
       {projects.map((project) => (

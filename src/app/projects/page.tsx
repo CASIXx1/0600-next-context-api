@@ -1,4 +1,5 @@
 import { headers } from "next/headers";
+import { ProjectsProvider } from "@/src/contexts/projects";
 import { Pagination } from "@/src/components/pagination/Pagination";
 import { ProjectList } from "@/src/components/projects/ProjectList";
 import type { Project } from "@/src/types/project";
@@ -50,7 +51,9 @@ export default async function ProjectsPage() {
             </p>
           </div>
 
-          <ProjectList projects={projects} />
+          <ProjectsProvider projects={projects}>
+            <ProjectList />
+          </ProjectsProvider>
         </div>
 
         <footer className={styles.footer}>

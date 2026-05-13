@@ -37,6 +37,7 @@ description: この Next.js Turvo/Real TODO プロジェクトで作業すると
 - sidebar 専用 UI は `src/components/layout/sidebar` 配下に置く。
 - コンポーネントを切り出した場合、そのコンポーネントが所有するスタイルなら CSS module も分ける。
 - `ProjectCard` は dashboard と project list の両方から使える状態を保つ。
+- 同じ値を渡す場合は、複数階層にまたがるかどうかに関係なく、props drilling ではなく Context API を使用する。
 - 一時的な値を増やすより、`src/app/globals.css` の既存 CSS 変数を優先する。
 
 ## 検証

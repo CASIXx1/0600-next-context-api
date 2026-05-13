@@ -1,13 +1,11 @@
 import { formatDate } from "@/src/lib/date/format";
 import { getProjectDisplayColor } from "@/src/lib/projects/color";
-import type { Project } from "@/src/types/project";
+import { useProjects } from "@/src/contexts/projects";
 import styles from "./ProjectMenu.module.css";
 
-type ProjectMenuProps = {
-  projects: Project[];
-};
+export function ProjectMenu() {
+  const projects = useProjects();
 
-export function ProjectMenu({ projects }: ProjectMenuProps) {
   return (
     <ul className={styles.projectList}>
       {projects.map((project) => {

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { IoChevronBack } from "react-icons/io5";
-import type { Project } from "@/src/types/project";
 import { ProjectMenu } from "./ProjectMenu";
 import styles from "./index.module.css";
 
@@ -22,11 +21,7 @@ const menuItems = [
   },
 ];
 
-type SidebarProps = {
-  projects: Project[];
-};
-
-export function Sidebar({ projects }: SidebarProps) {
+export function Sidebar() {
   const pathname = usePathname();
   const isProjectsPage = pathname.startsWith("/projects");
 
@@ -53,7 +48,7 @@ export function Sidebar({ projects }: SidebarProps) {
                     >
                       {item.label}
                     </Link>
-                    {item.href === "/projects" && isProjectsPage ? <ProjectMenu projects={projects} /> : null}
+                    {item.href === "/projects" && isProjectsPage ? <ProjectMenu /> : null}
                   </li>
                 );
               })}
