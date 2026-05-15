@@ -1,35 +1,15 @@
-import { headers } from "next/headers";
 import { PaginationProvider } from "@/src/contexts/pagination";
 import { ProjectsProvider } from "@/src/contexts/projects";
 import { Pagination } from "@/src/components/pagination/Pagination";
 import { ProjectList } from "@/src/components/projects/ProjectList";
-import type { ProjectsResponse } from "./project";
+import { fetchProjects } from "./fetchProjects";
 import styles from "./page.module.css";
-
-const PROJECTS_PER_PAGE = 10;
 
 type ProjectsPageProps = {
   searchParams: Promise<{
     page?: string;
   }>;
 };
-
-async function fetchProjects(page: number) {
-  const headersList = await headers();
-  const host = headersList.get("host");
-  const protocol = headersList.get("x-forwarded-proto") ?? "http";
-  const searchParams = new URLSearchParams({
-    page: page.toString(),
-    limit: PROJECTS_PER_PAGE.toString(),
-  });
-  const response = await fetch(`${protocol}://${host}/api/v1/users/projects?${searchParams}`, { cache: "no-store" });
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch projects");
-  }
-
-  return response.json() as Promise<ProjectsResponse>;
-}
 
 export default async function ProjectsPage({ searchParams }: ProjectsPageProps) {
   const params = await searchParams;
