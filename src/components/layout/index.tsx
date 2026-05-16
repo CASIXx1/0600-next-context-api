@@ -16,19 +16,27 @@ export function Layout({ children }: LayoutProps) {
   const [projects, setProjects] = useState<Project[]>([]);
 
   useEffect(() => {
-    const abortController = new AbortController();
+    let isActive = true;
 
-    fetchProjects(1, { signal: abortController.signal })
-      .then(({ data }) => setProjects(data))
-      .catch((error: unknown) => {
-        if (error instanceof DOMException && error.name === "AbortError") {
+    fetchProjects(1)
+      .then(({ data }) => {
+        if (!isActive) {
+          return;
+        }
+
+        setProjects(data);
+      })
+      .catch((_error: unknown) => {
+        if (!isActive) {
           return;
         }
 
         setProjects([]);
       });
 
-    return () => abortController.abort();
+    return () => {
+      isActive = false;
+    };
   }, []);
 
   return (
