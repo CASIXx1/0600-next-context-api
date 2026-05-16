@@ -1,0 +1,83 @@
+.card {
+  margin-bottom: var(--space-4);
+  border: 0;
+  border-left: 5px solid;
+  background: var(--background-color);
+  box-shadow: var(--shadow-sm);
+  color: var(--font-color-dark-weak);
+  padding: var(--space-4);
+  transition:
+    box-shadow 0.5s,
+    transform 0.5s;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+  transform: scale(1.05);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.title {
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.deadline {
+  display: flex;
+  align-items: center;
+  color: var(--font-color-dark);
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.deadlineIcon {
+  margin-right: var(--space-2);
+}
+
+.body {
+  padding: var(--space-4) 0;
+}
+
+.goal {
+  margin-bottom: var(--space-2);
+  color: var(--font-color-dark);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.shouldbe {
+  color: var(--font-color-weak);
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  color: var(--font-color-dark-weak);
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.icon {
+  margin-right: var(--space-1);
+  margin-left: var(--space-2);
+  font-size: 12px;
+}

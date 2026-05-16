@@ -1,0 +1,42 @@
+.container {
+  min-height: 100%;
+  margin: var(--space-6);
+  background: var(--background-color);
+}
+
+.content {
+  padding: var(--space-6);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.body {
+  max-width: 800px;
+  margin: var(--space-8) auto 0;
+}
+
+.projectsHeader {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-4) 0;
+}
+
+.projectsHeader p {
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  max-width: 800px;
+  margin: var(--space-5) auto 0;
+}

@@ -1,0 +1,35 @@
+.pagination {
+  display: flex;
+  align-items: center;
+}
+
+.pageButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  border: 0;
+  background: transparent;
+  color: var(--font-color-dark);
+  font-size: 18px;
+  margin: var(--space-2);
+  padding: var(--space-2);
+}
+
+.pageButton[aria-disabled="true"] {
+  cursor: default;
+  opacity: 1;
+  pointer-events: none;
+}
+
+.pageButton:hover {
+  background: var(--primary-color);
+  color: var(--font-color-light);
+}
+
+.activePage {
+  color: var(--primary-color);
+  font-size: 16px;
+  font-weight: 700;
+}
