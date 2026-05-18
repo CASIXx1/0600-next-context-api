@@ -57,11 +57,16 @@
 }
 
 .tableRow {
+  position: relative;
   display: flex;
   padding: var(--space-2) 0;
   transition:
     box-shadow 0.5s,
     transform 0.5s;
+}
+
+.tableRow:has(.selectorOpen) {
+  z-index: var(--z-index-popup);
 }
 
 .tableRow:hover {
@@ -87,23 +92,118 @@
   min-height: 100%;
 }
 
-.field {
+.editableField {
   width: 100%;
-  min-height: 100%;
-  border: 0;
-  background: transparent;
-  color: inherit;
+  cursor: pointer;
 }
 
-.field:focus {
-  outline: 1.5px solid var(--input-outline-color, var(--primary-color));
+.editableText {
+  min-width: 100%;
+}
+
+.placeholder {
+  color: var(--font-color-weak);
+}
+
+.editableInputContainer {
+  min-width: 100%;
+  border: 0;
+  border-radius: var(--border-radius-sm);
+  background: #fafafa;
+}
+
+.textInput {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  border-radius: var(--border-radius-sm);
+  background: var(--background-color);
+  box-shadow: 0 0 4px 1px #22222210;
+  color: var(--font-color-dark);
+  font-size: 12px;
+  font-weight: 300;
+}
+
+.dateInput {
+  padding: var(--space-1) var(--space-3);
+  border: 0;
+  border-radius: var(--border-radius-sm);
+  background: var(--background-color);
+  box-shadow: 0 0 4px 1px #22222210;
+}
+
+.textInput:focus,
+.dateInput:focus {
+  outline: 1.5px solid var(--input-outline-color, #22222240);
 }
 
 .selector {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  min-height: 100%;
+  cursor: pointer;
+}
+
+.selectorOpen {
+  z-index: var(--z-index-popup);
+}
+
+.selectorButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--space-2);
   border: 0;
+  border-radius: var(--border-radius-sm);
   background: var(--background-color);
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.selectorValue {
+  font-size: 12px;
+}
+
+.selectPullDownContainer {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: var(--z-index-popup);
+  display: none;
+  width: 100%;
+}
+
+.selectPullDownShow {
+  display: block;
+}
+
+.selectPullDown {
+  width: 100%;
+  min-width: 120px;
+  padding: var(--space-2) 0;
+  background: #ffffff;
+  box-shadow: 2px 2px 4px 1px #22222210;
+}
+
+.selectOption {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  text-align: left;
+}
+
+.selectOption:hover {
+  background: #18e5af;
+  color: #ffffff;
+  font-weight: 700;
+  text-shadow: 1px 1px 1px #56deba;
 }
 
 .titleCell {
@@ -114,9 +214,13 @@
   width: 14%;
 }
 
-.statusCell,
 .statusHeaderCell {
   width: 12%;
+}
+
+.statusCell {
+  width: 12%;
+  padding: 0;
 }
 
 .detailCell {
@@ -138,9 +242,8 @@
 }
 
 .empty {
-  padding: var(--space-8);
-  color: var(--font-color-weak);
-  text-align: center;
+  padding: var(--space-2);
+  font-size: 12px;
 }
 
 .footer {
@@ -156,12 +259,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 32px;
-  height: 32px;
   margin: var(--space-2);
   padding: var(--space-2);
   color: var(--font-color-dark);
-  font-size: 18px;
+  cursor: pointer;
 }
 
 .pageButton:hover {
@@ -176,6 +277,5 @@
 
 .activePage {
   color: var(--primary-color);
-  font-size: 16px;
   font-weight: 700;
 }

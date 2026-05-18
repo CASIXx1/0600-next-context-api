@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
-import { IoChevronBack, IoChevronForward, IoArrowForward } from "react-icons/io5";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { IoArrowForward, IoCaretDown, IoChevronBack, IoChevronForward } from "react-icons/io5";
 import styles from "./page.module.css";
 
 type Project = {
@@ -36,6 +37,7 @@ type ProjectsResponse = {
 };
 
 type TasksContentProps = {
+  requestedLimit: number;
   requestedPage: number;
 };
 
@@ -47,11 +49,18 @@ const STATUS_OPTIONS = [
   { label: "アーカイブ済み", value: "archived" },
 ] as const;
 
-export function TasksContent({ requestedPage }: TasksContentProps) {
+type SelectOption = {
+  label: string;
+  value: string;
+};
+
+export function TasksContent({ requestedLimit, requestedPage }: TasksContentProps) {
+  const router = useRouter();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
-  const [pageInfo, setPageInfo] = useState<PageInfo>(() => createInitialPageInfo(requestedPage, INITIAL_PAGE_LIMIT));
-  const [limit, setLimit] = useState(INITIAL_PAGE_LIMIT);
+  const [pageInfo, setPageInfo] = useState<PageInfo>(() => createInitialPageInfo(requestedPage, requestedLimit));
+  const [limit, setLimit] = useState(requestedLimit);
+  const [isTasksLoaded, setIsTasksLoaded] = useState(false);
 
   useEffect(() => {
     let isActive = true;
@@ -84,6 +93,7 @@ export function TasksContent({ requestedPage }: TasksContentProps) {
 
         setTasks(data);
         setPageInfo(responsePageInfo);
+        setIsTasksLoaded(true);
       })
       .catch(() => {
         if (!isActive) {
@@ -92,6 +102,7 @@ export function TasksContent({ requestedPage }: TasksContentProps) {
 
         setTasks([]);
         setPageInfo(createInitialPageInfo(requestedPage, limit));
+        setIsTasksLoaded(true);
       });
 
     return () => {
@@ -114,50 +125,56 @@ export function TasksContent({ requestedPage }: TasksContentProps) {
           <h2 className={styles.title}>タスク</h2>
         </header>
 
-        <div className={styles.tasks}>
-          <div className={styles.listHeader}>
-            <div className={styles.number}>
-              <div className={styles.pageIndex}>
-                <span>
-                  {pageInfo.page} / {pageCount}
-                </span>
-              </div>
+        {isTasksLoaded ? (
+          <div className={styles.tasks}>
+            <div className={styles.listHeader}>
+              <div className={styles.number}>
+                <div className={styles.pageIndex}>
+                  <span>
+                    {pageInfo.page} / {pageCount}
+                  </span>
+                </div>
 
-              <div className={styles.displayPageCount}>
-                <label htmlFor="task-limit">表示件数 : </label>
-                <select
-                  id="task-limit"
-                  className={styles.select}
-                  value={limit}
-                  onChange={(event) => {
-                    setLimit(Number(event.target.value));
-                  }}
-                >
-                  <option value="20">20 件</option>
-                  <option value="50">50 件</option>
-                  <option value="100">100 件</option>
-                </select>
-              </div>
+                <div className={styles.displayPageCount}>
+                  <label htmlFor="task-limit">表示件数 : </label>
+                  <select
+                    id="task-limit"
+                    className={styles.select}
+                    value={limit}
+                    onChange={(event) => {
+                      const nextLimit = Number(event.target.value);
 
-              <div>
-                <span className={styles.total}>{pageInfo.totalCount} 件</span>
+                      setLimit(nextLimit);
+                      router.replace(createTasksPageHref(1, nextLimit));
+                    }}
+                  >
+                    <option value="20">20 件</option>
+                    <option value="50">50 件</option>
+                    <option value="100">100 件</option>
+                  </select>
+                </div>
+
+                <div>
+                  <span className={styles.total}>{pageInfo.totalCount} 件</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          <TaskTable
-            onTaskChange={handleTaskChange}
-            projects={projects}
-            tasks={tasks}
-          />
-
-          <footer className={styles.footer}>
-            <Pagination
-              page={pageInfo.page}
-              pageCount={pageCount}
+            <TaskTable
+              onTaskChange={handleTaskChange}
+              projects={projects}
+              tasks={tasks}
             />
-          </footer>
-        </div>
+
+            <footer className={styles.footer}>
+              <Pagination
+                limit={limit}
+                page={pageInfo.page}
+                pageCount={pageCount}
+              />
+            </footer>
+          </div>
+        ) : null}
       </div>
     </section>
   );
@@ -183,7 +200,11 @@ function TaskTable({
       </div>
 
       <div>
-        {tasks.length === 0 ? <div className={styles.empty}>タスクが登録されていません</div> : null}
+        {tasks.length === 0 ? (
+          <div className={styles.tableRow}>
+            <div className={styles.empty}>タスクが登録されていません</div>
+          </div>
+        ) : null}
 
         {tasks.map((task) => (
           <TaskRow
@@ -207,19 +228,20 @@ function TaskRow({
   projects: Project[];
   task: Task;
 }) {
+  const projectOptions = projects.length > 0 ? projects.map(toSelectOption) : [toSelectOption(task.project)];
+
   return (
     <div className={styles.tableRow}>
       <div className={`${styles.tableCell} ${styles.titleCell}`}>
-        <input
-          className={styles.field}
-          aria-label="タスク名"
+        <EditableField
           defaultValue={task.title}
-          onBlur={(event) => {
-            const title = event.target.value;
+          label="タスク名"
+          onCommit={(title) => {
+            const nextTitle = title.trim();
 
-            if (title && title !== task.title) {
-              onTaskChange(task.id, { title });
-              updateTask(task.id, { title }).catch(() => {
+            if (nextTitle && nextTitle !== task.title) {
+              onTaskChange(task.id, { title: nextTitle });
+              updateTask(task.id, { title: nextTitle }).catch(() => {
                 onTaskChange(task.id, { title: task.title });
               });
             }
@@ -228,12 +250,12 @@ function TaskRow({
       </div>
 
       <div className={`${styles.tableCell} ${styles.projectCell}`}>
-        <select
-          className={styles.selector}
+        <TaskSelect
+          label={`${task.title} のプロジェクト`}
+          options={projectOptions}
           value={task.project.id}
-          aria-label={`${task.title} のプロジェクト`}
-          onChange={(event) => {
-            const project = projects.find((item) => item.id === event.target.value);
+          onSelect={(projectId) => {
+            const project = projects.find((item) => item.id === projectId);
 
             if (!project) {
               return;
@@ -244,52 +266,35 @@ function TaskRow({
               onTaskChange(task.id, { project: task.project });
             });
           }}
-        >
-          {projects.length === 0 ? <option value={task.project.id}>{task.project.name}</option> : null}
-          {projects.map((project) => (
-            <option
-              key={project.id}
-              value={project.id}
-            >
-              {project.name}
-            </option>
-          ))}
-        </select>
+        />
       </div>
 
       <div className={`${styles.tableCell} ${styles.statusCell}`}>
-        <select
-          className={styles.selector}
+        <TaskSelect
+          label={`${task.title} のステータス`}
+          options={STATUS_OPTIONS}
           value={task.status}
-          aria-label={`${task.title} のステータス`}
-          onChange={(event) => {
-            const status = event.target.value as Task["status"];
+          onSelect={(value) => {
+            const status = value as Task["status"];
 
             onTaskChange(task.id, { status });
             updateTask(task.id, { status }).catch(() => {
               onTaskChange(task.id, { status: task.status });
             });
           }}
-        >
-          {STATUS_OPTIONS.map((status) => (
-            <option
-              key={status.value}
-              value={status.value}
-            >
-              {status.label}
-            </option>
-          ))}
-        </select>
+        />
       </div>
 
       <div className={styles.tableCell}>
-        <input
-          className={styles.field}
+        <EditableField
+          defaultValue={formatDateForDisplay(task.deadline)}
+          inputValue={toDateInputValue(task.deadline)}
+          label={`${task.title} の期限日`}
           type="date"
-          aria-label={`${task.title} の期限日`}
-          value={toDateInputValue(task.deadline)}
-          onChange={(event) => {
-            const deadline = event.target.value;
+          onCommit={(deadline) => {
+            if (!deadline || deadline === toDateInputValue(task.deadline)) {
+              return;
+            }
 
             onTaskChange(task.id, { deadline });
             updateTask(task.id, { deadline }).catch(() => {
@@ -315,7 +320,141 @@ function TaskRow({
   );
 }
 
-function Pagination({ page, pageCount }: { page: number; pageCount: number }) {
+function EditableField({
+  defaultValue,
+  inputValue,
+  label,
+  onCommit,
+  type = "text",
+}: {
+  defaultValue: string;
+  inputValue?: string;
+  label: string;
+  onCommit: (value: string) => void;
+  type?: "date" | "text";
+}) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [value, setValue] = useState(inputValue ?? defaultValue);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isEditing) {
+      inputRef.current?.focus();
+    }
+  }, [isEditing]);
+
+  const commit = () => {
+    setIsEditing(false);
+    onCommit(value);
+  };
+
+  return (
+    <div
+      className={styles.editableField}
+      onClick={() => {
+        if (!isEditing) {
+          setValue(inputValue ?? defaultValue);
+          setIsEditing(true);
+        }
+      }}
+    >
+      {isEditing ? (
+        <div className={styles.editableInputContainer}>
+          <input
+            ref={inputRef}
+            aria-label={label}
+            className={type === "date" ? styles.dateInput : styles.textInput}
+            type={type}
+            value={value}
+            onBlur={commit}
+            onChange={(event) => {
+              setValue(event.target.value);
+            }}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                commit();
+              }
+            }}
+          />
+        </div>
+      ) : (
+        <p className={`${styles.editableText} ${defaultValue ? "" : styles.placeholder}`}>{defaultValue || label}</p>
+      )}
+    </div>
+  );
+}
+
+function TaskSelect({
+  label,
+  onSelect,
+  options,
+  value,
+}: {
+  label: string;
+  onSelect: (value: string) => void;
+  options: readonly SelectOption[];
+  value: string;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const selectedOption = options.find((option) => option.value === value) ?? options[0];
+
+  useEffect(() => {
+    const handleDocumentClick = (event: MouseEvent) => {
+      if (!containerRef.current?.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("click", handleDocumentClick);
+
+    return () => {
+      document.removeEventListener("click", handleDocumentClick);
+    };
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      className={`${styles.selector} ${isOpen ? styles.selectorOpen : ""}`}
+    >
+      <button
+        className={styles.selectorButton}
+        type="button"
+        aria-label={label}
+        aria-expanded={isOpen}
+        onClick={() => {
+          setIsOpen((current) => !current);
+        }}
+      >
+        <span className={styles.selectorValue}>{selectedOption?.label}</span>
+        <IoCaretDown aria-hidden="true" />
+      </button>
+
+      <div className={`${styles.selectPullDownContainer} ${isOpen ? styles.selectPullDownShow : ""}`}>
+        <ul className={styles.selectPullDown}>
+          {options.map((option) => (
+            <li key={option.value}>
+              <button
+                className={styles.selectOption}
+                type="button"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setIsOpen(false);
+                  onSelect(option.value);
+                }}
+              >
+                {option.label}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+function Pagination({ limit, page, pageCount }: { limit: number; page: number; pageCount: number }) {
   const pages = Array.from({ length: pageCount }, (_, index) => index + 1);
 
   return (
@@ -323,7 +462,7 @@ function Pagination({ page, pageCount }: { page: number; pageCount: number }) {
       <li>
         <Link
           className={styles.pageButton}
-          href={`/tasks?page=${Math.max(1, page - 1)}`}
+          href={createTasksPageHref(Math.max(1, page - 1), limit)}
           aria-label="前のページ"
           aria-disabled={page <= 1}
         >
@@ -335,7 +474,7 @@ function Pagination({ page, pageCount }: { page: number; pageCount: number }) {
         <li key={pageNumber}>
           <Link
             className={`${styles.pageButton} ${pageNumber === page ? styles.activePage : ""}`}
-            href={`/tasks?page=${pageNumber}`}
+            href={createTasksPageHref(pageNumber, limit)}
             aria-current={pageNumber === page ? "page" : undefined}
           >
             {pageNumber}
@@ -346,7 +485,7 @@ function Pagination({ page, pageCount }: { page: number; pageCount: number }) {
       <li>
         <Link
           className={styles.pageButton}
-          href={`/tasks?page=${Math.min(pageCount, page + 1)}`}
+          href={createTasksPageHref(Math.min(pageCount, page + 1), limit)}
           aria-label="次のページ"
           aria-disabled={page >= pageCount}
         >
@@ -405,10 +544,33 @@ function createInitialPageInfo(page: number, limit: number): PageInfo {
   };
 }
 
+function createTasksPageHref(page: number, limit: number) {
+  const params = new URLSearchParams({
+    page: String(page),
+  });
+
+  if (limit !== INITIAL_PAGE_LIMIT) {
+    params.set("limit", String(limit));
+  }
+
+  return `/tasks?${params.toString()}`;
+}
+
+function formatDateForDisplay(value: string) {
+  return toDateInputValue(value).replaceAll("-", "/");
+}
+
 function toDateInputValue(value: string) {
   if (!value) {
     return "";
   }
 
   return value.slice(0, 10);
+}
+
+function toSelectOption(project: Project): SelectOption {
+  return {
+    label: project.name,
+    value: project.id,
+  };
 }
