@@ -1,0 +1,31 @@
+---
+name: api-client-implementation
+description: フロントエンドの API client、src/requests、レスポンス型、API 結果の state 反映を実装するときに使う。
+---
+
+# API Client 実装手順
+
+## 使い方
+
+- この skill は API を実行するフロントエンド側の手順を扱う。
+- 設計方針は `.agents/project.md` を優先する。
+- backend API route、datastore、swagger は対象外。
+
+## 調査手順
+
+1. 対象画面の API 呼び出し箇所を読む。
+2. 既存の `src/requests` 実装を読む。
+3. 呼び出し条件、レスポンス利用箇所、エラー表示箇所を確認する。
+
+## 実装手順
+
+1. 必要な request 関数とレスポンス型を `src/requests` に追加または更新する。
+2. 画面側の呼び出しを request 関数へ差し替える。
+3. 成功時、失敗時の state 更新を画面側でつなぐ。
+4. 不要になった画面内の `fetch` 関数や型を削除する。
+
+## 検証
+
+- コード編集後は `npm run lint` と `npm run format` を実行する。
+- request 関数のシグネチャ変更では、呼び出し箇所を `rg` で確認する。
+- build 確認が必要な場合は `AGENTS.md` の Verification に従う。
