@@ -12,13 +12,18 @@ type LayoutProps = {
   children: ReactNode;
 };
 
+const PROJECT_MENU_PROJECTS_LIMIT = 100;
+
 export function Layout({ children }: LayoutProps) {
   const [projects, setProjects] = useState<Project[]>([]);
 
   useEffect(() => {
     let isActive = true;
 
-    fetchProjects(1)
+    fetchProjects({
+      page: 1,
+      limit: PROJECT_MENU_PROJECTS_LIMIT,
+    })
       .then(({ data }) => {
         if (!isActive) {
           return;

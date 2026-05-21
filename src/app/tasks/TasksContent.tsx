@@ -4,37 +4,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IoArrowForward, IoCaretDown, IoChevronBack, IoChevronForward } from "react-icons/io5";
+import { fetchProjects, type Project } from "@/src/requests/projects/fetchProjects";
+import { fetchTasks, type PageInfo, type Task } from "@/src/requests/tasks/fetchTasks";
+import { updateTask } from "@/src/requests/tasks/updateTask";
 import styles from "./page.module.css";
-
-type Project = {
-  id: string;
-  name: string;
-};
-
-type Task = {
-  id: string;
-  title: string;
-  status: "scheduled" | "completed" | "archived";
-  deadline: string;
-  project: Project;
-};
-
-type PageInfo = {
-  page: number;
-  limit: number;
-  totalCount: number;
-  hasNext?: boolean;
-  hasPrevious?: boolean;
-};
-
-type TasksResponse = {
-  data: Task[];
-  pageInfo: PageInfo;
-};
-
-type ProjectsResponse = {
-  data: Project[];
-};
 
 type TasksContentProps = {
   requestedLimit: number;
@@ -42,6 +15,8 @@ type TasksContentProps = {
 };
 
 const INITIAL_PAGE_LIMIT = 20;
+const TASK_PROJECTS_LIMIT = 100;
+const TASK_LIST_STATUS = "scheduled";
 
 const STATUS_OPTIONS = [
   { label: "未完了", value: "scheduled" },
@@ -65,8 +40,11 @@ export function TasksContent({ requestedLimit, requestedPage }: TasksContentProp
   useEffect(() => {
     let isActive = true;
 
-    fetchProjects()
-      .then((data) => {
+    fetchProjects({
+      page: 1,
+      limit: TASK_PROJECTS_LIMIT,
+    })
+      .then(({ data }) => {
         if (isActive) {
           setProjects(data);
         }
@@ -85,7 +63,11 @@ export function TasksContent({ requestedLimit, requestedPage }: TasksContentProp
   useEffect(() => {
     let isActive = true;
 
-    fetchTasks(requestedPage, limit)
+    fetchTasks({
+      page: requestedPage,
+      limit,
+      status: TASK_LIST_STATUS,
+    })
       .then(({ data, pageInfo: responsePageInfo }) => {
         if (!isActive) {
           return;
@@ -494,46 +476,6 @@ function Pagination({ limit, page, pageCount }: { limit: number; page: number; p
       </li>
     </ul>
   );
-}
-
-async function fetchTasks(page: number, limit: number): Promise<TasksResponse> {
-  const params = new URLSearchParams({
-    page: String(page),
-    limit: String(limit),
-    status: "scheduled",
-  });
-  const response = await fetch(`/api/v1/users/tasks?${params.toString()}`);
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch tasks");
-  }
-
-  return response.json();
-}
-
-async function fetchProjects(): Promise<Project[]> {
-  const response = await fetch("/api/v1/users/projects?limit=100");
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch projects");
-  }
-
-  const { data }: ProjectsResponse = await response.json();
-  return data;
-}
-
-async function updateTask(taskId: string, data: Record<string, string>) {
-  const response = await fetch(`/api/v1/users/tasks/${taskId}`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to update task");
-  }
 }
 
 function createInitialPageInfo(page: number, limit: number): PageInfo {
