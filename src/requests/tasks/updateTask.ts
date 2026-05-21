@@ -1,13 +1,4 @@
-import type { Task, TaskStatus } from "./fetchTasks";
-
-export type UpdateTaskData = Partial<Pick<Task, "deadline" | "title">> & {
-  projectId?: string;
-  status?: TaskStatus;
-};
-
-type UpdateTaskResponse = {
-  data: Task;
-};
+import type { UpdateTaskData, UpdateTaskResponse } from "./schema";
 
 export async function updateTask(taskId: string, data: UpdateTaskData) {
   const response = await fetch(`/api/v1/users/tasks/${taskId}`, {

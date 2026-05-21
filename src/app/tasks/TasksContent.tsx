@@ -2,11 +2,9 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IoArrowForward, IoCaretDown, IoChevronBack, IoChevronForward } from "react-icons/io5";
-import { fetchProjects, type Project } from "@/src/requests/projects/fetchProjects";
-import { fetchTasks, type PageInfo, type Task } from "@/src/requests/tasks/fetchTasks";
-import { updateTask, type UpdateTaskData } from "@/src/requests/tasks/updateTask";
+import { useTasksList, type Project, type Task, type UpdateTaskData } from "@/src/contexts/tasks";
 import styles from "./page.module.css";
 
 type TasksContentProps = {
@@ -15,9 +13,6 @@ type TasksContentProps = {
 };
 
 const INITIAL_PAGE_LIMIT = 20;
-const TASK_PROJECTS_LIMIT = 100;
-const TASK_LIST_STATUS = "scheduled";
-const UPDATE_TASK_ERROR_MESSAGE = "タスクの更新に失敗しました。時間をおいて再度お試しください。";
 
 const STATUS_OPTIONS = [
   { label: "未完了", value: "scheduled" },
@@ -32,81 +27,11 @@ type SelectOption = {
 
 export function TasksContent({ requestedLimit, requestedPage }: TasksContentProps) {
   const router = useRouter();
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [pageInfo, setPageInfo] = useState<PageInfo>(() => createInitialPageInfo(requestedPage, requestedLimit));
-  const [limit, setLimit] = useState(requestedLimit);
-  const [isTasksLoaded, setIsTasksLoaded] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  useEffect(() => {
-    let isActive = true;
-
-    fetchProjects({
-      page: 1,
-      limit: TASK_PROJECTS_LIMIT,
-    })
-      .then(({ data }) => {
-        if (isActive) {
-          setProjects(data);
-        }
-      })
-      .catch(() => {
-        if (isActive) {
-          setProjects([]);
-        }
-      });
-
-    return () => {
-      isActive = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    let isActive = true;
-
-    fetchTasks({
-      page: requestedPage,
-      limit,
-      status: TASK_LIST_STATUS,
-    })
-      .then(({ data, pageInfo: responsePageInfo }) => {
-        if (!isActive) {
-          return;
-        }
-
-        setTasks(data);
-        setPageInfo(responsePageInfo);
-        setIsTasksLoaded(true);
-        setErrorMessage(null);
-      })
-      .catch(() => {
-        if (!isActive) {
-          return;
-        }
-
-        setTasks([]);
-        setPageInfo(createInitialPageInfo(requestedPage, limit));
-        setIsTasksLoaded(true);
-      });
-
-    return () => {
-      isActive = false;
-    };
-  }, [limit, requestedPage]);
-
-  const pageCount = useMemo(() => {
-    return Math.max(1, Math.ceil(pageInfo.totalCount / pageInfo.limit));
-  }, [pageInfo.limit, pageInfo.totalCount]);
-
-  const handleTaskUpdated = (updatedTask: Task) => {
-    setTasks((currentTasks) => currentTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task)));
-    setErrorMessage(null);
-  };
-
-  const handleTaskUpdateError = () => {
-    setErrorMessage(UPDATE_TASK_ERROR_MESSAGE);
-  };
+  const { errorMessage, isTasksLoaded, limit, pageCount, pageInfo, projects, setLimit, tasks, updateTaskById } =
+    useTasksList({
+      requestedLimit,
+      requestedPage,
+    });
 
   return (
     <section className={styles.container}>
@@ -160,10 +85,9 @@ export function TasksContent({ requestedLimit, requestedPage }: TasksContentProp
             </div>
 
             <TaskTable
-              onTaskUpdateError={handleTaskUpdateError}
-              onTaskUpdated={handleTaskUpdated}
               projects={projects}
               tasks={tasks}
+              updateTaskById={updateTaskById}
             />
 
             <footer className={styles.footer}>
@@ -181,15 +105,13 @@ export function TasksContent({ requestedLimit, requestedPage }: TasksContentProp
 }
 
 function TaskTable({
-  onTaskUpdateError,
-  onTaskUpdated,
   projects,
   tasks,
+  updateTaskById,
 }: {
-  onTaskUpdateError: () => void;
-  onTaskUpdated: (task: Task) => void;
   projects: Project[];
   tasks: Task[];
+  updateTaskById: (taskId: string, data: UpdateTaskData) => Promise<void>;
 }) {
   return (
     <div className={styles.table}>
@@ -211,10 +133,9 @@ function TaskTable({
         {tasks.map((task) => (
           <TaskRow
             key={task.id}
-            onTaskUpdateError={onTaskUpdateError}
-            onTaskUpdated={onTaskUpdated}
             projects={projects}
             task={task}
+            updateTaskById={updateTaskById}
           />
         ))}
       </div>
@@ -223,25 +144,17 @@ function TaskTable({
 }
 
 function TaskRow({
-  onTaskUpdateError,
-  onTaskUpdated,
   projects,
   task,
+  updateTaskById,
 }: {
-  onTaskUpdateError: () => void;
-  onTaskUpdated: (task: Task) => void;
   projects: Project[];
   task: Task;
+  updateTaskById: (taskId: string, data: UpdateTaskData) => Promise<void>;
 }) {
   const projectOptions = projects.length > 0 ? projects.map(toSelectOption) : [toSelectOption(task.project)];
   const handleTaskUpdate = (data: UpdateTaskData) => {
-    updateTask(task.id, data)
-      .then(({ data: updatedTask }) => {
-        onTaskUpdated(updatedTask);
-      })
-      .catch(() => {
-        onTaskUpdateError();
-      });
+    void updateTaskById(task.id, data);
   };
 
   return (
@@ -500,14 +413,6 @@ function Pagination({ limit, page, pageCount }: { limit: number; page: number; p
       </li>
     </ul>
   );
-}
-
-function createInitialPageInfo(page: number, limit: number): PageInfo {
-  return {
-    totalCount: 0,
-    page,
-    limit,
-  };
 }
 
 function createTasksPageHref(page: number, limit: number) {
