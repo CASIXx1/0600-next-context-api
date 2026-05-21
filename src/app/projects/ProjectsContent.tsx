@@ -15,32 +15,41 @@ type ProjectsContentProps = {
   requestedPage: number;
 };
 
+type FetchProjectsResult = {
+  data: Project[];
+  responsePageInfo: PageInfo;
+  errorMessage: string | null;
+};
+
 const INITIAL_PAGE_LIMIT = 10;
+const FETCH_PROJECTS_ERROR_MESSAGE = "プロジェクトの取得に失敗しました。時間をおいて再度お試しください。";
 
 export function ProjectsContent({ requestedPage }: ProjectsContentProps) {
   const [projects, setProjects] = useState<Project[]>([]);
   const [pageInfo, setPageInfo] = useState<PageInfo>(() => createInitialPageInfo(requestedPage));
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     let isActive = true;
 
-    async function fetcher(): Promise<{ data: Project[]; responsePageInfo: PageInfo }> {
+    async function fetcher(): Promise<FetchProjectsResult> {
       try {
         const { data, pageInfo: responsePageInfo } = await fetchProjects(requestedPage);
 
-        return { data, responsePageInfo };
+        return { data, responsePageInfo, errorMessage: null };
       } catch (error) {
         console.error(error);
 
         return {
           data: [],
           responsePageInfo: createInitialPageInfo(requestedPage),
+          errorMessage: FETCH_PROJECTS_ERROR_MESSAGE,
         };
       }
     }
 
     async function init() {
-      const { data, responsePageInfo } = await fetcher();
+      const { data, responsePageInfo, errorMessage: nextErrorMessage } = await fetcher();
 
       if (!isActive) {
         return;
@@ -48,6 +57,7 @@ export function ProjectsContent({ requestedPage }: ProjectsContentProps) {
 
       setProjects(data);
       setPageInfo(responsePageInfo);
+      setErrorMessage(nextErrorMessage);
     }
 
     void init();
@@ -69,6 +79,15 @@ export function ProjectsContent({ requestedPage }: ProjectsContentProps) {
         </header>
 
         <div className={styles.body}>
+          {errorMessage ? (
+            <p
+              className={styles.errorMessage}
+              role="alert"
+            >
+              {errorMessage}
+            </p>
+          ) : null}
+
           <div className={styles.projectsHeader}>
             <p>
               {pageInfo.page} / {pageCount} ({pageInfo.totalCount} 件)
