@@ -24,23 +24,33 @@ export function ProjectsContent({ requestedPage }: ProjectsContentProps) {
   useEffect(() => {
     let isActive = true;
 
-    fetchProjects(requestedPage)
-      .then(({ data, pageInfo: responsePageInfo }) => {
-        if (!isActive) {
-          return;
-        }
+    async function fetcher(): Promise<{ data: Project[]; responsePageInfo: PageInfo }> {
+      try {
+        const { data, pageInfo: responsePageInfo } = await fetchProjects(requestedPage);
 
-        setProjects(data);
-        setPageInfo(responsePageInfo);
-      })
-      .catch((_error: unknown) => {
-        if (!isActive) {
-          return;
-        }
+        return { data, responsePageInfo };
+      } catch (error) {
+        console.error(error);
 
-        setProjects([]);
-        setPageInfo(createInitialPageInfo(requestedPage));
-      });
+        return {
+          data: [],
+          responsePageInfo: createInitialPageInfo(requestedPage),
+        };
+      }
+    }
+
+    async function init() {
+      const { data, responsePageInfo } = await fetcher();
+
+      if (!isActive) {
+        return;
+      }
+
+      setProjects(data);
+      setPageInfo(responsePageInfo);
+    }
+
+    void init();
 
     return () => {
       isActive = false;
