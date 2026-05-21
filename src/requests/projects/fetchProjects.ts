@@ -1,5 +1,3 @@
-const PROJECTS_PER_PAGE = 10;
-
 export type Project = {
   id: string;
   name: string;
@@ -36,10 +34,15 @@ export type ProjectsResponse = {
   };
 };
 
-export async function fetchProjects(page: number, options?: RequestInit) {
+type FetchProjectsParams = {
+  page: number;
+  limit: number;
+};
+
+export async function fetchProjects({ page, limit }: FetchProjectsParams, options?: RequestInit) {
   const searchParams = new URLSearchParams({
     page: page.toString(),
-    limit: PROJECTS_PER_PAGE.toString(),
+    limit: limit.toString(),
   });
   const response = await fetch(`/api/v1/users/projects?${searchParams}`, {
     cache: "no-store",

@@ -22,6 +22,7 @@ type FetchProjectsResult = {
 };
 
 const INITIAL_PAGE_LIMIT = 10;
+const PROJECTS_PER_PAGE = 10;
 const FETCH_PROJECTS_ERROR_MESSAGE = "プロジェクトの取得に失敗しました。時間をおいて再度お試しください。";
 
 export function ProjectsContent({ requestedPage }: ProjectsContentProps) {
@@ -34,7 +35,10 @@ export function ProjectsContent({ requestedPage }: ProjectsContentProps) {
 
     async function fetcher(): Promise<FetchProjectsResult> {
       try {
-        const { data, pageInfo: responsePageInfo } = await fetchProjects(requestedPage);
+        const { data, pageInfo: responsePageInfo } = await fetchProjects({
+          page: requestedPage,
+          limit: PROJECTS_PER_PAGE,
+        });
 
         return { data, responsePageInfo, errorMessage: null };
       } catch (error) {
