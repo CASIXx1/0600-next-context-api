@@ -1,8 +1,12 @@
 import type { Task, TaskStatus } from "./fetchTasks";
 
-type UpdateTaskData = Partial<Pick<Task, "deadline" | "title">> & {
+export type UpdateTaskData = Partial<Pick<Task, "deadline" | "title">> & {
   projectId?: string;
   status?: TaskStatus;
+};
+
+type UpdateTaskResponse = {
+  data: Task;
 };
 
 export async function updateTask(taskId: string, data: UpdateTaskData) {
@@ -17,4 +21,6 @@ export async function updateTask(taskId: string, data: UpdateTaskData) {
   if (!response.ok) {
     throw new Error("Failed to update task");
   }
+
+  return response.json() as Promise<UpdateTaskResponse>;
 }

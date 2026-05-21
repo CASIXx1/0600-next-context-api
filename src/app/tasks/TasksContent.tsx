@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { IoArrowForward, IoCaretDown, IoChevronBack, IoChevronForward } from "react-icons/io5";
 import { fetchProjects, type Project } from "@/src/requests/projects/fetchProjects";
 import { fetchTasks, type PageInfo, type Task } from "@/src/requests/tasks/fetchTasks";
-import { updateTask } from "@/src/requests/tasks/updateTask";
+import { updateTask, type UpdateTaskData } from "@/src/requests/tasks/updateTask";
 import styles from "./page.module.css";
 
 type TasksContentProps = {
@@ -17,6 +17,7 @@ type TasksContentProps = {
 const INITIAL_PAGE_LIMIT = 20;
 const TASK_PROJECTS_LIMIT = 100;
 const TASK_LIST_STATUS = "scheduled";
+const UPDATE_TASK_ERROR_MESSAGE = "タスクの更新に失敗しました。時間をおいて再度お試しください。";
 
 const STATUS_OPTIONS = [
   { label: "未完了", value: "scheduled" },
@@ -36,6 +37,7 @@ export function TasksContent({ requestedLimit, requestedPage }: TasksContentProp
   const [pageInfo, setPageInfo] = useState<PageInfo>(() => createInitialPageInfo(requestedPage, requestedLimit));
   const [limit, setLimit] = useState(requestedLimit);
   const [isTasksLoaded, setIsTasksLoaded] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     let isActive = true;
@@ -76,6 +78,7 @@ export function TasksContent({ requestedLimit, requestedPage }: TasksContentProp
         setTasks(data);
         setPageInfo(responsePageInfo);
         setIsTasksLoaded(true);
+        setErrorMessage(null);
       })
       .catch(() => {
         if (!isActive) {
@@ -96,8 +99,13 @@ export function TasksContent({ requestedLimit, requestedPage }: TasksContentProp
     return Math.max(1, Math.ceil(pageInfo.totalCount / pageInfo.limit));
   }, [pageInfo.limit, pageInfo.totalCount]);
 
-  const handleTaskChange = (taskId: string, changes: Partial<Task>) => {
-    setTasks((currentTasks) => currentTasks.map((task) => (task.id === taskId ? { ...task, ...changes } : task)));
+  const handleTaskUpdated = (updatedTask: Task) => {
+    setTasks((currentTasks) => currentTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task)));
+    setErrorMessage(null);
+  };
+
+  const handleTaskUpdateError = () => {
+    setErrorMessage(UPDATE_TASK_ERROR_MESSAGE);
   };
 
   return (
@@ -109,6 +117,15 @@ export function TasksContent({ requestedLimit, requestedPage }: TasksContentProp
 
         {isTasksLoaded ? (
           <div className={styles.tasks}>
+            {errorMessage ? (
+              <p
+                className={styles.errorMessage}
+                role="alert"
+              >
+                {errorMessage}
+              </p>
+            ) : null}
+
             <div className={styles.listHeader}>
               <div className={styles.number}>
                 <div className={styles.pageIndex}>
@@ -143,7 +160,8 @@ export function TasksContent({ requestedLimit, requestedPage }: TasksContentProp
             </div>
 
             <TaskTable
-              onTaskChange={handleTaskChange}
+              onTaskUpdateError={handleTaskUpdateError}
+              onTaskUpdated={handleTaskUpdated}
               projects={projects}
               tasks={tasks}
             />
@@ -163,11 +181,13 @@ export function TasksContent({ requestedLimit, requestedPage }: TasksContentProp
 }
 
 function TaskTable({
-  onTaskChange,
+  onTaskUpdateError,
+  onTaskUpdated,
   projects,
   tasks,
 }: {
-  onTaskChange: (taskId: string, changes: Partial<Task>) => void;
+  onTaskUpdateError: () => void;
+  onTaskUpdated: (task: Task) => void;
   projects: Project[];
   tasks: Task[];
 }) {
@@ -191,7 +211,8 @@ function TaskTable({
         {tasks.map((task) => (
           <TaskRow
             key={task.id}
-            onTaskChange={onTaskChange}
+            onTaskUpdateError={onTaskUpdateError}
+            onTaskUpdated={onTaskUpdated}
             projects={projects}
             task={task}
           />
@@ -202,15 +223,26 @@ function TaskTable({
 }
 
 function TaskRow({
-  onTaskChange,
+  onTaskUpdateError,
+  onTaskUpdated,
   projects,
   task,
 }: {
-  onTaskChange: (taskId: string, changes: Partial<Task>) => void;
+  onTaskUpdateError: () => void;
+  onTaskUpdated: (task: Task) => void;
   projects: Project[];
   task: Task;
 }) {
   const projectOptions = projects.length > 0 ? projects.map(toSelectOption) : [toSelectOption(task.project)];
+  const handleTaskUpdate = (data: UpdateTaskData) => {
+    updateTask(task.id, data)
+      .then(({ data: updatedTask }) => {
+        onTaskUpdated(updatedTask);
+      })
+      .catch(() => {
+        onTaskUpdateError();
+      });
+  };
 
   return (
     <div className={styles.tableRow}>
@@ -222,10 +254,7 @@ function TaskRow({
             const nextTitle = title.trim();
 
             if (nextTitle && nextTitle !== task.title) {
-              onTaskChange(task.id, { title: nextTitle });
-              updateTask(task.id, { title: nextTitle }).catch(() => {
-                onTaskChange(task.id, { title: task.title });
-              });
+              handleTaskUpdate({ title: nextTitle });
             }
           }}
         />
@@ -243,10 +272,9 @@ function TaskRow({
               return;
             }
 
-            onTaskChange(task.id, { project });
-            updateTask(task.id, { projectId: project.id }).catch(() => {
-              onTaskChange(task.id, { project: task.project });
-            });
+            if (project.id !== task.project.id) {
+              handleTaskUpdate({ projectId: project.id });
+            }
           }}
         />
       </div>
@@ -259,10 +287,9 @@ function TaskRow({
           onSelect={(value) => {
             const status = value as Task["status"];
 
-            onTaskChange(task.id, { status });
-            updateTask(task.id, { status }).catch(() => {
-              onTaskChange(task.id, { status: task.status });
-            });
+            if (status !== task.status) {
+              handleTaskUpdate({ status });
+            }
           }}
         />
       </div>
@@ -278,10 +305,7 @@ function TaskRow({
               return;
             }
 
-            onTaskChange(task.id, { deadline });
-            updateTask(task.id, { deadline }).catch(() => {
-              onTaskChange(task.id, { deadline: task.deadline });
-            });
+            handleTaskUpdate({ deadline });
           }}
         />
       </div>
