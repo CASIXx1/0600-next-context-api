@@ -52,7 +52,7 @@ export function useProjectsList({ requestedPage }: UseProjectsListParams): Proje
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    let isActive = true;
+    const controller = new AbortController();
 
     async function init() {
       let nextProjects: Project[] = [];
@@ -60,21 +60,26 @@ export function useProjectsList({ requestedPage }: UseProjectsListParams): Proje
       let nextErrorMessage: string | null = null;
 
       try {
-        const { data, pageInfo: responsePageInfo } = await fetchProjects({
-          page: requestedPage,
-          limit: PROJECTS_PER_PAGE,
-        });
+        const { data, pageInfo: responsePageInfo } = await fetchProjects(
+          {
+            page: requestedPage,
+            limit: PROJECTS_PER_PAGE,
+          },
+          {
+            signal: controller.signal,
+          },
+        );
 
         nextProjects = data;
         nextPageInfo = responsePageInfo;
       } catch (error) {
+        if (isAbortError(error)) {
+          return;
+        }
+
         console.error(error);
 
         nextErrorMessage = FETCH_PROJECTS_ERROR_MESSAGE;
-      }
-
-      if (!isActive) {
-        return;
       }
 
       setProjects(nextProjects);
@@ -85,7 +90,7 @@ export function useProjectsList({ requestedPage }: UseProjectsListParams): Proje
     void init();
 
     return () => {
-      isActive = false;
+      controller.abort();
     };
   }, [requestedPage]);
 
@@ -105,24 +110,29 @@ export function useProjectMenuProjects({ limit }: UseProjectMenuProjectsParams) 
   const [projects, setProjects] = useState<Project[]>([]);
 
   useEffect(() => {
-    let isActive = true;
+    const controller = new AbortController();
 
     async function init() {
       let nextProjects: Project[] = [];
 
       try {
-        const { data } = await fetchProjects({
-          page: 1,
-          limit,
-        });
+        const { data } = await fetchProjects(
+          {
+            page: 1,
+            limit,
+          },
+          {
+            signal: controller.signal,
+          },
+        );
 
         nextProjects = data;
-      } catch {
-        nextProjects = [];
-      }
+      } catch (error) {
+        if (isAbortError(error)) {
+          return;
+        }
 
-      if (!isActive) {
-        return;
+        nextProjects = [];
       }
 
       setProjects(nextProjects);
@@ -131,7 +141,7 @@ export function useProjectMenuProjects({ limit }: UseProjectMenuProjectsParams) 
     void init();
 
     return () => {
-      isActive = false;
+      controller.abort();
     };
   }, [limit]);
 
@@ -144,4 +154,8 @@ function createInitialPageInfo(page: number): ProjectsPageInfo {
     page,
     limit: INITIAL_PAGE_LIMIT,
   };
+}
+
+function isAbortError(error: unknown) {
+  return error instanceof DOMException && error.name === "AbortError";
 }

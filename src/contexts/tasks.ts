@@ -27,24 +27,29 @@ export function useTasksList({ requestedLimit, requestedPage }: UseTasksListPara
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    let isActive = true;
+    const controller = new AbortController();
 
     async function init() {
       let nextProjects: Project[] = [];
 
       try {
-        const { data } = await fetchProjects({
-          page: 1,
-          limit: TASK_PROJECTS_LIMIT,
-        });
+        const { data } = await fetchProjects(
+          {
+            page: 1,
+            limit: TASK_PROJECTS_LIMIT,
+          },
+          {
+            signal: controller.signal,
+          },
+        );
 
         nextProjects = data;
-      } catch {
-        nextProjects = [];
-      }
+      } catch (error) {
+        if (isAbortError(error)) {
+          return;
+        }
 
-      if (!isActive) {
-        return;
+        nextProjects = [];
       }
 
       setProjects(nextProjects);
@@ -53,12 +58,12 @@ export function useTasksList({ requestedLimit, requestedPage }: UseTasksListPara
     void init();
 
     return () => {
-      isActive = false;
+      controller.abort();
     };
   }, []);
 
   useEffect(() => {
-    let isActive = true;
+    const controller = new AbortController();
 
     async function init() {
       let nextTasks: Task[] = [];
@@ -67,20 +72,25 @@ export function useTasksList({ requestedLimit, requestedPage }: UseTasksListPara
       let shouldUpdateErrorMessage = true;
 
       try {
-        const { data, pageInfo: responsePageInfo } = await fetchTasks({
-          page: requestedPage,
-          limit,
-          status: TASK_LIST_STATUS,
-        });
+        const { data, pageInfo: responsePageInfo } = await fetchTasks(
+          {
+            page: requestedPage,
+            limit,
+            status: TASK_LIST_STATUS,
+          },
+          {
+            signal: controller.signal,
+          },
+        );
 
         nextTasks = data;
         nextPageInfo = responsePageInfo;
-      } catch {
-        shouldUpdateErrorMessage = false;
-      }
+      } catch (error) {
+        if (isAbortError(error)) {
+          return;
+        }
 
-      if (!isActive) {
-        return;
+        shouldUpdateErrorMessage = false;
       }
 
       setTasks(nextTasks);
@@ -95,7 +105,7 @@ export function useTasksList({ requestedLimit, requestedPage }: UseTasksListPara
     void init();
 
     return () => {
-      isActive = false;
+      controller.abort();
     };
   }, [limit, requestedPage]);
 
@@ -141,4 +151,8 @@ function createInitialPageInfo(page: number, limit: number): TasksPageInfo {
     page,
     limit,
   };
+}
+
+function isAbortError(error: unknown) {
+  return error instanceof DOMException && error.name === "AbortError";
 }
