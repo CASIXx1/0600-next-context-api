@@ -54,30 +54,35 @@ export function useProjectsList({ requestedPage }: UseProjectsListParams): Proje
   useEffect(() => {
     let isActive = true;
 
-    fetchProjects({
-      page: requestedPage,
-      limit: PROJECTS_PER_PAGE,
-    })
-      .then(({ data, pageInfo: responsePageInfo }) => {
-        if (!isActive) {
-          return;
-        }
+    async function init() {
+      let nextProjects: Project[] = [];
+      let nextPageInfo = createInitialPageInfo(requestedPage);
+      let nextErrorMessage: string | null = null;
 
-        setProjects(data);
-        setPageInfo(responsePageInfo);
-        setErrorMessage(null);
-      })
-      .catch((error: unknown) => {
+      try {
+        const { data, pageInfo: responsePageInfo } = await fetchProjects({
+          page: requestedPage,
+          limit: PROJECTS_PER_PAGE,
+        });
+
+        nextProjects = data;
+        nextPageInfo = responsePageInfo;
+      } catch (error) {
         console.error(error);
 
-        if (!isActive) {
-          return;
-        }
+        nextErrorMessage = FETCH_PROJECTS_ERROR_MESSAGE;
+      }
 
-        setProjects([]);
-        setPageInfo(createInitialPageInfo(requestedPage));
-        setErrorMessage(FETCH_PROJECTS_ERROR_MESSAGE);
-      });
+      if (!isActive) {
+        return;
+      }
+
+      setProjects(nextProjects);
+      setPageInfo(nextPageInfo);
+      setErrorMessage(nextErrorMessage);
+    }
+
+    void init();
 
     return () => {
       isActive = false;
@@ -102,24 +107,28 @@ export function useProjectMenuProjects({ limit }: UseProjectMenuProjectsParams) 
   useEffect(() => {
     let isActive = true;
 
-    fetchProjects({
-      page: 1,
-      limit,
-    })
-      .then(({ data }) => {
-        if (!isActive) {
-          return;
-        }
+    async function init() {
+      let nextProjects: Project[] = [];
 
-        setProjects(data);
-      })
-      .catch(() => {
-        if (!isActive) {
-          return;
-        }
+      try {
+        const { data } = await fetchProjects({
+          page: 1,
+          limit,
+        });
 
-        setProjects([]);
-      });
+        nextProjects = data;
+      } catch {
+        nextProjects = [];
+      }
+
+      if (!isActive) {
+        return;
+      }
+
+      setProjects(nextProjects);
+    }
+
+    void init();
 
     return () => {
       isActive = false;

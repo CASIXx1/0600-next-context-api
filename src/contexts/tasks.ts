@@ -29,20 +29,28 @@ export function useTasksList({ requestedLimit, requestedPage }: UseTasksListPara
   useEffect(() => {
     let isActive = true;
 
-    fetchProjects({
-      page: 1,
-      limit: TASK_PROJECTS_LIMIT,
-    })
-      .then(({ data }) => {
-        if (isActive) {
-          setProjects(data);
-        }
-      })
-      .catch(() => {
-        if (isActive) {
-          setProjects([]);
-        }
-      });
+    async function init() {
+      let nextProjects: Project[] = [];
+
+      try {
+        const { data } = await fetchProjects({
+          page: 1,
+          limit: TASK_PROJECTS_LIMIT,
+        });
+
+        nextProjects = data;
+      } catch {
+        nextProjects = [];
+      }
+
+      if (!isActive) {
+        return;
+      }
+
+      setProjects(nextProjects);
+    }
+
+    void init();
 
     return () => {
       isActive = false;
@@ -52,30 +60,39 @@ export function useTasksList({ requestedLimit, requestedPage }: UseTasksListPara
   useEffect(() => {
     let isActive = true;
 
-    fetchTasks({
-      page: requestedPage,
-      limit,
-      status: TASK_LIST_STATUS,
-    })
-      .then(({ data, pageInfo: responsePageInfo }) => {
-        if (!isActive) {
-          return;
-        }
+    async function init() {
+      let nextTasks: Task[] = [];
+      let nextPageInfo = createInitialPageInfo(requestedPage, limit);
+      const nextErrorMessage: string | null = null;
+      let shouldUpdateErrorMessage = true;
 
-        setTasks(data);
-        setPageInfo(responsePageInfo);
-        setIsTasksLoaded(true);
-        setErrorMessage(null);
-      })
-      .catch(() => {
-        if (!isActive) {
-          return;
-        }
+      try {
+        const { data, pageInfo: responsePageInfo } = await fetchTasks({
+          page: requestedPage,
+          limit,
+          status: TASK_LIST_STATUS,
+        });
 
-        setTasks([]);
-        setPageInfo(createInitialPageInfo(requestedPage, limit));
-        setIsTasksLoaded(true);
-      });
+        nextTasks = data;
+        nextPageInfo = responsePageInfo;
+      } catch {
+        shouldUpdateErrorMessage = false;
+      }
+
+      if (!isActive) {
+        return;
+      }
+
+      setTasks(nextTasks);
+      setPageInfo(nextPageInfo);
+      setIsTasksLoaded(true);
+
+      if (shouldUpdateErrorMessage) {
+        setErrorMessage(nextErrorMessage);
+      }
+    }
+
+    void init();
 
     return () => {
       isActive = false;
@@ -86,15 +103,23 @@ export function useTasksList({ requestedLimit, requestedPage }: UseTasksListPara
     return Math.max(1, Math.ceil(pageInfo.totalCount / pageInfo.limit));
   }, [pageInfo.limit, pageInfo.totalCount]);
 
-  const updateTaskById = useCallback((taskId: string, data: UpdateTaskData) => {
-    return updateTask(taskId, data)
-      .then(({ data: updatedTask }) => {
-        setTasks((currentTasks) => currentTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task)));
-        setErrorMessage(null);
-      })
-      .catch(() => {
-        setErrorMessage(UPDATE_TASK_ERROR_MESSAGE);
-      });
+  const updateTaskById = useCallback(async (taskId: string, data: UpdateTaskData) => {
+    let updatedTask: Task | null = null;
+    let nextErrorMessage: string | null = null;
+
+    try {
+      const response = await updateTask(taskId, data);
+
+      updatedTask = response.data;
+    } catch {
+      nextErrorMessage = UPDATE_TASK_ERROR_MESSAGE;
+    }
+
+    if (updatedTask) {
+      setTasks((currentTasks) => currentTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task)));
+    }
+
+    setErrorMessage(nextErrorMessage);
   }, []);
 
   return {
