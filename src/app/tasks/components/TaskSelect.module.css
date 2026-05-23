@@ -1,0 +1,68 @@
+.selector {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  cursor: pointer;
+}
+
+.selectorOpen {
+  z-index: var(--z-index-popup);
+}
+
+.selectorButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--space-2);
+  border: 0;
+  border-radius: var(--border-radius-sm);
+  background: var(--background-color);
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.selectorValue {
+  font-size: 12px;
+}
+
+.selectPullDownContainer {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: var(--z-index-popup);
+  display: none;
+  width: 100%;
+}
+
+.selectPullDownShow {
+  display: block;
+}
+
+.selectPullDown {
+  width: 100%;
+  min-width: 120px;
+  padding: var(--space-2) 0;
+  background: #ffffff;
+  box-shadow: 2px 2px 4px 1px #22222210;
+}
+
+.selectOption {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  text-align: left;
+}
+
+.selectOption:hover {
+  background: #18e5af;
+  color: #ffffff;
+  font-weight: 700;
+  text-shadow: 1px 1px 1px #56deba;
+}

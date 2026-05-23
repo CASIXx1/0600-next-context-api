@@ -2,11 +2,15 @@
 
 import Link from "next/link";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
-import { usePagination } from "@/src/contexts/pagination";
 import styles from "./Pagination.module.css";
 
-export function Pagination() {
-  const { page, pageCount, getPageQuery } = usePagination();
+type PaginationProps = {
+  getPageHref: (page: number) => string;
+  page: number;
+  pageCount: number;
+};
+
+export function Pagination({ getPageHref, page, pageCount }: PaginationProps) {
   const pages = Array.from({ length: pageCount }, (_, index) => index + 1);
 
   return (
@@ -19,7 +23,7 @@ export function Pagination() {
           className={`${styles.pageButton} ${styles.arrowButton}`}
           aria-label="前のページ"
           aria-disabled={page <= 1}
-          href={getPageQuery(Math.max(1, page - 1))}
+          href={getPageHref(Math.max(1, page - 1))}
         >
           <IoChevronBack aria-hidden="true" />
         </Link>
@@ -30,7 +34,7 @@ export function Pagination() {
           <Link
             className={`${styles.pageButton} ${pageNumber === page ? styles.activePage : ""}`}
             aria-current={pageNumber === page ? "page" : undefined}
-            href={getPageQuery(pageNumber)}
+            href={getPageHref(pageNumber)}
           >
             {pageNumber}
           </Link>
@@ -42,7 +46,7 @@ export function Pagination() {
           className={`${styles.pageButton} ${styles.arrowButton}`}
           aria-label="次のページ"
           aria-disabled={page >= pageCount}
-          href={getPageQuery(Math.min(pageCount, page + 1))}
+          href={getPageHref(Math.min(pageCount, page + 1))}
         >
           <IoChevronForward aria-hidden="true" />
         </Link>
