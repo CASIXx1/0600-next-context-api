@@ -1,4 +1,4 @@
-import { ProjectsContent } from "./ProjectsContent";
+import { ProjectsContent } from "./content";
 
 type ProjectsPageProps = {
   searchParams: Promise<{

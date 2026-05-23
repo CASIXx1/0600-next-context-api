@@ -1,4 +1,4 @@
-import { TasksContent } from "./TasksContent";
+import { TasksContent } from "./content";
 
 type TasksPageProps = {
   searchParams: Promise<{
