@@ -2,9 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useTasksList } from "@/src/contexts/tasks";
+import { Pagination } from "@/src/components/pagination/Pagination";
 import { TaskListHeader } from "./components/TaskListHeader";
 import { TaskTable } from "./components/TaskTable";
-import { TasksPagination } from "./components/TasksPagination";
 import styles from "./page.module.css";
 
 type TasksContentProps = {
@@ -58,8 +58,8 @@ export function TasksContent({ requestedLimit, requestedPage }: TasksContentProp
             />
 
             <footer className={styles.footer}>
-              <TasksPagination
-                limit={limit}
+              <Pagination
+                getPageHref={(targetPage) => createTasksPageHref(targetPage, limit)}
                 page={pageInfo.page}
                 pageCount={pageCount}
               />

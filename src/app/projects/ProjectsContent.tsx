@@ -1,6 +1,5 @@
 "use client";
 
-import { PaginationProvider } from "@/src/contexts/pagination";
 import { ProjectsProvider, useProjectsList } from "@/src/contexts/projects";
 import { Pagination } from "@/src/components/pagination/Pagination";
 import { ProjectList } from "@/src/components/projects/ProjectList";
@@ -41,14 +40,13 @@ export function ProjectsContent({ requestedPage }: ProjectsContentProps) {
           </ProjectsProvider>
         </div>
 
-        <PaginationProvider
-          page={pageInfo.page}
-          pageCount={pageCount}
-        >
-          <footer className={styles.footer}>
-            <Pagination />
-          </footer>
-        </PaginationProvider>
+        <footer className={styles.footer}>
+          <Pagination
+            getPageHref={(targetPage) => `?page=${targetPage}`}
+            page={pageInfo.page}
+            pageCount={pageCount}
+          />
+        </footer>
       </div>
     </section>
   );
