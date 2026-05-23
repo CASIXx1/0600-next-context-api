@@ -1,4 +1,5 @@
 import type { Project } from "../projects/schema";
+import type { ListResponse } from "../schema";
 
 export type TaskStatus = "scheduled" | "completed" | "archived";
 
@@ -10,18 +11,7 @@ export type Task = {
   project: Project;
 };
 
-export type TasksPageInfo = {
-  page: number;
-  limit: number;
-  totalCount: number;
-  hasNext?: boolean;
-  hasPrevious?: boolean;
-};
-
-export type TasksResponse = {
-  data: Task[];
-  pageInfo: TasksPageInfo;
-};
+export type TasksResponse = ListResponse<Task>;
 
 export type FetchTasksParams = {
   page: number;

@@ -1,3 +1,5 @@
+import type { ListResponse } from "../schema";
+
 export type Project = {
   id: string;
   name: string;
@@ -25,16 +27,7 @@ export type Project = {
   milestones: string[];
 };
 
-export type ProjectsPageInfo = {
-  totalCount: number;
-  page: number;
-  limit: number;
-};
-
-export type ProjectsResponse = {
-  data: Project[];
-  pageInfo: ProjectsPageInfo;
-};
+export type ProjectsResponse = ListResponse<Project>;
 
 export type FetchProjectsParams = {
   page: number;

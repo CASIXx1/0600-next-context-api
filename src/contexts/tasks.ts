@@ -4,10 +4,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { fetchProjects } from "@/src/requests/projects/fetchProjects";
 import { fetchTasks } from "@/src/requests/tasks/fetchTasks";
 import { updateTask } from "@/src/requests/tasks/updateTask";
+import type { PageInfo } from "@/src/requests/schema";
 import type { Project } from "@/src/requests/projects/schema";
-import type { Task, TasksPageInfo, UpdateTaskData } from "@/src/requests/tasks/schema";
+import type { Task, UpdateTaskData } from "@/src/requests/tasks/schema";
 
-export type { Project, Task, TasksPageInfo, UpdateTaskData };
+export type { PageInfo, Project, Task, UpdateTaskData };
 
 type UseTasksListParams = {
   requestedLimit: number;
@@ -21,7 +22,7 @@ const UPDATE_TASK_ERROR_MESSAGE = "タスクの更新に失敗しました。時
 export function useTasksList({ requestedLimit, requestedPage }: UseTasksListParams) {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
-  const [pageInfo, setPageInfo] = useState<TasksPageInfo>(() => createInitialPageInfo(requestedPage, requestedLimit));
+  const [pageInfo, setPageInfo] = useState<PageInfo>(() => createInitialPageInfo(requestedPage, requestedLimit));
   const [limit, setLimit] = useState(requestedLimit);
   const [isTasksLoaded, setIsTasksLoaded] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -145,7 +146,7 @@ export function useTasksList({ requestedLimit, requestedPage }: UseTasksListPara
   };
 }
 
-function createInitialPageInfo(page: number, limit: number): TasksPageInfo {
+function createInitialPageInfo(page: number, limit: number): PageInfo {
   return {
     totalCount: 0,
     page,

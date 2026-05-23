@@ -2,9 +2,10 @@
 
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { fetchProjects } from "@/src/requests/projects/fetchProjects";
-import type { Project, ProjectsPageInfo } from "@/src/requests/projects/schema";
+import type { PageInfo } from "@/src/requests/schema";
+import type { Project } from "@/src/requests/projects/schema";
 
-export type { Project, ProjectsPageInfo };
+export type { PageInfo, Project };
 
 const ProjectsContext = createContext<Project[] | null>(null);
 
@@ -38,7 +39,7 @@ type UseProjectMenuProjectsParams = {
 type ProjectsListState = {
   errorMessage: string | null;
   pageCount: number;
-  pageInfo: ProjectsPageInfo;
+  pageInfo: PageInfo;
   projects: Project[];
 };
 
@@ -48,7 +49,7 @@ const FETCH_PROJECTS_ERROR_MESSAGE = "プロジェクトの取得に失敗しま
 
 export function useProjectsList({ requestedPage }: UseProjectsListParams): ProjectsListState {
   const [projects, setProjects] = useState<Project[]>([]);
-  const [pageInfo, setPageInfo] = useState<ProjectsPageInfo>(() => createInitialPageInfo(requestedPage));
+  const [pageInfo, setPageInfo] = useState<PageInfo>(() => createInitialPageInfo(requestedPage));
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -148,7 +149,7 @@ export function useProjectMenuProjects({ limit }: UseProjectMenuProjectsParams) 
   return projects;
 }
 
-function createInitialPageInfo(page: number): ProjectsPageInfo {
+function createInitialPageInfo(page: number): PageInfo {
   return {
     totalCount: 0,
     page,
