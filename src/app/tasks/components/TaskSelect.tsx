@@ -21,6 +21,11 @@ export function TaskSelect({ label, onOpenChange, onSelect, options, value }: Ta
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const selectedOption = options.find((option) => option.value === value) ?? options[0];
+  const handleSelect = (value: string) => {
+    setIsOpen(false);
+    onOpenChange?.(false);
+    onSelect(value);
+  };
 
   useEffect(() => {
     const handleDocumentClick = (event: MouseEvent) => {
@@ -68,11 +73,14 @@ export function TaskSelect({ label, onOpenChange, onSelect, options, value }: Ta
               <button
                 className={styles.selectOption}
                 type="button"
+                onPointerDown={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  handleSelect(option.value);
+                }}
                 onClick={(event) => {
                   event.stopPropagation();
-                  setIsOpen(false);
-                  onOpenChange?.(false);
-                  onSelect(option.value);
+                  handleSelect(option.value);
                 }}
               >
                 {option.label}

@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 import { IoArrowForward } from "react-icons/io5";
 import { EditableField } from "./EditableField";
 import { TaskSelect, type SelectOption } from "./TaskSelect";
@@ -15,20 +14,21 @@ const STATUS_OPTIONS = [
 ] as const;
 
 type TaskRowProps = {
+  isSelectOpen: boolean;
+  onSelectOpenChange: (isOpen: boolean) => void;
   projects: Project[];
   task: Task;
   updateTaskById: (taskId: string, data: UpdateTaskData) => Promise<void>;
 };
 
-export function TaskRow({ projects, task, updateTaskById }: TaskRowProps) {
-  const [hasOpenSelect, setHasOpenSelect] = useState(false);
+export function TaskRow({ isSelectOpen, onSelectOpenChange, projects, task, updateTaskById }: TaskRowProps) {
   const projectOptions = projects.length > 0 ? projects.map(toSelectOption) : [toSelectOption(task.project)];
   const handleTaskUpdate = (data: UpdateTaskData) => {
     void updateTaskById(task.id, data);
   };
 
   return (
-    <div className={`${styles.tableRow} ${hasOpenSelect ? styles.tableRowOpen : ""}`}>
+    <div className={`${styles.tableRow} ${isSelectOpen ? styles.tableRowOpen : ""}`}>
       <div className={`${styles.tableCell} ${styles.titleCell}`}>
         <EditableField
           defaultValue={task.title}
@@ -48,7 +48,7 @@ export function TaskRow({ projects, task, updateTaskById }: TaskRowProps) {
           label={`${task.title} のプロジェクト`}
           options={projectOptions}
           value={task.project.id}
-          onOpenChange={setHasOpenSelect}
+          onOpenChange={onSelectOpenChange}
           onSelect={(projectId) => {
             const project = projects.find((item) => item.id === projectId);
 
@@ -68,7 +68,7 @@ export function TaskRow({ projects, task, updateTaskById }: TaskRowProps) {
           label={`${task.title} のステータス`}
           options={STATUS_OPTIONS}
           value={task.status}
-          onOpenChange={setHasOpenSelect}
+          onOpenChange={onSelectOpenChange}
           onSelect={(value) => {
             const status = value as Task["status"];
 

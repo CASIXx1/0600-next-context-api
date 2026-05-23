@@ -8,10 +8,12 @@
 }
 
 .tableRowOpen {
-  z-index: var(--z-index-popup);
+  z-index: var(--z-index-modal);
+  transform: none;
+  box-shadow: var(--shadow-sm);
 }
 
-.tableRow:hover {
+.tableRow:not(.tableRowOpen):hover {
   transform: scale(1.01);
   box-shadow: var(--shadow-sm);
 }

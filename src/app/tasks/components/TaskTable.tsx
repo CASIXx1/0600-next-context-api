@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { TaskRow } from "./TaskRow";
 import type { Project, Task, UpdateTaskData } from "@/src/contexts/tasks";
 import styles from "./TaskTable.module.css";
@@ -9,6 +12,8 @@ type TaskTableProps = {
 };
 
 export function TaskTable({ projects, tasks, updateTaskById }: TaskTableProps) {
+  const [openTaskId, setOpenTaskId] = useState<string | null>(null);
+
   return (
     <div className={styles.table}>
       <div className={styles.tableHeader}>
@@ -29,8 +34,12 @@ export function TaskTable({ projects, tasks, updateTaskById }: TaskTableProps) {
         {tasks.map((task) => (
           <TaskRow
             key={task.id}
+            isSelectOpen={openTaskId === task.id}
             projects={projects}
             task={task}
+            onSelectOpenChange={(isOpen) => {
+              setOpenTaskId(isOpen ? task.id : null);
+            }}
             updateTaskById={updateTaskById}
           />
         ))}

@@ -29,6 +29,8 @@ description: UI コンポーネント、CSS module、デザイン再現、画面
 - 複数画面で使う Pagination は `src/components/pagination` の共通コンポーネントを使う。ページごとの URL 生成や query 条件は `getPageHref` のような props で外から渡し、Pagination 本体に画面固有条件を持たせない。
 - コンポーネントを切り出した場合、そのコンポーネントが所有するスタイルなら CSS module も同じ粒度で分ける。
 - 小さな純粋ヘルパーやそのファイル内だけで使う型は、可読性を損なわない範囲で近くに置いてよい。複数コンポーネントで共有する純粋ロジックは `src/lib` へ切り出す。
+- table/list 行の中に dropdown や popover を置く場合は、開いている項目を親側で管理し、開いている行だけ z-index を上げる。行 hover の `transform` は stacking context を作るため、dropdown 展開中の行や背面行が前面化しないよう hover/transform 条件を分ける。
+- dropdown option の選択が背面要素に抜ける場合は、`pointerdown` で先に選択を確定し、`preventDefault()` / `stopPropagation()` で背面クリックを防ぐ。`click` 側にも最低限の伝播停止を残す。
 
 ## 検証
 
