@@ -1,0 +1,60 @@
+.tableRow {
+  position: relative;
+  display: flex;
+  padding: var(--space-2) 0;
+  transition:
+    box-shadow 0.5s,
+    transform 0.5s;
+}
+
+.tableRowOpen {
+  z-index: var(--z-index-popup);
+}
+
+.tableRow:hover {
+  transform: scale(1.01);
+  box-shadow: var(--shadow-sm);
+}
+
+.tableCell {
+  display: flex;
+  align-items: center;
+  width: 10%;
+  padding: var(--space-2) 0;
+  font-size: 12px;
+}
+
+.tableCell:first-child {
+  padding-left: var(--space-4);
+}
+
+.titleCell {
+  width: 50%;
+}
+
+.projectCell {
+  width: 14%;
+}
+
+.statusCell {
+  width: 12%;
+  padding: 0;
+}
+
+.detailCell {
+  width: 8%;
+}
+
+.detailCircle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  box-shadow: 2px 2px 4px 1px #22222210;
+}
+
+.detailIcon {
+  color: var(--font-color-dark);
+}

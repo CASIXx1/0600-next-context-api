@@ -1,0 +1,22 @@
+.listHeader {
+  margin: var(--space-4) 0;
+  border-bottom: 1px solid var(--table-border-color);
+}
+
+.number {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+}
+
+.pageIndex,
+.displayPageCount,
+.total {
+  margin-right: var(--space-4);
+}
+
+.select {
+  padding: var(--space-1) var(--space-2);
+  border: 0;
+  background: var(--background-color);
+}
