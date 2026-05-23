@@ -1,9 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { fetchProjects } from "@/src/requests/projects/fetchProjects";
-import { fetchTasks } from "@/src/requests/tasks/fetchTasks";
-import { updateTask } from "@/src/requests/tasks/updateTask";
+import { fetchProjects } from "@/src/requests/projects/client";
+import { fetchTasks, updateTask } from "@/src/requests/tasks/client";
 import type { PageInfo } from "@/src/requests/schema";
 import type { Project } from "@/src/requests/projects/schema";
 import type { Task, UpdateTaskData } from "@/src/requests/tasks/schema";
