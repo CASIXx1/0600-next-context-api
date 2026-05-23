@@ -26,6 +26,7 @@ description: UI コンポーネント、CSS module、デザイン再現、画面
 - API レスポンスに不足がある場合も、まずフロントエンド側で吸収できるかを検討する。
 - 画面コンポーネントは orchestration に寄せ、一覧、行、フォーム部品、セレクト、ページネーションなど責務が分かれる UI は原則 1 ファイル 1 コンポーネントで切り出す。
 - 画面専用の UI は `src/app/<route>/components` に置き、複数画面で使う UI は `src/components/<domain>` に置く。
+- 複数画面で使う Pagination は `src/components/pagination` の共通コンポーネントを使う。ページごとの URL 生成や query 条件は `getPageHref` のような props で外から渡し、Pagination 本体に画面固有条件を持たせない。
 - コンポーネントを切り出した場合、そのコンポーネントが所有するスタイルなら CSS module も同じ粒度で分ける。
 - 小さな純粋ヘルパーやそのファイル内だけで使う型は、可読性を損なわない範囲で近くに置いてよい。複数コンポーネントで共有する純粋ロジックは `src/lib` へ切り出す。
 
