@@ -7,8 +7,8 @@ import { useStats } from "@/src/contexts/stats";
 import { useTasksList } from "@/src/contexts/tasks";
 import { ProgressChart } from "@/src/components/progress/ProgressChart";
 import { ProjectCard } from "@/src/components/projects/ProjectCard";
-import { TaskTable } from "../tasks/components/TaskTable";
-import styles from "./page.module.css";
+import { TaskTable } from "@/src/components/tasks/TaskTable";
+import styles from "./content.module.css";
 
 const DASHBOARD_PROJECTS_PAGE = 1;
 const DASHBOARD_TASKS_LIMIT = 5;

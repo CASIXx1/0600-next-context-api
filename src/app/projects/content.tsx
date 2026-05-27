@@ -3,7 +3,7 @@
 import { ProjectsProvider, useProjectsList } from "@/src/contexts/projects";
 import { Pagination } from "@/src/components/pagination/Pagination";
 import { ProjectList } from "@/src/components/projects/ProjectList";
-import styles from "./page.module.css";
+import styles from "./content.module.css";
 
 type ProjectsContentProps = {
   requestedPage: number;

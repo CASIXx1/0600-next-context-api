@@ -3,9 +3,9 @@
 import { useRouter } from "next/navigation";
 import { useTasksList } from "@/src/contexts/tasks";
 import { Pagination } from "@/src/components/pagination/Pagination";
-import { TaskListHeader } from "./components/TaskListHeader";
-import { TaskTable } from "./components/TaskTable";
-import styles from "./page.module.css";
+import { TaskListHeader } from "@/src/components/tasks/TaskListHeader";
+import { TaskTable } from "@/src/components/tasks/TaskTable";
+import styles from "./content.module.css";
 
 type TasksContentProps = {
   requestedLimit: number;
