@@ -11,7 +11,7 @@ import { TaskTable } from "@/src/components/tasks/TaskTable";
 import styles from "./content.module.css";
 
 const DASHBOARD_PROJECTS_PAGE = 1;
-const DASHBOARD_TASKS_LIMIT = 5;
+const DASHBOARD_TASKS_LIMIT = 20;
 const DASHBOARD_TASKS_PAGE = 1;
 
 export function DashboardContent() {
@@ -22,6 +22,8 @@ export function DashboardContent() {
   const {
     errorMessage: tasksErrorMessage,
     isTasksLoaded,
+    pageCount: tasksPageCount,
+    pageInfo: tasksPageInfo,
     projects: taskProjects,
     tasks,
     updateTaskById,
@@ -31,6 +33,7 @@ export function DashboardContent() {
   });
   const dashboardProjects = projects.slice(0, 3);
   const errorMessage = projectsErrorMessage ?? statsErrorMessage ?? tasksErrorMessage;
+  const remainingTasksPageCount = Math.max(0, tasksPageCount - tasksPageInfo.page);
 
   return (
     <section className={styles.container}>
@@ -101,7 +104,20 @@ export function DashboardContent() {
                 />
               ) : null}
             </div>
-            <div className={styles.sectionFooter} />
+            <div className={styles.sectionFooter}>
+              {remainingTasksPageCount > 0 ? (
+                <Link
+                  className={styles.remainingPageLink}
+                  href="/tasks"
+                >
+                  あと {remainingTasksPageCount} ページ
+                  <IoArrowForward
+                    className={styles.linkIcon}
+                    aria-hidden="true"
+                  />
+                </Link>
+              ) : null}
+            </div>
           </section>
         </div>
       </div>

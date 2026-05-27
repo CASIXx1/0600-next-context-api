@@ -85,7 +85,8 @@
   justify-content: flex-end;
 }
 
-.link {
+.link,
+.remainingPageLink {
   display: flex;
   align-items: center;
   color: var(--primary-color);
