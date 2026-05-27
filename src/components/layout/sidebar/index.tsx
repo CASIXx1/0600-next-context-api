@@ -25,7 +25,6 @@ const menuItems = [
 export function Sidebar() {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const isProjectsPage = pathname.startsWith("/projects");
 
   return (
     <aside className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ""}`}>
@@ -59,7 +58,7 @@ export function Sidebar() {
                     >
                       {item.label}
                     </Link>
-                    {item.href === "/projects" && isProjectsPage ? <ProjectMenu /> : null}
+                    {item.href === "/projects" ? <ProjectMenu /> : null}
                   </li>
                 );
               })}
