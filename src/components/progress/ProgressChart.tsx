@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import Chart from "chart.js/auto";
 import type { ChartConfiguration } from "chart.js";
-import type { Stats } from "@/src/contexts/dashboard";
+import type { Stats } from "@/src/contexts/stats";
 import styles from "./ProgressChart.module.css";
 
 type ProgressChartProps = {

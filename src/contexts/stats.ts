@@ -6,14 +6,14 @@ import type { Stats } from "@/src/requests/stats/schema";
 
 export type { Stats };
 
-type DashboardStatsState = {
+type StatsState = {
   errorMessage: string | null;
   stats: Stats[];
 };
 
 const FETCH_STATS_ERROR_MESSAGE = "進捗の取得に失敗しました。時間をおいて再度お試しください。";
 
-export function useDashboardStats(): DashboardStatsState {
+export function useStats(): StatsState {
   const [stats, setStats] = useState<Stats[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 

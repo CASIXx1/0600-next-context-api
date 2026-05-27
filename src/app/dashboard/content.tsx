@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { IoArrowForward } from "react-icons/io5";
-import { useDashboardStats } from "@/src/contexts/dashboard";
 import { useProjectsList } from "@/src/contexts/projects";
+import { useStats } from "@/src/contexts/stats";
 import { useTasksList } from "@/src/contexts/tasks";
+import { ProgressChart } from "@/src/components/progress/ProgressChart";
 import { ProjectCard } from "@/src/components/projects/ProjectCard";
-import { ProgressChart } from "./components/ProgressChart";
-import { TaskTable } from "./tasks/components/TaskTable";
+import { TaskTable } from "../tasks/components/TaskTable";
 import styles from "./page.module.css";
 
 const DASHBOARD_PROJECTS_PAGE = 1;
@@ -18,7 +18,7 @@ export function DashboardContent() {
   const { errorMessage: projectsErrorMessage, projects } = useProjectsList({
     requestedPage: DASHBOARD_PROJECTS_PAGE,
   });
-  const { errorMessage: statsErrorMessage, stats } = useDashboardStats();
+  const { errorMessage: statsErrorMessage, stats } = useStats();
   const {
     errorMessage: tasksErrorMessage,
     isTasksLoaded,
