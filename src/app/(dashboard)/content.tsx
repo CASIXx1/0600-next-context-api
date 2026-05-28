@@ -11,8 +11,9 @@ import { TaskTable } from "@/src/components/tasks/TaskTable";
 import styles from "./content.module.css";
 
 const DASHBOARD_PROJECTS_PAGE = 1;
-const DASHBOARD_TASKS_LIMIT = 20;
+const DASHBOARD_PROJECTS_LIMIT = 3;
 const DASHBOARD_TASKS_PAGE = 1;
+const DASHBOARD_TASKS_LIMIT = 20;
 
 export function DashboardContent() {
   const { errorMessage: projectsErrorMessage, projects } = useProjectsList({
@@ -31,7 +32,7 @@ export function DashboardContent() {
     requestedLimit: DASHBOARD_TASKS_LIMIT,
     requestedPage: DASHBOARD_TASKS_PAGE,
   });
-  const dashboardProjects = projects.slice(0, 3);
+  const dashboardProjects = projects.slice(0, DASHBOARD_PROJECTS_LIMIT);
   const errorMessage = projectsErrorMessage ?? statsErrorMessage ?? tasksErrorMessage;
   const remainingTasksPageCount = Math.max(0, tasksPageCount - tasksPageInfo.page);
 
