@@ -53,13 +53,10 @@ export function TaskSelect({ label, onOpenChange, onSelect, options, value }: Ta
         aria-label={label}
         aria-expanded={isOpen}
         onClick={() => {
-          setIsOpen((current) => {
-            const nextIsOpen = !current;
+          const nextIsOpen = !isOpen;
 
-            onOpenChange?.(nextIsOpen);
-
-            return nextIsOpen;
-          });
+          setIsOpen(nextIsOpen);
+          onOpenChange?.(nextIsOpen);
         }}
       >
         <span className={styles.selectorValue}>{selectedOption?.label}</span>
