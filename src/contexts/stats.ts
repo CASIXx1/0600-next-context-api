@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { runAbortableEffect, runAbortableRequest } from "./abort";
 import { fetchStats } from "@/src/requests/stats/client";
 import type { Stats } from "@/src/requests/stats/schema";
 
@@ -18,45 +19,39 @@ export function useStats(): StatsState {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    const controller = new AbortController();
+    return runAbortableEffect((signal) => {
+      async function init() {
+        let nextStats: Stats[] = [];
+        let nextErrorMessage: string | null = null;
 
-    async function init() {
-      let nextStats: Stats[] = [];
-      let nextErrorMessage: string | null = null;
+        const result = await runAbortableRequest(signal, (requestSignal) =>
+          fetchStats({
+            signal: requestSignal,
+          }),
+        );
 
-      try {
-        const { data } = await fetchStats({
-          signal: controller.signal,
-        });
-
-        nextStats = data;
-      } catch (error) {
-        if (isAbortError(error)) {
+        if (result.status === "aborted") {
           return;
         }
 
-        console.error(error);
+        if (result.status === "success") {
+          nextStats = result.data.data;
+        } else {
+          console.error(result.error);
 
-        nextErrorMessage = FETCH_STATS_ERROR_MESSAGE;
+          nextErrorMessage = FETCH_STATS_ERROR_MESSAGE;
+        }
+
+        setStats(nextStats);
+        setErrorMessage(nextErrorMessage);
       }
 
-      setStats(nextStats);
-      setErrorMessage(nextErrorMessage);
-    }
-
-    void init();
-
-    return () => {
-      controller.abort();
-    };
+      void init();
+    });
   }, []);
 
   return {
     errorMessage,
     stats,
   };
-}
-
-function isAbortError(error: unknown) {
-  return error instanceof DOMException && error.name === "AbortError";
 }

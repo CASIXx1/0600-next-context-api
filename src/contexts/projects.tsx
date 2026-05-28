@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { runAbortableEffect, runAbortableRequest } from "./abort";
 import { fetchProjects } from "@/src/requests/projects/client";
 import type { PageInfo } from "@/src/requests/schema";
 import type { Project } from "@/src/requests/projects/schema";
@@ -53,46 +54,44 @@ export function useProjectsList({ requestedPage }: UseProjectsListParams): Proje
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    const controller = new AbortController();
+    return runAbortableEffect((signal) => {
+      async function init() {
+        let nextProjects: Project[] = [];
+        let nextPageInfo = createInitialPageInfo(requestedPage);
+        let nextErrorMessage: string | null = null;
 
-    async function init() {
-      let nextProjects: Project[] = [];
-      let nextPageInfo = createInitialPageInfo(requestedPage);
-      let nextErrorMessage: string | null = null;
-
-      try {
-        const { data, pageInfo: responsePageInfo } = await fetchProjects(
-          {
-            page: requestedPage,
-            limit: PROJECTS_PER_PAGE,
-          },
-          {
-            signal: controller.signal,
-          },
+        const result = await runAbortableRequest(signal, (requestSignal) =>
+          fetchProjects(
+            {
+              page: requestedPage,
+              limit: PROJECTS_PER_PAGE,
+            },
+            {
+              signal: requestSignal,
+            },
+          ),
         );
 
-        nextProjects = data;
-        nextPageInfo = responsePageInfo;
-      } catch (error) {
-        if (isAbortError(error)) {
+        if (result.status === "aborted") {
           return;
         }
 
-        console.error(error);
+        if (result.status === "success") {
+          nextProjects = result.data.data;
+          nextPageInfo = result.data.pageInfo;
+        } else {
+          console.error(result.error);
 
-        nextErrorMessage = FETCH_PROJECTS_ERROR_MESSAGE;
+          nextErrorMessage = FETCH_PROJECTS_ERROR_MESSAGE;
+        }
+
+        setProjects(nextProjects);
+        setPageInfo(nextPageInfo);
+        setErrorMessage(nextErrorMessage);
       }
 
-      setProjects(nextProjects);
-      setPageInfo(nextPageInfo);
-      setErrorMessage(nextErrorMessage);
-    }
-
-    void init();
-
-    return () => {
-      controller.abort();
-    };
+      void init();
+    });
   }, [requestedPage]);
 
   const pageCount = useMemo(() => {
@@ -111,39 +110,37 @@ export function useProjectMenuProjects({ limit }: UseProjectMenuProjectsParams) 
   const [projects, setProjects] = useState<Project[]>([]);
 
   useEffect(() => {
-    const controller = new AbortController();
+    return runAbortableEffect((signal) => {
+      async function init() {
+        let nextProjects: Project[] = [];
 
-    async function init() {
-      let nextProjects: Project[] = [];
-
-      try {
-        const { data } = await fetchProjects(
-          {
-            page: 1,
-            limit,
-          },
-          {
-            signal: controller.signal,
-          },
+        const result = await runAbortableRequest(signal, (requestSignal) =>
+          fetchProjects(
+            {
+              page: 1,
+              limit,
+            },
+            {
+              signal: requestSignal,
+            },
+          ),
         );
 
-        nextProjects = data;
-      } catch (error) {
-        if (isAbortError(error)) {
+        if (result.status === "aborted") {
           return;
         }
 
-        nextProjects = [];
+        if (result.status === "success") {
+          nextProjects = result.data.data;
+        } else {
+          nextProjects = [];
+        }
+
+        setProjects(nextProjects);
       }
 
-      setProjects(nextProjects);
-    }
-
-    void init();
-
-    return () => {
-      controller.abort();
-    };
+      void init();
+    });
   }, [limit]);
 
   return projects;
@@ -155,8 +152,4 @@ function createInitialPageInfo(page: number): PageInfo {
     page,
     limit: INITIAL_PAGE_LIMIT,
   };
-}
-
-function isAbortError(error: unknown) {
-  return error instanceof DOMException && error.name === "AbortError";
 }
