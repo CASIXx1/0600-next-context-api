@@ -3,11 +3,18 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import type { ReactNode } from "react";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import { ProjectMenu } from "./ProjectMenu";
 import styles from "./index.module.css";
 
-const menuItems = [
+type MenuItem = {
+  children?: ReactNode;
+  href: string;
+  label: string;
+};
+
+const menuItems: MenuItem[] = [
   {
     href: "/",
     label: "ダッシュボード",
@@ -19,6 +26,7 @@ const menuItems = [
   {
     href: "/projects",
     label: "プロジェクト",
+    children: <ProjectMenu />,
   },
 ];
 
@@ -58,7 +66,7 @@ export function Sidebar() {
                     >
                       {item.label}
                     </Link>
-                    {item.href === "/projects" ? <ProjectMenu /> : null}
+                    {item.children}
                   </li>
                 );
               })}
