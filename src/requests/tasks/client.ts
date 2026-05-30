@@ -1,35 +1,46 @@
+import { runAbortableRequest, type AbortableRequestResult } from "../abort";
 import type { FetchTasksParams, TasksResponse, UpdateTaskData, UpdateTaskResponse } from "./schema";
 
-export async function fetchTasks({ page, limit, status }: FetchTasksParams, options?: RequestInit) {
-  const params = new URLSearchParams({
-    page: String(page),
-    limit: String(limit),
-    status,
-  });
-  const response = await fetch(`/api/v1/users/tasks?${params.toString()}`, {
-    cache: "no-store",
-    ...options,
-  });
+export class TasksClient {
+  private controller = new AbortController();
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch tasks");
+  abort() {
+    this.controller.abort();
   }
 
-  return response.json() as Promise<TasksResponse>;
-}
+  async fetchTasks({ page, limit, status }: FetchTasksParams): Promise<AbortableRequestResult<TasksResponse>> {
+    return runAbortableRequest(async () => {
+      const params = new URLSearchParams({
+        page: String(page),
+        limit: String(limit),
+        status,
+      });
+      const response = await fetch(`/api/v1/users/tasks?${params.toString()}`, {
+        cache: "no-store",
+        signal: this.controller.signal,
+      });
 
-export async function updateTask(taskId: string, data: UpdateTaskData) {
-  const response = await fetch(`/api/v1/users/tasks/${taskId}`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
+      if (!response.ok) {
+        throw new Error("Failed to fetch tasks");
+      }
 
-  if (!response.ok) {
-    throw new Error("Failed to update task");
+      return response.json() as Promise<TasksResponse>;
+    });
   }
 
-  return response.json() as Promise<UpdateTaskResponse>;
+  async updateTask(taskId: string, data: UpdateTaskData) {
+    const response = await fetch(`/api/v1/users/tasks/${taskId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update task");
+    }
+
+    return response.json() as Promise<UpdateTaskResponse>;
+  }
 }

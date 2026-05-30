@@ -1,4 +1,4 @@
-type AbortableRequestResult<T> =
+export type AbortableRequestResult<T> =
   | {
       data: T;
       status: "success";
@@ -11,22 +11,9 @@ type AbortableRequestResult<T> =
       status: "aborted";
     };
 
-export function runAbortableEffect(init: (signal: AbortSignal) => void) {
-  const controller = new AbortController();
-
-  init(controller.signal);
-
-  return () => {
-    controller.abort();
-  };
-}
-
-export async function runAbortableRequest<T>(
-  signal: AbortSignal,
-  request: (signal: AbortSignal) => Promise<T>,
-): Promise<AbortableRequestResult<T>> {
+export async function runAbortableRequest<T>(request: () => Promise<T>): Promise<AbortableRequestResult<T>> {
   try {
-    const data = await request(signal);
+    const data = await request();
 
     return {
       data,

@@ -1,9 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { runAbortableEffect, runAbortableRequest } from "@/src/requests/abort";
-import { fetchProjects } from "@/src/requests/projects/client";
-import { fetchTasks, updateTask } from "@/src/requests/tasks/client";
+import { ProjectsClient } from "@/src/requests/projects/client";
+import { TasksClient } from "@/src/requests/tasks/client";
 import type { PageInfo } from "@/src/requests/schema";
 import type { Project } from "@/src/requests/projects/schema";
 import type { Task, UpdateTaskData } from "@/src/requests/tasks/schema";
@@ -28,82 +27,76 @@ export function useTasksList({ requestedLimit, requestedPage }: UseTasksListPara
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    return runAbortableEffect((signal) => {
-      async function init() {
-        let nextProjects: Project[] = [];
+    const client = new ProjectsClient();
 
-        const result = await runAbortableRequest(signal, (requestSignal) =>
-          fetchProjects(
-            {
-              page: 1,
-              limit: TASK_PROJECTS_LIMIT,
-            },
-            {
-              signal: requestSignal,
-            },
-          ),
-        );
+    async function init() {
+      let nextProjects: Project[] = [];
 
-        if (result.status === "aborted") {
-          return;
-        }
+      const result = await client.fetchProjects({
+        page: 1,
+        limit: TASK_PROJECTS_LIMIT,
+      });
 
-        if (result.status === "success") {
-          nextProjects = result.data.data;
-        } else {
-          nextProjects = [];
-        }
-
-        setProjects(nextProjects);
+      if (result.status === "aborted") {
+        return;
       }
 
-      void init();
-    });
+      if (result.status === "success") {
+        nextProjects = result.data.data;
+      } else {
+        nextProjects = [];
+      }
+
+      setProjects(nextProjects);
+    }
+
+    void init();
+
+    return () => {
+      client.abort();
+    };
   }, []);
 
   useEffect(() => {
-    return runAbortableEffect((signal) => {
-      async function init() {
-        let nextTasks: Task[] = [];
-        let nextPageInfo = createInitialPageInfo(requestedPage, limit);
-        const nextErrorMessage: string | null = null;
-        let shouldUpdateErrorMessage = true;
+    const client = new TasksClient();
 
-        const result = await runAbortableRequest(signal, (requestSignal) =>
-          fetchTasks(
-            {
-              page: requestedPage,
-              limit,
-              status: TASK_LIST_STATUS,
-            },
-            {
-              signal: requestSignal,
-            },
-          ),
-        );
+    async function init() {
+      let nextTasks: Task[] = [];
+      let nextPageInfo = createInitialPageInfo(requestedPage, limit);
+      const nextErrorMessage: string | null = null;
+      let shouldUpdateErrorMessage = true;
 
-        if (result.status === "aborted") {
-          return;
-        }
+      const result = await client.fetchTasks({
+        page: requestedPage,
+        limit,
+        status: TASK_LIST_STATUS,
+      });
 
-        if (result.status === "success") {
-          nextTasks = result.data.data;
-          nextPageInfo = result.data.pageInfo;
-        } else {
-          shouldUpdateErrorMessage = false;
-        }
-
-        setTasks(nextTasks);
-        setPageInfo(nextPageInfo);
-        setIsTasksLoaded(true);
-
-        if (shouldUpdateErrorMessage) {
-          setErrorMessage(nextErrorMessage);
-        }
+      if (result.status === "aborted") {
+        return;
       }
 
-      void init();
-    });
+      if (result.status === "success") {
+        nextTasks = result.data.data;
+        nextPageInfo = result.data.pageInfo;
+      } else {
+        shouldUpdateErrorMessage = false;
+      }
+
+      setTasks(nextTasks);
+      setPageInfo(nextPageInfo);
+      setIsTasksLoaded(true);
+
+      if (shouldUpdateErrorMessage) {
+        setErrorMessage(nextErrorMessage);
+      }
+    }
+
+    void init();
+
+    return () => {
+      client.abort();
+    };
   }, [limit, requestedPage]);
 
   const pageCount = useMemo(() => {
@@ -111,11 +104,12 @@ export function useTasksList({ requestedLimit, requestedPage }: UseTasksListPara
   }, [pageInfo.limit, pageInfo.totalCount]);
 
   const updateTaskById = useCallback(async (taskId: string, data: UpdateTaskData) => {
+    const client = new TasksClient();
     let updatedTask: Task | null = null;
     let nextErrorMessage: string | null = null;
 
     try {
-      const response = await updateTask(taskId, data);
+      const response = await client.updateTask(taskId, data);
 
       updatedTask = response.data;
     } catch {
