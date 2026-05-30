@@ -4,6 +4,12 @@ type AbortableRequestOptions = RequestInit & {
   errorMessage: string;
 };
 
+type QueryParams = Record<string, string | number | boolean | null | undefined>;
+
+type RequestOptions = {
+  errorMessage: string;
+};
+
 export class RequestClient {
   private controller = new AbortController();
 
@@ -11,7 +17,7 @@ export class RequestClient {
     this.controller.abort();
   }
 
-  request<T>(input: RequestInfo | URL, options: AbortableRequestOptions): Promise<AbortableRequestResult<T>> {
+  private request<T>(input: RequestInfo | URL, options: AbortableRequestOptions): Promise<AbortableRequestResult<T>> {
     const { errorMessage, ...init } = options;
 
     return runAbortableRequest(async () => {
@@ -25,6 +31,39 @@ export class RequestClient {
       }
 
       return response.json() as Promise<T>;
+    });
+  }
+
+  get<T>(endpoint: string, params: QueryParams, options: RequestOptions): Promise<AbortableRequestResult<T>> {
+    const searchParams = new URLSearchParams();
+
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        searchParams.append(key, String(value));
+      }
+    });
+
+    const query = searchParams.toString();
+    const url = query ? `${endpoint}?${query}` : endpoint;
+
+    return this.request<T>(url, {
+      cache: "no-store",
+      errorMessage: options.errorMessage,
+    });
+  }
+
+  patch<Data, Response>(
+    endpoint: string,
+    data: Data,
+    options: RequestOptions,
+  ): Promise<AbortableRequestResult<Response>> {
+    return this.request<Response>(endpoint, {
+      body: JSON.stringify(data),
+      errorMessage: options.errorMessage,
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
   }
 }

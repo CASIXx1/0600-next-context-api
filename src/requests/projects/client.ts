@@ -10,14 +10,15 @@ export class ProjectsClient {
   }
 
   async fetchProjects({ page, limit }: FetchProjectsParams): Promise<AbortableRequestResult<ProjectsResponse>> {
-    const searchParams = new URLSearchParams({
-      page: page.toString(),
-      limit: limit.toString(),
-    });
-
-    return this.client.request<ProjectsResponse>(`/api/v1/users/projects?${searchParams}`, {
-      cache: "no-store",
-      errorMessage: "Failed to fetch projects",
-    });
+    return this.client.get<ProjectsResponse>(
+      "/api/v1/users/projects",
+      {
+        page,
+        limit,
+      },
+      {
+        errorMessage: "Failed to fetch projects",
+      },
+    );
   }
 }

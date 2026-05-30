@@ -10,9 +10,12 @@ export class StatsClient {
   }
 
   async fetchStats(): Promise<AbortableRequestResult<StatsResponse>> {
-    return this.client.request<StatsResponse>("/api/v1/users/stats", {
-      cache: "no-store",
-      errorMessage: "Failed to fetch stats",
-    });
+    return this.client.get<StatsResponse>(
+      "/api/v1/users/stats",
+      {},
+      {
+        errorMessage: "Failed to fetch stats",
+      },
+    );
   }
 }
