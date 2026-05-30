@@ -1,16 +1,16 @@
 import type { AbortableRequestResult } from "../abort";
-import { RequestClient } from "../client";
+import { HttpRequester } from "../client";
 import type { FetchTasksParams, TasksResponse, UpdateTaskData, UpdateTaskResponse } from "./schema";
 
 export class TasksClient {
-  private client = new RequestClient();
+  private requester = new HttpRequester();
 
   abort() {
-    this.client.abort();
+    this.requester.abort();
   }
 
   async fetchTasks({ page, limit, status }: FetchTasksParams): Promise<AbortableRequestResult<TasksResponse>> {
-    return this.client.get<TasksResponse>(
+    return this.requester.get<TasksResponse>(
       "/api/v1/users/tasks",
       {
         page,
@@ -24,7 +24,7 @@ export class TasksClient {
   }
 
   async updateTask(taskId: string, data: UpdateTaskData): Promise<AbortableRequestResult<UpdateTaskResponse>> {
-    return this.client.patch<UpdateTaskData, UpdateTaskResponse>(`/api/v1/users/tasks/${taskId}`, data, {
+    return this.requester.patch<UpdateTaskData, UpdateTaskResponse>(`/api/v1/users/tasks/${taskId}`, data, {
       errorMessage: "Failed to update task",
     });
   }

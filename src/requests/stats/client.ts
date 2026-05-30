@@ -1,16 +1,16 @@
 import type { AbortableRequestResult } from "../abort";
-import { RequestClient } from "../client";
+import { HttpRequester } from "../client";
 import type { StatsResponse } from "./schema";
 
 export class StatsClient {
-  private client = new RequestClient();
+  private requester = new HttpRequester();
 
   abort() {
-    this.client.abort();
+    this.requester.abort();
   }
 
   async fetchStats(): Promise<AbortableRequestResult<StatsResponse>> {
-    return this.client.get<StatsResponse>(
+    return this.requester.get<StatsResponse>(
       "/api/v1/users/stats",
       {},
       {

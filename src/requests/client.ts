@@ -10,7 +10,7 @@ type RequestOptions = {
   errorMessage: string;
 };
 
-export class RequestClient {
+export class HttpRequester {
   private controller = new AbortController();
 
   abort() {
