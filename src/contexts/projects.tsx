@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { runAbortableEffect, runAbortableRequest } from "./abort";
+import { runAbortableEffect, runAbortableRequest } from "@/src/requests/abort";
 import { fetchProjects } from "@/src/requests/projects/client";
 import type { PageInfo } from "@/src/requests/schema";
 import type { Project } from "@/src/requests/projects/schema";

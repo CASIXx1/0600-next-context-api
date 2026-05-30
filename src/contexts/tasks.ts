@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { runAbortableEffect, runAbortableRequest } from "./abort";
+import { runAbortableEffect, runAbortableRequest } from "@/src/requests/abort";
 import { fetchProjects } from "@/src/requests/projects/client";
 import { fetchTasks, updateTask } from "@/src/requests/tasks/client";
 import type { PageInfo } from "@/src/requests/schema";

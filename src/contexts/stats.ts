@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { runAbortableEffect, runAbortableRequest } from "./abort";
+import { runAbortableEffect, runAbortableRequest } from "@/src/requests/abort";
 import { fetchStats } from "@/src/requests/stats/client";
 import type { Stats } from "@/src/requests/stats/schema";
 
