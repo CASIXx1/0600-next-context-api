@@ -29,6 +29,7 @@ description: UI コンポーネント、CSS module、デザイン再現、画面
 - UI 部品は原則 `src/components/<domain>` に置く。画面固有に見えても、一覧、行、フォーム部品、セレクト、ページネーション、グラフなど独立した部品は route 配下に置かない。
 - UI 部品は責務ごとに 1 ファイル 1 コンポーネントで切り出し、所有する CSS module も同じ粒度で分ける。
 - Pagination は `src/components/pagination` を使い、URL 生成や query 条件は `getPageHref` などの props で外から渡す。
+- 画面内の固定値や magic number は意味が分かる定数にする。同じ対象の固定値は近くに並べ、`PAGE`、`LIMIT` のように関連する値は対象ごとに順序を揃える。
 - 小さな純粋ヘルパーやそのファイル内だけで使う型は、可読性を損なわない範囲で近くに置いてよい。複数コンポーネントで共有する純粋ロジックは `src/lib` へ切り出す。
 - table/list 行の中に dropdown や popover を置く場合は、開いている項目を親側で管理し、開いている行だけ z-index を上げる。行 hover の `transform` は stacking context を作るため、dropdown 展開中の行や背面行が前面化しないよう hover/transform 条件を分ける。
 - dropdown option の選択が背面要素に抜ける場合は、`pointerdown` で先に選択を確定し、`preventDefault()` / `stopPropagation()` で背面クリックを防ぐ。`click` 側にも最低限の伝播停止を残す。
