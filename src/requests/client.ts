@@ -1,4 +1,10 @@
-import { runAbortableRequest, type AbortableRequestResult } from "./abort";
+import {
+  createAbortedResult,
+  createErrorResult,
+  createSuccessResult,
+  isAbortError,
+  type AbortableRequestResult,
+} from "./abort";
 
 type AbortableRequestOptions = RequestInit & {
   errorMessage: string;
@@ -17,10 +23,13 @@ export class HttpRequester {
     this.controller.abort();
   }
 
-  private request<T>(input: RequestInfo | URL, options: AbortableRequestOptions): Promise<AbortableRequestResult<T>> {
+  private async request<T>(
+    input: RequestInfo | URL,
+    options: AbortableRequestOptions,
+  ): Promise<AbortableRequestResult<T>> {
     const { errorMessage, ...init } = options;
 
-    return runAbortableRequest(async () => {
+    try {
       const response = await fetch(input, {
         ...init,
         signal: this.controller.signal,
@@ -30,8 +39,16 @@ export class HttpRequester {
         throw new Error(errorMessage);
       }
 
-      return response.json() as Promise<T>;
-    });
+      const data = (await response.json()) as T;
+
+      return createSuccessResult(data);
+    } catch (error) {
+      if (isAbortError(error)) {
+        return createAbortedResult();
+      }
+
+      return createErrorResult(error);
+    }
   }
 
   get<T>(endpoint: string, params: QueryParams, options: RequestOptions): Promise<AbortableRequestResult<T>> {

@@ -1,38 +1,42 @@
+const ABORTABLE_REQUEST_STATUS = {
+  aborted: "aborted",
+  error: "error",
+  success: "success",
+} as const;
+
 export type AbortableRequestResult<T> =
   | {
       data: T;
-      status: "success";
+      status: typeof ABORTABLE_REQUEST_STATUS.success;
     }
   | {
       error: unknown;
-      status: "error";
+      status: typeof ABORTABLE_REQUEST_STATUS.error;
     }
   | {
-      status: "aborted";
+      status: typeof ABORTABLE_REQUEST_STATUS.aborted;
     };
 
-export async function runAbortableRequest<T>(request: () => Promise<T>): Promise<AbortableRequestResult<T>> {
-  try {
-    const data = await request();
-
-    return {
-      data,
-      status: "success",
-    };
-  } catch (error) {
-    if (isAbortError(error)) {
-      return {
-        status: "aborted",
-      };
-    }
-
-    return {
-      error,
-      status: "error",
-    };
-  }
+export function createSuccessResult<T>(data: T): AbortableRequestResult<T> {
+  return {
+    data,
+    status: ABORTABLE_REQUEST_STATUS.success,
+  };
 }
 
-function isAbortError(error: unknown) {
+export function createErrorResult<T>(error: unknown): AbortableRequestResult<T> {
+  return {
+    error,
+    status: ABORTABLE_REQUEST_STATUS.error,
+  };
+}
+
+export function createAbortedResult<T>(): AbortableRequestResult<T> {
+  return {
+    status: ABORTABLE_REQUEST_STATUS.aborted,
+  };
+}
+
+export function isAbortError(error: unknown) {
   return error instanceof DOMException && error.name === "AbortError";
 }
