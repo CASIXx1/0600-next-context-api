@@ -1,46 +1,35 @@
-import { runAbortableRequest, type AbortableRequestResult } from "../abort";
+import type { AbortableRequestResult } from "../abort";
+import { RequestClient } from "../client";
 import type { FetchTasksParams, TasksResponse, UpdateTaskData, UpdateTaskResponse } from "./schema";
 
 export class TasksClient {
-  private controller = new AbortController();
+  private client = new RequestClient();
 
   abort() {
-    this.controller.abort();
+    this.client.abort();
   }
 
   async fetchTasks({ page, limit, status }: FetchTasksParams): Promise<AbortableRequestResult<TasksResponse>> {
-    return runAbortableRequest(async () => {
-      const params = new URLSearchParams({
-        page: String(page),
-        limit: String(limit),
-        status,
-      });
-      const response = await fetch(`/api/v1/users/tasks?${params.toString()}`, {
-        cache: "no-store",
-        signal: this.controller.signal,
-      });
+    const params = new URLSearchParams({
+      page: String(page),
+      limit: String(limit),
+      status,
+    });
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch tasks");
-      }
-
-      return response.json() as Promise<TasksResponse>;
+    return this.client.request<TasksResponse>(`/api/v1/users/tasks?${params.toString()}`, {
+      cache: "no-store",
+      errorMessage: "Failed to fetch tasks",
     });
   }
 
-  async updateTask(taskId: string, data: UpdateTaskData) {
-    const response = await fetch(`/api/v1/users/tasks/${taskId}`, {
+  async updateTask(taskId: string, data: UpdateTaskData): Promise<AbortableRequestResult<UpdateTaskResponse>> {
+    return this.client.request<UpdateTaskResponse>(`/api/v1/users/tasks/${taskId}`, {
+      body: JSON.stringify(data),
+      errorMessage: "Failed to update task",
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
     });
-
-    if (!response.ok) {
-      throw new Error("Failed to update task");
-    }
-
-    return response.json() as Promise<UpdateTaskResponse>;
   }
 }

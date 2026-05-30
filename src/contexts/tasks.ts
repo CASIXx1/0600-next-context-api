@@ -108,11 +108,15 @@ export function useTasksList({ requestedLimit, requestedPage }: UseTasksListPara
     let updatedTask: Task | null = null;
     let nextErrorMessage: string | null = null;
 
-    try {
-      const response = await client.updateTask(taskId, data);
+    const result = await client.updateTask(taskId, data);
 
-      updatedTask = response.data;
-    } catch {
+    if (result.status === "aborted") {
+      return;
+    }
+
+    if (result.status === "success") {
+      updatedTask = result.data.data;
+    } else {
       nextErrorMessage = UPDATE_TASK_ERROR_MESSAGE;
     }
 

@@ -1,25 +1,18 @@
-import { runAbortableRequest, type AbortableRequestResult } from "../abort";
+import type { AbortableRequestResult } from "../abort";
+import { RequestClient } from "../client";
 import type { StatsResponse } from "./schema";
 
 export class StatsClient {
-  private controller = new AbortController();
+  private client = new RequestClient();
 
   abort() {
-    this.controller.abort();
+    this.client.abort();
   }
 
   async fetchStats(): Promise<AbortableRequestResult<StatsResponse>> {
-    return runAbortableRequest(async () => {
-      const response = await fetch("/api/v1/users/stats", {
-        cache: "no-store",
-        signal: this.controller.signal,
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch stats");
-      }
-
-      return response.json() as Promise<StatsResponse>;
+    return this.client.request<StatsResponse>("/api/v1/users/stats", {
+      cache: "no-store",
+      errorMessage: "Failed to fetch stats",
     });
   }
 }
