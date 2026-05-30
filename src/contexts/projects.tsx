@@ -1,8 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { runAbortableEffect, runAbortableRequest } from "./abort";
-import { fetchProjects } from "@/src/requests/projects/client";
+import { ProjectsClient } from "@/src/requests/projects/client";
 import type { PageInfo } from "@/src/requests/schema";
 import type { Project } from "@/src/requests/projects/schema";
 
@@ -54,44 +53,29 @@ export function useProjectsList({ requestedPage }: UseProjectsListParams): Proje
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    return runAbortableEffect((signal) => {
-      async function init() {
-        let nextProjects: Project[] = [];
-        let nextPageInfo = createInitialPageInfo(requestedPage);
-        let nextErrorMessage: string | null = null;
-
-        const result = await runAbortableRequest(signal, (requestSignal) =>
-          fetchProjects(
-            {
-              page: requestedPage,
-              limit: PROJECTS_PER_PAGE,
-            },
-            {
-              signal: requestSignal,
-            },
-          ),
-        );
-
-        if (result.status === "aborted") {
+    const client = new ProjectsClient();
+    async function init() {
+      try {
+        const res = await client.fetchProjects({
+          page: requestedPage,
+          limit: PROJECTS_PER_PAGE,
+        });
+        if (!res) {
+          setProjects([]);
+          setPageInfo((prev) => ({ ...prev, page: requestedPage }));
           return;
         }
 
-        if (result.status === "success") {
-          nextProjects = result.data.data;
-          nextPageInfo = result.data.pageInfo;
-        } else {
-          console.error(result.error);
-
-          nextErrorMessage = FETCH_PROJECTS_ERROR_MESSAGE;
-        }
-
-        setProjects(nextProjects);
-        setPageInfo(nextPageInfo);
-        setErrorMessage(nextErrorMessage);
+        setProjects(res.data);
+        setPageInfo(res.pageInfo);
+      } catch (error) {
+        setErrorMessage(FETCH_PROJECTS_ERROR_MESSAGE);
       }
-
-      void init();
-    });
+    }
+    void init();
+    return () => {
+      client.abort();
+    };
   }, [requestedPage]);
 
   const pageCount = useMemo(() => {
@@ -110,37 +94,24 @@ export function useProjectMenuProjects({ limit }: UseProjectMenuProjectsParams) 
   const [projects, setProjects] = useState<Project[]>([]);
 
   useEffect(() => {
-    return runAbortableEffect((signal) => {
-      async function init() {
-        let nextProjects: Project[] = [];
-
-        const result = await runAbortableRequest(signal, (requestSignal) =>
-          fetchProjects(
-            {
-              page: 1,
-              limit,
-            },
-            {
-              signal: requestSignal,
-            },
-          ),
-        );
-
-        if (result.status === "aborted") {
-          return;
-        }
-
-        if (result.status === "success") {
-          nextProjects = result.data.data;
-        } else {
-          nextProjects = [];
-        }
-
-        setProjects(nextProjects);
+    const client = new ProjectsClient();
+    async function init() {
+      const res = await client.fetchProjects({
+        page: 1,
+        limit,
+      });
+      if (!res) {
+        setProjects([]);
+        return;
       }
 
-      void init();
-    });
+      setProjects(res.data);
+    }
+
+    void init();
+    return () => {
+      client.abort();
+    };
   }, [limit]);
 
   return projects;

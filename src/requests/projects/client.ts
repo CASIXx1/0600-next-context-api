@@ -1,18 +1,26 @@
 import type { FetchProjectsParams, ProjectsResponse } from "./schema";
+import { httpClient } from "../client";
 
-export async function fetchProjects({ page, limit }: FetchProjectsParams, options?: RequestInit) {
-  const searchParams = new URLSearchParams({
-    page: page.toString(),
-    limit: limit.toString(),
-  });
-  const response = await fetch(`/api/v1/users/projects?${searchParams}`, {
-    cache: "no-store",
-    ...options,
-  });
+export class ProjectsClient {
+  requester: ReturnType<typeof httpClient.build>;
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch projects");
+  constructor() {
+    this.requester = httpClient.build();
   }
 
-  return response.json() as Promise<ProjectsResponse>;
+  abort() {
+    this.requester.abort();
+  }
+
+  async fetchProjects({ page, limit }: FetchProjectsParams): Promise<ProjectsResponse | undefined> {
+    const response = await this.requester.get<FetchProjectsParams, ProjectsResponse>(`/api/v1/users/projects`, {
+      page,
+      limit,
+    });
+    if (!response) {
+      return;
+    }
+
+    return response;
+  }
 }
