@@ -4,7 +4,7 @@ import {
   createSuccessResult,
   isAbortError,
   type AbortableRequestResult,
-} from "./abort";
+} from "./result";
 
 type AbortableRequestOptions = RequestInit & {
   errorMessage: string;

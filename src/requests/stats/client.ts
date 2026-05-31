@@ -1,4 +1,4 @@
-import type { AbortableRequestResult } from "../abort";
+import type { AbortableRequestResult } from "../result";
 import { HttpRequester } from "../client";
 import type { StatsResponse } from "./schema";
 
