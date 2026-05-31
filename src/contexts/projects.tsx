@@ -56,31 +56,18 @@ export function useProjectsList({ requestedPage }: UseProjectsListParams): Proje
     const client = new ProjectsClient();
 
     async function init() {
-      let nextProjects: Project[] = [];
-      let nextPageInfo = createInitialPageInfo(requestedPage);
-      let nextErrorMessage: string | null = null;
-
       const result = await client.fetchProjects({
         page: requestedPage,
         limit: PROJECTS_PER_PAGE,
       });
 
-      if (result.status === "aborted") {
-        return;
-      }
+      const projects = result.status === "success" ? result.data.data : [];
+      const pageInfo = result.status === "success" ? result.data.pageInfo : createInitialPageInfo(requestedPage);
+      const errorMessage = result.status === "error" ? FETCH_PROJECTS_ERROR_MESSAGE : null;
 
-      if (result.status === "success") {
-        nextProjects = result.data.data;
-        nextPageInfo = result.data.pageInfo;
-      } else {
-        console.error(result.error);
-
-        nextErrorMessage = FETCH_PROJECTS_ERROR_MESSAGE;
-      }
-
-      setProjects(nextProjects);
-      setPageInfo(nextPageInfo);
-      setErrorMessage(nextErrorMessage);
+      setProjects(projects);
+      setPageInfo(pageInfo);
+      setErrorMessage(errorMessage);
     }
 
     void init();
@@ -109,24 +96,14 @@ export function useProjectMenuProjects({ limit }: UseProjectMenuProjectsParams) 
     const client = new ProjectsClient();
 
     async function init() {
-      let nextProjects: Project[] = [];
-
       const result = await client.fetchProjects({
         page: 1,
         limit,
       });
 
-      if (result.status === "aborted") {
-        return;
-      }
+      const projects = result.status === "success" ? result.data.data : [];
 
-      if (result.status === "success") {
-        nextProjects = result.data.data;
-      } else {
-        nextProjects = [];
-      }
-
-      setProjects(nextProjects);
+      setProjects(projects);
     }
 
     void init();

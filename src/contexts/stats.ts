@@ -21,25 +21,13 @@ export function useStats(): StatsState {
     const client = new StatsClient();
 
     async function init() {
-      let nextStats: Stats[] = [];
-      let nextErrorMessage: string | null = null;
-
       const result = await client.fetchStats();
 
-      if (result.status === "aborted") {
-        return;
-      }
+      const stats = result.status === "success" ? result.data.data : [];
+      const errorMessage = result.status === "error" ? FETCH_STATS_ERROR_MESSAGE : null;
 
-      if (result.status === "success") {
-        nextStats = result.data.data;
-      } else {
-        console.error(result.error);
-
-        nextErrorMessage = FETCH_STATS_ERROR_MESSAGE;
-      }
-
-      setStats(nextStats);
-      setErrorMessage(nextErrorMessage);
+      setStats(stats);
+      setErrorMessage(errorMessage);
     }
 
     void init();
