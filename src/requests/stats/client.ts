@@ -1,14 +1,21 @@
+import type { AbortableRequestResult } from "../result";
+import { HttpRequester } from "../client";
 import type { StatsResponse } from "./schema";
 
-export async function fetchStats(options?: RequestInit) {
-  const response = await fetch("/api/v1/users/stats", {
-    cache: "no-store",
-    ...options,
-  });
+export class StatsClient {
+  private requester = new HttpRequester();
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch stats");
+  abort() {
+    this.requester.abort();
   }
 
-  return response.json() as Promise<StatsResponse>;
+  async fetchStats(): Promise<AbortableRequestResult<StatsResponse>> {
+    return this.requester.get<StatsResponse>(
+      "/api/v1/users/stats",
+      {},
+      {
+        errorMessage: "Failed to fetch stats",
+      },
+    );
+  }
 }

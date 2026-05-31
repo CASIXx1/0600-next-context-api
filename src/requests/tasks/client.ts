@@ -1,35 +1,31 @@
+import type { AbortableRequestResult } from "../result";
+import { HttpRequester } from "../client";
 import type { FetchTasksParams, TasksResponse, UpdateTaskData, UpdateTaskResponse } from "./schema";
 
-export async function fetchTasks({ page, limit, status }: FetchTasksParams, options?: RequestInit) {
-  const params = new URLSearchParams({
-    page: String(page),
-    limit: String(limit),
-    status,
-  });
-  const response = await fetch(`/api/v1/users/tasks?${params.toString()}`, {
-    cache: "no-store",
-    ...options,
-  });
+export class TasksClient {
+  private requester = new HttpRequester();
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch tasks");
+  abort() {
+    this.requester.abort();
   }
 
-  return response.json() as Promise<TasksResponse>;
-}
-
-export async function updateTask(taskId: string, data: UpdateTaskData) {
-  const response = await fetch(`/api/v1/users/tasks/${taskId}`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to update task");
+  async fetchTasks({ page, limit, status }: FetchTasksParams): Promise<AbortableRequestResult<TasksResponse>> {
+    return this.requester.get<TasksResponse>(
+      "/api/v1/users/tasks",
+      {
+        page,
+        limit,
+        status,
+      },
+      {
+        errorMessage: "Failed to fetch tasks",
+      },
+    );
   }
 
-  return response.json() as Promise<UpdateTaskResponse>;
+  async updateTask(taskId: string, data: UpdateTaskData): Promise<AbortableRequestResult<UpdateTaskResponse>> {
+    return this.requester.patch<UpdateTaskData, UpdateTaskResponse>(`/api/v1/users/tasks/${taskId}`, data, {
+      errorMessage: "Failed to update task",
+    });
+  }
 }

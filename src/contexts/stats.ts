@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { runAbortableEffect, runAbortableRequest } from "./abort";
-import { fetchStats } from "@/src/requests/stats/client";
+import { StatsClient } from "@/src/requests/stats/client";
 import type { Stats } from "@/src/requests/stats/schema";
 
 export type { Stats };
@@ -19,35 +18,23 @@ export function useStats(): StatsState {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    return runAbortableEffect((signal) => {
-      async function init() {
-        let nextStats: Stats[] = [];
-        let nextErrorMessage: string | null = null;
+    const client = new StatsClient();
 
-        const result = await runAbortableRequest(signal, (requestSignal) =>
-          fetchStats({
-            signal: requestSignal,
-          }),
-        );
+    async function init() {
+      const result = await client.fetchStats();
 
-        if (result.status === "aborted") {
-          return;
-        }
+      const stats = result.status === "success" ? result.data.data : [];
+      const errorMessage = result.status === "error" ? FETCH_STATS_ERROR_MESSAGE : null;
 
-        if (result.status === "success") {
-          nextStats = result.data.data;
-        } else {
-          console.error(result.error);
+      setStats(stats);
+      setErrorMessage(errorMessage);
+    }
 
-          nextErrorMessage = FETCH_STATS_ERROR_MESSAGE;
-        }
+    void init();
 
-        setStats(nextStats);
-        setErrorMessage(nextErrorMessage);
-      }
-
-      void init();
-    });
+    return () => {
+      client.abort();
+    };
   }, []);
 
   return {
