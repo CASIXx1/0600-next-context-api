@@ -24,6 +24,17 @@ export type UpdateTaskData = Partial<Pick<Task, "deadline" | "title">> & {
   status?: TaskStatus;
 };
 
+export type CreateTaskData = Pick<Task, "deadline" | "status" | "title"> & {
+  children: [];
+  description: string;
+  kind: "task";
+  projectId: string;
+};
+
+export type CreateTaskResponse = {
+  data: null;
+};
+
 export type UpdateTaskResponse = {
   data: Task;
 };

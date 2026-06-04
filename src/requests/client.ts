@@ -83,4 +83,19 @@ export class HttpRequester {
       },
     });
   }
+
+  post<Data, Response>(
+    endpoint: string,
+    data: Data,
+    options: RequestOptions,
+  ): Promise<AbortableRequestResult<Response>> {
+    return this.request<Response>(endpoint, {
+      body: JSON.stringify(data),
+      errorMessage: options.errorMessage,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }
 }

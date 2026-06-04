@@ -5,9 +5,9 @@ import { ProjectsClient } from "@/src/requests/projects/client";
 import { TasksClient } from "@/src/requests/tasks/client";
 import type { PageInfo } from "@/src/requests/schema";
 import type { Project } from "@/src/requests/projects/schema";
-import type { Task, UpdateTaskData } from "@/src/requests/tasks/schema";
+import type { CreateTaskData, Task, UpdateTaskData } from "@/src/requests/tasks/schema";
 
-export type { PageInfo, Project, Task, UpdateTaskData };
+export type { CreateTaskData, PageInfo, Project, Task, UpdateTaskData };
 
 type UseTasksListParams = {
   requestedLimit: number;
@@ -16,7 +16,9 @@ type UseTasksListParams = {
 
 const TASK_PROJECTS_LIMIT = 100;
 const TASK_LIST_STATUS = "scheduled";
+const TASKS_CHANGED_EVENT = "tasks:changed";
 const FETCH_TASKS_ERROR_MESSAGE = "タスクの取得に失敗しました。時間をおいて再度お試しください。";
+const CREATE_TASK_ERROR_MESSAGE = "タスクの作成に失敗しました。入力内容を確認して再度お試しください。";
 const UPDATE_TASK_ERROR_MESSAGE = "タスクの更新に失敗しました。時間をおいて再度お試しください。";
 
 export function useTasksList({ requestedLimit, requestedPage }: UseTasksListParams) {
@@ -26,6 +28,25 @@ export function useTasksList({ requestedLimit, requestedPage }: UseTasksListPara
   const [limit, setLimit] = useState(requestedLimit);
   const [isTasksLoaded, setIsTasksLoaded] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const refetchTasks = useCallback(async () => {
+    const client = new TasksClient();
+
+    const result = await client.fetchTasks({
+      page: requestedPage,
+      limit,
+      status: TASK_LIST_STATUS,
+    });
+
+    const tasks = result.status === "success" ? result.data.data : [];
+    const pageInfo = result.status === "success" ? result.data.pageInfo : createInitialPageInfo(requestedPage, limit);
+    const errorMessage = result.status === "error" ? FETCH_TASKS_ERROR_MESSAGE : null;
+
+    setTasks(tasks);
+    setPageInfo(pageInfo);
+    setIsTasksLoaded(true);
+    setErrorMessage(errorMessage);
+  }, [limit, requestedPage]);
 
   useEffect(() => {
     const client = new ProjectsClient();
@@ -75,6 +96,14 @@ export function useTasksList({ requestedLimit, requestedPage }: UseTasksListPara
     };
   }, [limit, requestedPage]);
 
+  useEffect(() => {
+    window.addEventListener(TASKS_CHANGED_EVENT, refetchTasks);
+
+    return () => {
+      window.removeEventListener(TASKS_CHANGED_EVENT, refetchTasks);
+    };
+  }, [refetchTasks]);
+
   const pageCount = useMemo(() => {
     return Math.max(1, Math.ceil(pageInfo.totalCount / pageInfo.limit));
   }, [pageInfo.limit, pageInfo.totalCount]);
@@ -103,6 +132,36 @@ export function useTasksList({ requestedLimit, requestedPage }: UseTasksListPara
     setLimit,
     tasks,
     updateTaskById,
+  };
+}
+
+export function useCreateTask() {
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
+
+  const createTask = useCallback(async (data: CreateTaskData) => {
+    const client = new TasksClient();
+
+    setIsCreating(true);
+
+    const result = await client.createTask(data);
+    const errorMessage = result.status === "error" ? CREATE_TASK_ERROR_MESSAGE : null;
+    const isSuccess = result.status === "success";
+
+    setErrorMessage(errorMessage);
+    setIsCreating(false);
+
+    if (isSuccess) {
+      window.dispatchEvent(new Event(TASKS_CHANGED_EVENT));
+    }
+
+    return isSuccess;
+  }, []);
+
+  return {
+    createTask,
+    errorMessage,
+    isCreating,
   };
 }
 
