@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { fetchProjects } from "@/src/requests/projects/client";
+import { ProjectsClient } from "@/src/requests/projects/client";
 import type { PageInfo } from "@/src/requests/schema";
 import type { Project } from "@/src/requests/projects/schema";
 
@@ -53,45 +53,27 @@ export function useProjectsList({ requestedPage }: UseProjectsListParams): Proje
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    const controller = new AbortController();
+    const client = new ProjectsClient();
 
     async function init() {
-      let nextProjects: Project[] = [];
-      let nextPageInfo = createInitialPageInfo(requestedPage);
-      let nextErrorMessage: string | null = null;
+      const result = await client.fetchProjects({
+        page: requestedPage,
+        limit: PROJECTS_PER_PAGE,
+      });
 
-      try {
-        const { data, pageInfo: responsePageInfo } = await fetchProjects(
-          {
-            page: requestedPage,
-            limit: PROJECTS_PER_PAGE,
-          },
-          {
-            signal: controller.signal,
-          },
-        );
+      const projects = result.status === "success" ? result.data.data : [];
+      const pageInfo = result.status === "success" ? result.data.pageInfo : createInitialPageInfo(requestedPage);
+      const errorMessage = result.status === "error" ? FETCH_PROJECTS_ERROR_MESSAGE : null;
 
-        nextProjects = data;
-        nextPageInfo = responsePageInfo;
-      } catch (error) {
-        if (isAbortError(error)) {
-          return;
-        }
-
-        console.error(error);
-
-        nextErrorMessage = FETCH_PROJECTS_ERROR_MESSAGE;
-      }
-
-      setProjects(nextProjects);
-      setPageInfo(nextPageInfo);
-      setErrorMessage(nextErrorMessage);
+      setProjects(projects);
+      setPageInfo(pageInfo);
+      setErrorMessage(errorMessage);
     }
 
     void init();
 
     return () => {
-      controller.abort();
+      client.abort();
     };
   }, [requestedPage]);
 
@@ -111,38 +93,23 @@ export function useProjectMenuProjects({ limit }: UseProjectMenuProjectsParams) 
   const [projects, setProjects] = useState<Project[]>([]);
 
   useEffect(() => {
-    const controller = new AbortController();
+    const client = new ProjectsClient();
 
     async function init() {
-      let nextProjects: Project[] = [];
+      const result = await client.fetchProjects({
+        page: 1,
+        limit,
+      });
 
-      try {
-        const { data } = await fetchProjects(
-          {
-            page: 1,
-            limit,
-          },
-          {
-            signal: controller.signal,
-          },
-        );
+      const projects = result.status === "success" ? result.data.data : [];
 
-        nextProjects = data;
-      } catch (error) {
-        if (isAbortError(error)) {
-          return;
-        }
-
-        nextProjects = [];
-      }
-
-      setProjects(nextProjects);
+      setProjects(projects);
     }
 
     void init();
 
     return () => {
-      controller.abort();
+      client.abort();
     };
   }, [limit]);
 
@@ -155,8 +122,4 @@ function createInitialPageInfo(page: number): PageInfo {
     page,
     limit: INITIAL_PAGE_LIMIT,
   };
-}
-
-function isAbortError(error: unknown) {
-  return error instanceof DOMException && error.name === "AbortError";
 }

@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { fetchProjects } from "@/src/requests/projects/client";
-import { fetchTasks, updateTask } from "@/src/requests/tasks/client";
+import { ProjectsClient } from "@/src/requests/projects/client";
+import { TasksClient } from "@/src/requests/tasks/client";
 import type { PageInfo } from "@/src/requests/schema";
 import type { Project } from "@/src/requests/projects/schema";
 import type { Task, UpdateTaskData } from "@/src/requests/tasks/schema";
@@ -16,6 +16,7 @@ type UseTasksListParams = {
 
 const TASK_PROJECTS_LIMIT = 100;
 const TASK_LIST_STATUS = "scheduled";
+const FETCH_TASKS_ERROR_MESSAGE = "タスクの取得に失敗しました。時間をおいて再度お試しください。";
 const UPDATE_TASK_ERROR_MESSAGE = "タスクの更新に失敗しました。時間をおいて再度お試しください。";
 
 export function useTasksList({ requestedLimit, requestedPage }: UseTasksListParams) {
@@ -27,85 +28,50 @@ export function useTasksList({ requestedLimit, requestedPage }: UseTasksListPara
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    const controller = new AbortController();
+    const client = new ProjectsClient();
 
     async function init() {
-      let nextProjects: Project[] = [];
+      const result = await client.fetchProjects({
+        page: 1,
+        limit: TASK_PROJECTS_LIMIT,
+      });
 
-      try {
-        const { data } = await fetchProjects(
-          {
-            page: 1,
-            limit: TASK_PROJECTS_LIMIT,
-          },
-          {
-            signal: controller.signal,
-          },
-        );
+      const projects = result.status === "success" ? result.data.data : [];
 
-        nextProjects = data;
-      } catch (error) {
-        if (isAbortError(error)) {
-          return;
-        }
-
-        nextProjects = [];
-      }
-
-      setProjects(nextProjects);
+      setProjects(projects);
     }
 
     void init();
 
     return () => {
-      controller.abort();
+      client.abort();
     };
   }, []);
 
   useEffect(() => {
-    const controller = new AbortController();
+    const client = new TasksClient();
 
     async function init() {
-      let nextTasks: Task[] = [];
-      let nextPageInfo = createInitialPageInfo(requestedPage, limit);
-      const nextErrorMessage: string | null = null;
-      let shouldUpdateErrorMessage = true;
+      const result = await client.fetchTasks({
+        page: requestedPage,
+        limit,
+        status: TASK_LIST_STATUS,
+      });
 
-      try {
-        const { data, pageInfo: responsePageInfo } = await fetchTasks(
-          {
-            page: requestedPage,
-            limit,
-            status: TASK_LIST_STATUS,
-          },
-          {
-            signal: controller.signal,
-          },
-        );
+      const tasks = result.status === "success" ? result.data.data : [];
+      const pageInfo = result.status === "success" ? result.data.pageInfo : createInitialPageInfo(requestedPage, limit);
+      const errorMessage = result.status === "error" ? FETCH_TASKS_ERROR_MESSAGE : null;
 
-        nextTasks = data;
-        nextPageInfo = responsePageInfo;
-      } catch (error) {
-        if (isAbortError(error)) {
-          return;
-        }
-
-        shouldUpdateErrorMessage = false;
-      }
-
-      setTasks(nextTasks);
-      setPageInfo(nextPageInfo);
+      setTasks(tasks);
+      setPageInfo(pageInfo);
       setIsTasksLoaded(true);
-
-      if (shouldUpdateErrorMessage) {
-        setErrorMessage(nextErrorMessage);
-      }
+      setErrorMessage(errorMessage);
     }
 
     void init();
 
     return () => {
-      controller.abort();
+      client.abort();
     };
   }, [limit, requestedPage]);
 
@@ -114,22 +80,17 @@ export function useTasksList({ requestedLimit, requestedPage }: UseTasksListPara
   }, [pageInfo.limit, pageInfo.totalCount]);
 
   const updateTaskById = useCallback(async (taskId: string, data: UpdateTaskData) => {
-    let updatedTask: Task | null = null;
-    let nextErrorMessage: string | null = null;
+    const client = new TasksClient();
 
-    try {
-      const response = await updateTask(taskId, data);
-
-      updatedTask = response.data;
-    } catch {
-      nextErrorMessage = UPDATE_TASK_ERROR_MESSAGE;
-    }
+    const result = await client.updateTask(taskId, data);
+    const updatedTask = result.status === "success" ? result.data.data : null;
+    const errorMessage = result.status === "error" ? UPDATE_TASK_ERROR_MESSAGE : null;
 
     if (updatedTask) {
       setTasks((currentTasks) => currentTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task)));
     }
 
-    setErrorMessage(nextErrorMessage);
+    setErrorMessage(errorMessage);
   }, []);
 
   return {
@@ -151,8 +112,4 @@ function createInitialPageInfo(page: number, limit: number): PageInfo {
     page,
     limit,
   };
-}
-
-function isAbortError(error: unknown) {
-  return error instanceof DOMException && error.name === "AbortError";
 }

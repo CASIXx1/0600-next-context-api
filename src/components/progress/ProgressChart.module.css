@@ -1,0 +1,12 @@
+.container {
+  height: 320px;
+  margin-top: var(--space-8);
+  width: 100%;
+}
+
+.empty {
+  padding: var(--space-8) 0;
+  color: var(--font-color-weak);
+  font-size: 12px;
+  text-align: center;
+}
