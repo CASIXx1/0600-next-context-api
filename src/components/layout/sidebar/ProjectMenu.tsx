@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { formatDate } from "@/src/lib/date/format";
 import { useProjects } from "@/src/contexts/projects";
 import styles from "./ProjectMenu.module.css";
@@ -15,18 +16,23 @@ export function ProjectMenu() {
             className={styles.projectItem}
             key={project.id}
           >
-            <span
-              className={styles.projectDot}
-              style={{ backgroundColor: color }}
-              aria-hidden="true"
-            />
-            <span className={styles.projectName}>{project.name}</span>
-            <time
-              className={styles.projectDeadline}
-              dateTime={project.deadline}
+            <Link
+              className={styles.projectLink}
+              href={`/projects/${project.slug}`}
             >
-              {formatDate(project.deadline)}
-            </time>
+              <span
+                className={styles.projectDot}
+                style={{ backgroundColor: color }}
+                aria-hidden="true"
+              />
+              <span className={styles.projectName}>{project.name}</span>
+              <time
+                className={styles.projectDeadline}
+                dateTime={project.deadline}
+              >
+                {formatDate(project.deadline)}
+              </time>
+            </Link>
           </li>
         );
       })}

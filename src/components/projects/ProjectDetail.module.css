@@ -1,0 +1,205 @@
+.project {
+  min-height: 486px;
+  padding: var(--space-4);
+  border: 1px solid var(--weak-border-color);
+  border-left: 5px solid;
+  border-radius: 4px;
+  background: var(--background-color);
+  color: var(--font-color-dark);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.title {
+  position: relative;
+  z-index: 1;
+  padding: var(--space-2) var(--space-4);
+  background: var(--background-color);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.menu {
+  cursor: pointer;
+}
+
+.projectBody {
+  position: relative;
+  top: -36px;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: var(--space-4) 0;
+  padding: var(--space-4);
+  font-size: 14px;
+}
+
+.label {
+  display: flex;
+  flex: 0 0 15%;
+  min-width: 15%;
+  margin-right: var(--space-4);
+  color: var(--font-color-dark);
+  font-size: 12px;
+  font-weight: 300;
+  letter-spacing: 0.1rem;
+}
+
+.labelText {
+  position: relative;
+  top: 2px;
+  margin-right: var(--space-6);
+}
+
+.text {
+  min-width: 0;
+  color: var(--font-color-dark);
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.7;
+}
+
+.goalContainer {
+  min-width: 0;
+}
+
+.deadline {
+  display: flex;
+  align-items: baseline;
+  color: var(--font-color-dark);
+  font-weight: 300;
+  letter-spacing: 0.1rem;
+}
+
+.fromText {
+  display: inline-block;
+  margin-right: var(--space-2);
+}
+
+.fromDate {
+  position: relative;
+  top: 2px;
+  font-size: 12px;
+}
+
+.goal {
+  margin-top: var(--space-1);
+  color: var(--font-color-dark);
+  overflow-wrap: anywhere;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.2rem;
+  line-height: 1.45;
+}
+
+.border {
+  width: 70%;
+  height: 1px;
+  margin-left: var(--space-4);
+  background: var(--weak-border-color);
+}
+
+.slug {
+  display: flex;
+  align-items: center;
+}
+
+.slugBasePath {
+  display: inline-block;
+  margin-right: var(--space-2);
+}
+
+.slugInput {
+  width: 152px;
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  border-radius: 4px;
+  background: var(--background-color);
+  box-shadow: 0 0 4px 1px #22222210;
+  color: var(--font-color-dark);
+  font-size: 12px;
+  font-weight: 300;
+}
+
+.stats {
+  position: relative;
+  top: 20px;
+  right: var(--space-2);
+  display: flex;
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+  background: var(--background-color);
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-4);
+  border-right: 1px solid var(--border-color);
+  color: var(--font-color-dark);
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.lastStat {
+  border-right: 0;
+}
+
+.statIcon {
+  display: inline-block;
+  margin-right: var(--space-2);
+}
+
+@media (max-width: 780px) {
+  .project {
+    min-height: auto;
+  }
+
+  .projectBody {
+    top: 0;
+  }
+
+  .field {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .label {
+    flex-basis: auto;
+    min-width: 0;
+  }
+
+  .border {
+    width: calc(100% - var(--space-8));
+  }
+
+  .slug {
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .stats {
+    top: 0;
+    right: 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .project {
+    padding: var(--space-3);
+  }
+
+  .goal {
+    font-size: 22px;
+  }
+
+  .deadline {
+    flex-wrap: wrap;
+  }
+}

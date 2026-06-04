@@ -29,7 +29,15 @@ export type Project = {
 
 export type ProjectsResponse = ListResponse<Project>;
 
+export type ProjectResponse = {
+  data: Project;
+};
+
 export type FetchProjectsParams = {
   page: number;
   limit: number;
+};
+
+export type FetchProjectParams = {
+  slug: string;
 };
