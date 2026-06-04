@@ -1,0 +1,14 @@
+.container {
+  min-height: 100%;
+  background: var(--background-color);
+}
+
+.content {
+  padding: 72px var(--space-6) var(--space-6);
+}
+
+@media (max-width: 720px) {
+  .content {
+    padding: var(--space-6) var(--space-4);
+  }
+}
