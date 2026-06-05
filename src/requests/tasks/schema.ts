@@ -4,11 +4,14 @@ import type { ListResponse } from "../schema";
 export type TaskStatus = "scheduled" | "completed" | "archived";
 
 export type Task = {
-  id: string;
-  title: string;
-  status: TaskStatus;
+  createdAt: string;
+  description: string;
   deadline: string;
+  id: string;
   project: Project;
+  status: TaskStatus;
+  title: string;
+  updatedAt: string;
 };
 
 export type TasksResponse = ListResponse<Task>;
@@ -17,6 +20,10 @@ export type FetchTasksParams = {
   page: number;
   limit: number;
   status: TaskStatus;
+};
+
+export type FetchTaskResponse = {
+  data: Task;
 };
 
 export type UpdateTaskData = Partial<Pick<Task, "deadline" | "title">> & {

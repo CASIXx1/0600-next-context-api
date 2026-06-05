@@ -4,6 +4,7 @@ import type {
   CreateTaskData,
   CreateTaskResponse,
   DeleteTaskResponse,
+  FetchTaskResponse,
   FetchTasksParams,
   TasksResponse,
   UpdateTaskData,
@@ -27,6 +28,16 @@ export class TasksClient {
       },
       {
         errorMessage: "Failed to fetch tasks",
+      },
+    );
+  }
+
+  async fetchTask(taskId: string): Promise<AbortableRequestResult<FetchTaskResponse>> {
+    return this.requester.get<FetchTaskResponse>(
+      `/api/v1/users/tasks/${taskId}`,
+      {},
+      {
+        errorMessage: "Failed to fetch task",
       },
     );
   }

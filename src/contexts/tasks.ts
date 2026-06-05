@@ -14,9 +14,20 @@ type UseTasksListParams = {
   requestedPage: number;
 };
 
+type UseTaskDetailParams = {
+  taskId: string;
+};
+
+type TaskDetailState = {
+  errorMessage: string | null;
+  isTaskLoaded: boolean;
+  task: Task | null;
+};
+
 const TASK_PROJECTS_LIMIT = 100;
 const TASK_LIST_STATUS = "scheduled";
 const TASKS_CHANGED_EVENT = "tasks:changed";
+const FETCH_TASK_ERROR_MESSAGE = "タスク詳細の取得に失敗しました。時間をおいて再度お試しください。";
 const FETCH_TASKS_ERROR_MESSAGE = "タスクの取得に失敗しました。時間をおいて再度お試しください。";
 const CREATE_TASK_ERROR_MESSAGE = "タスクの作成に失敗しました。入力内容を確認して再度お試しください。";
 const DELETE_TASK_ERROR_MESSAGE = "タスクの削除に失敗しました。時間をおいて再度お試しください。";
@@ -163,6 +174,39 @@ export function useCreateTask() {
     createTask,
     errorMessage,
     isCreating,
+  };
+}
+
+export function useTaskDetail({ taskId }: UseTaskDetailParams): TaskDetailState {
+  const [task, setTask] = useState<Task | null>(null);
+  const [isTaskLoaded, setIsTaskLoaded] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    const client = new TasksClient();
+
+    async function init() {
+      const result = await client.fetchTask(taskId);
+
+      const task = result.status === "success" ? result.data.data : null;
+      const errorMessage = result.status === "error" ? FETCH_TASK_ERROR_MESSAGE : null;
+
+      setTask(task);
+      setErrorMessage(errorMessage);
+      setIsTaskLoaded(true);
+    }
+
+    void init();
+
+    return () => {
+      client.abort();
+    };
+  }, [taskId]);
+
+  return {
+    errorMessage,
+    isTaskLoaded,
+    task,
   };
 }
 

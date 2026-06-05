@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { IoCaretDown, IoTrashOutline } from "react-icons/io5";
 import type { Project } from "@/src/contexts/projects";
+import type { Task } from "@/src/contexts/tasks";
 import styles from "./TaskDetailForm.module.css";
 
 type TaskDetailFormProps = {
@@ -10,7 +11,7 @@ type TaskDetailFormProps = {
   isDeleting: boolean;
   onDelete: () => Promise<void>;
   projects: Project[];
-  taskId: string;
+  task: Task;
 };
 
 const TASK_STATUS_OPTIONS = [
@@ -28,19 +29,17 @@ const TASK_STATUS_OPTIONS = [
   },
 ] as const;
 
-const MOCK_CREATED_AT = "2026/06/04";
-const MOCK_UPDATED_AT = "2026/06/04";
-const MOCK_DEADLINE = "2026/06/18";
+export function TaskDetailForm({ deleteErrorMessage, isDeleting, onDelete, projects, task }: TaskDetailFormProps) {
+  const projectOptions = projects.length > 0 ? projects : [task.project];
 
-export function TaskDetailForm({ deleteErrorMessage, isDeleting, onDelete, projects, taskId }: TaskDetailFormProps) {
   return (
     <article className={styles.detail}>
       <header className={styles.header}>
         <div>
-          <h1 className={styles.title}>{getTaskTitle(taskId)}</h1>
+          <h1 className={styles.title}>{task.title}</h1>
           <p className={styles.meta}>
-            <span>作成日時: {MOCK_CREATED_AT}</span>
-            <span>更新日時: {MOCK_UPDATED_AT}</span>
+            <span>作成日時: {formatDateForDisplay(task.createdAt)}</span>
+            <span>更新日時: {formatDateForDisplay(task.updatedAt)}</span>
           </p>
         </div>
 
@@ -83,15 +82,9 @@ export function TaskDetailForm({ deleteErrorMessage, isDeleting, onDelete, proje
             <select
               className={styles.select}
               id="detail-project"
-              defaultValue=""
+              defaultValue={task.project.id}
             >
-              <option
-                value=""
-                disabled
-              >
-                プログラムを選択してください
-              </option>
-              {projects.map((project) => (
+              {projectOptions.map((project) => (
                 <option
                   key={project.id}
                   value={project.id}
@@ -119,7 +112,7 @@ export function TaskDetailForm({ deleteErrorMessage, isDeleting, onDelete, proje
               className={styles.input}
               id="detail-deadline"
               type="text"
-              defaultValue={MOCK_DEADLINE}
+              defaultValue={formatDateForDisplay(task.deadline)}
             />
           </div>
         </div>
@@ -135,7 +128,7 @@ export function TaskDetailForm({ deleteErrorMessage, isDeleting, onDelete, proje
             <select
               className={styles.select}
               id="detail-status"
-              defaultValue={TASK_STATUS_OPTIONS[0].value}
+              defaultValue={task.status}
             >
               {TASK_STATUS_OPTIONS.map((option) => (
                 <option
@@ -163,6 +156,7 @@ export function TaskDetailForm({ deleteErrorMessage, isDeleting, onDelete, proje
           <textarea
             className={styles.textarea}
             id="detail-description"
+            defaultValue={task.description}
             placeholder="タスクの説明・メモ"
             rows={6}
           />
@@ -194,8 +188,10 @@ export function TaskDetailForm({ deleteErrorMessage, isDeleting, onDelete, proje
   );
 }
 
-function getTaskTitle(taskId: string) {
-  const numericPart = taskId.match(/\d+/)?.[0];
+function formatDateForDisplay(value: string) {
+  if (!value) {
+    return "";
+  }
 
-  return numericPart ? `タスク ${numericPart}` : "タスク 100";
+  return value.slice(0, 10).replaceAll("-", "/");
 }
