@@ -6,6 +6,9 @@ import type { Project } from "@/src/contexts/projects";
 import styles from "./TaskDetailForm.module.css";
 
 type TaskDetailFormProps = {
+  deleteErrorMessage: string | null;
+  isDeleting: boolean;
+  onDelete: () => Promise<void>;
   projects: Project[];
   taskId: string;
 };
@@ -29,7 +32,7 @@ const MOCK_CREATED_AT = "2026/06/04";
 const MOCK_UPDATED_AT = "2026/06/04";
 const MOCK_DEADLINE = "2026/06/18";
 
-export function TaskDetailForm({ projects, taskId }: TaskDetailFormProps) {
+export function TaskDetailForm({ deleteErrorMessage, isDeleting, onDelete, projects, taskId }: TaskDetailFormProps) {
   return (
     <article className={styles.detail}>
       <header className={styles.header}>
@@ -45,10 +48,23 @@ export function TaskDetailForm({ projects, taskId }: TaskDetailFormProps) {
           className={styles.deleteButton}
           type="button"
           aria-label="タスクを削除"
+          disabled={isDeleting}
+          onClick={() => {
+            void onDelete();
+          }}
         >
           <IoTrashOutline aria-hidden="true" />
         </button>
       </header>
+
+      {deleteErrorMessage ? (
+        <p
+          className={styles.errorMessage}
+          role="alert"
+        >
+          {deleteErrorMessage}
+        </p>
+      ) : null}
 
       <form
         className={styles.form}

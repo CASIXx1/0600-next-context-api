@@ -84,6 +84,13 @@ export class HttpRequester {
     });
   }
 
+  delete<Response>(endpoint: string, options: RequestOptions): Promise<AbortableRequestResult<Response>> {
+    return this.request<Response>(endpoint, {
+      errorMessage: options.errorMessage,
+      method: "DELETE",
+    });
+  }
+
   post<Data, Response>(
     endpoint: string,
     data: Data,

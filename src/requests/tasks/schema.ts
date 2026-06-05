@@ -35,6 +35,10 @@ export type CreateTaskResponse = {
   data: null;
 };
 
+export type DeleteTaskResponse = {
+  data: Task[];
+};
+
 export type UpdateTaskResponse = {
   data: Task;
 };

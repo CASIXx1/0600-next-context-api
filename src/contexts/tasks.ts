@@ -19,6 +19,7 @@ const TASK_LIST_STATUS = "scheduled";
 const TASKS_CHANGED_EVENT = "tasks:changed";
 const FETCH_TASKS_ERROR_MESSAGE = "タスクの取得に失敗しました。時間をおいて再度お試しください。";
 const CREATE_TASK_ERROR_MESSAGE = "タスクの作成に失敗しました。入力内容を確認して再度お試しください。";
+const DELETE_TASK_ERROR_MESSAGE = "タスクの削除に失敗しました。時間をおいて再度お試しください。";
 const UPDATE_TASK_ERROR_MESSAGE = "タスクの更新に失敗しました。時間をおいて再度お試しください。";
 
 export function useTasksList({ requestedLimit, requestedPage }: UseTasksListParams) {
@@ -162,6 +163,36 @@ export function useCreateTask() {
     createTask,
     errorMessage,
     isCreating,
+  };
+}
+
+export function useDeleteTask() {
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const deleteTask = useCallback(async (taskId: string) => {
+    const client = new TasksClient();
+
+    setIsDeleting(true);
+
+    const result = await client.deleteTask(taskId);
+    const errorMessage = result.status === "error" ? DELETE_TASK_ERROR_MESSAGE : null;
+    const isSuccess = result.status === "success";
+
+    setErrorMessage(errorMessage);
+    setIsDeleting(false);
+
+    if (isSuccess) {
+      window.dispatchEvent(new Event(TASKS_CHANGED_EVENT));
+    }
+
+    return isSuccess;
+  }, []);
+
+  return {
+    deleteTask,
+    errorMessage,
+    isDeleting,
   };
 }
 

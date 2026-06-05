@@ -3,6 +3,7 @@ import { HttpRequester } from "../client";
 import type {
   CreateTaskData,
   CreateTaskResponse,
+  DeleteTaskResponse,
   FetchTasksParams,
   TasksResponse,
   UpdateTaskData,
@@ -39,6 +40,12 @@ export class TasksClient {
   async createTask(data: CreateTaskData): Promise<AbortableRequestResult<CreateTaskResponse>> {
     return this.requester.post<CreateTaskData, CreateTaskResponse>("/api/v1/users/tasks", data, {
       errorMessage: "Failed to create task",
+    });
+  }
+
+  async deleteTask(taskId: string): Promise<AbortableRequestResult<DeleteTaskResponse>> {
+    return this.requester.delete<DeleteTaskResponse>(`/api/v1/users/tasks/${taskId}`, {
+      errorMessage: "Failed to delete task",
     });
   }
 }
