@@ -1,10 +1,18 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { IoCaretDown, IoTrashOutline } from "react-icons/io5";
 import { useProjects } from "@/src/contexts/projects";
 import { useTaskDetailContext, type Task } from "@/src/contexts/tasks";
 import styles from "./TaskDetailForm.module.css";
+
+type TaskDetailFormData = {
+  deadline: string;
+  description: string;
+  projectId: string;
+  status: Task["status"];
+};
 
 const TASK_STATUS_OPTIONS = [
   {
@@ -36,6 +44,18 @@ export function TaskDetailForm() {
     updateSuccessMessage,
     updateTask,
   } = useTaskDetailContext();
+  const [formData, setFormData] = useState<TaskDetailFormData>(() => createInitialFormData(task));
+
+  useEffect(() => {
+    setFormData(createInitialFormData(task));
+  }, [task]);
+
+  const updateFormData = <Key extends keyof TaskDetailFormData>(key: Key, value: TaskDetailFormData[Key]) => {
+    setFormData((current) => ({
+      ...current,
+      [key]: value,
+    }));
+  };
 
   if (!task) {
     return null;
@@ -88,15 +108,14 @@ export function TaskDetailForm() {
 
       <form
         className={styles.form}
-        onSubmit={(event) => {
+        onSubmit={async (event) => {
           event.preventDefault();
-          const formData = new FormData(event.currentTarget);
 
-          void updateTask({
-            deadline: toDateInputValue(String(formData.get("deadline") ?? "")),
-            description: String(formData.get("description") ?? ""),
-            projectId: String(formData.get("projectId") ?? ""),
-            status: toTaskStatus(String(formData.get("status") ?? "")),
+          await updateTask({
+            deadline: toDateInputValue(formData.deadline),
+            description: formData.description,
+            projectId: formData.projectId,
+            status: formData.status,
           });
         }}
       >
@@ -112,7 +131,10 @@ export function TaskDetailForm() {
               className={styles.select}
               id="detail-project"
               name="projectId"
-              defaultValue={task.project.id}
+              value={formData.projectId}
+              onChange={(event) => {
+                updateFormData("projectId", event.target.value);
+              }}
             >
               {projectOptions.map((project) => (
                 <option
@@ -143,7 +165,10 @@ export function TaskDetailForm() {
               id="detail-deadline"
               name="deadline"
               type="text"
-              defaultValue={formatDateForDisplay(task.deadline)}
+              value={formData.deadline}
+              onChange={(event) => {
+                updateFormData("deadline", event.target.value);
+              }}
             />
           </div>
         </div>
@@ -160,7 +185,10 @@ export function TaskDetailForm() {
               className={styles.select}
               id="detail-status"
               name="status"
-              defaultValue={task.status}
+              value={formData.status}
+              onChange={(event) => {
+                updateFormData("status", toTaskStatus(event.target.value));
+              }}
             >
               {TASK_STATUS_OPTIONS.map((option) => (
                 <option
@@ -189,9 +217,12 @@ export function TaskDetailForm() {
             className={styles.textarea}
             id="detail-description"
             name="description"
-            defaultValue={task.description}
+            value={formData.description}
             placeholder="タスクの説明・メモ"
             rows={6}
+            onChange={(event) => {
+              updateFormData("description", event.target.value);
+            }}
           />
         </div>
 
@@ -205,8 +236,11 @@ export function TaskDetailForm() {
           </button>
           <button
             className={styles.secondaryButton}
-            type="reset"
+            type="button"
             disabled={isUpdating || isDeleting}
+            onClick={() => {
+              setFormData(createInitialFormData(task));
+            }}
           >
             リセット
           </button>
@@ -221,6 +255,15 @@ export function TaskDetailForm() {
       </Link>
     </article>
   );
+}
+
+function createInitialFormData(task: Task | null): TaskDetailFormData {
+  return {
+    deadline: task ? formatDateForDisplay(task.deadline) : "",
+    description: task?.description ?? "",
+    projectId: task?.project.id ?? "",
+    status: task?.status ?? TASK_STATUS_OPTIONS[0].value,
+  };
 }
 
 function formatDateForDisplay(value: string) {
