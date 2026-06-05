@@ -12,6 +12,7 @@
 
 - UI 実装、デザイン再現、コンポーネントや CSS module の変更では `ui-implementation` を使います。
 - フロントエンドから API を実行する `src/requests`、レスポンス型、API 結果の state 反映では `api-client-implementation` を使います。
+- フォーム UI、controlled component、FormData、submit 処理、フォーム値と API payload の責務分離では `form-implementation` を使います。
 
 ## Verification
 

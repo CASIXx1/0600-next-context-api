@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { IoCaretDown } from "react-icons/io5";
 import { useProjects } from "@/src/contexts/projects";
 import { useCreateTask, type CreateTaskFormData } from "@/src/contexts/tasks";
@@ -32,23 +33,25 @@ const TASK_STATUS_OPTIONS = [
 export function TaskCreateForm({ onCancel, onCreated }: TaskCreateFormProps) {
   const projects = useProjects();
   const { createTask, errorMessage, isCreating } = useCreateTask();
+  const [formData, setFormData] = useState<CreateTaskFormData>(() => createInitialFormData());
+
+  const updateFormData = <Key extends keyof CreateTaskFormData>(key: Key, value: CreateTaskFormData[Key]) => {
+    setFormData((current) => ({
+      ...current,
+      [key]: value,
+    }));
+  };
 
   return (
     <form
       className={styles.form}
       onSubmit={async (event) => {
         event.preventDefault();
-        const formData = new FormData(event.currentTarget);
 
-        const isSuccess = await createTask({
-          deadline: String(formData.get("deadline") ?? ""),
-          description: String(formData.get("description") ?? ""),
-          projectId: String(formData.get("projectId") ?? ""),
-          status: toTaskStatus(String(formData.get("status") ?? "")),
-          title: String(formData.get("title") ?? ""),
-        });
+        const isSuccess = await createTask(formData);
 
         if (isSuccess) {
+          setFormData(createInitialFormData());
           onCreated();
         }
       }}
@@ -76,8 +79,11 @@ export function TaskCreateForm({ onCancel, onCreated }: TaskCreateFormProps) {
             className={styles.select}
             id="task-project"
             name="projectId"
-            defaultValue=""
+            value={formData.projectId}
             required
+            onChange={(event) => {
+              updateFormData("projectId", event.target.value);
+            }}
           >
             <option
               value=""
@@ -113,8 +119,12 @@ export function TaskCreateForm({ onCancel, onCreated }: TaskCreateFormProps) {
           id="task-title"
           name="title"
           type="text"
+          value={formData.title}
           placeholder="タスクを入力。例）英会話レッスンの予約、React公式ドキュメントを1ページ読む"
           required
+          onChange={(event) => {
+            updateFormData("title", event.target.value);
+          }}
         />
       </div>
 
@@ -129,8 +139,12 @@ export function TaskCreateForm({ onCancel, onCreated }: TaskCreateFormProps) {
           className={styles.textarea}
           id="task-description"
           name="description"
+          value={formData.description}
           placeholder="タスクの説明・メモ"
           rows={6}
+          onChange={(event) => {
+            updateFormData("description", event.target.value);
+          }}
         />
       </div>
 
@@ -146,8 +160,11 @@ export function TaskCreateForm({ onCancel, onCreated }: TaskCreateFormProps) {
           id="task-deadline"
           name="deadline"
           type="date"
-          defaultValue={getDefaultDeadlineValue()}
+          value={formData.deadline}
           required
+          onChange={(event) => {
+            updateFormData("deadline", event.target.value);
+          }}
         />
       </div>
 
@@ -163,7 +180,10 @@ export function TaskCreateForm({ onCancel, onCreated }: TaskCreateFormProps) {
             className={styles.select}
             id="task-status"
             name="status"
-            defaultValue={TASK_STATUS_OPTIONS[0].value}
+            value={formData.status}
+            onChange={(event) => {
+              updateFormData("status", toTaskStatus(event.target.value));
+            }}
           >
             {TASK_STATUS_OPTIONS.map((option) => (
               <option
@@ -200,6 +220,16 @@ export function TaskCreateForm({ onCancel, onCreated }: TaskCreateFormProps) {
       </div>
     </form>
   );
+}
+
+function createInitialFormData(): CreateTaskFormData {
+  return {
+    deadline: getDefaultDeadlineValue(),
+    description: "",
+    projectId: "",
+    status: TASK_STATUS_OPTIONS[0].value,
+    title: "",
+  };
 }
 
 function getDefaultDeadlineValue() {
