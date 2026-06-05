@@ -1,13 +1,30 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  createElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 import { ProjectsClient } from "@/src/requests/projects/client";
 import { TasksClient } from "@/src/requests/tasks/client";
 import type { PageInfo } from "@/src/requests/schema";
 import type { Project } from "@/src/requests/projects/schema";
-import type { CreateTaskData, Task, UpdateTaskData } from "@/src/requests/tasks/schema";
+import type { CreateTaskData, Task, TaskStatus, UpdateTaskData } from "@/src/requests/tasks/schema";
 
-export type { CreateTaskData, PageInfo, Project, Task, UpdateTaskData };
+export type { PageInfo, Project, Task, TaskStatus, UpdateTaskData };
+
+export type CreateTaskFormData = {
+  deadline: string;
+  description: string;
+  projectId: string;
+  status: TaskStatus;
+  title: string;
+};
 
 type UseTasksListParams = {
   requestedLimit: number;
@@ -28,6 +45,19 @@ type TaskDetailState = {
   updateTask: (data: UpdateTaskData) => Promise<boolean>;
 };
 
+type TaskDetailViewState = TaskDetailState & {
+  deleteErrorMessage: string | null;
+  deleteTask: () => Promise<void>;
+  isDeleting: boolean;
+};
+
+type TaskDetailProviderProps = {
+  children: ReactNode;
+  value: TaskDetailViewState;
+};
+
+const TaskDetailContext = createContext<TaskDetailViewState | null>(null);
+
 const TASK_PROJECTS_LIMIT = 100;
 const TASK_LIST_STATUS = "scheduled";
 const TASKS_CHANGED_EVENT = "tasks:changed";
@@ -37,6 +67,20 @@ const CREATE_TASK_ERROR_MESSAGE = "タスクの作成に失敗しました。入
 const DELETE_TASK_ERROR_MESSAGE = "タスクの削除に失敗しました。時間をおいて再度お試しください。";
 const UPDATE_TASK_ERROR_MESSAGE = "タスクの更新に失敗しました。時間をおいて再度お試しください。";
 const UPDATE_TASK_SUCCESS_MESSAGE = "タスクを更新しました。";
+
+export function TaskDetailProvider({ children, value }: TaskDetailProviderProps) {
+  return createElement(TaskDetailContext.Provider, { value }, children);
+}
+
+export function useTaskDetailContext(): TaskDetailViewState {
+  const state = useContext(TaskDetailContext);
+
+  if (!state) {
+    throw new Error("useTaskDetailContext must be used within TaskDetailProvider");
+  }
+
+  return state;
+}
 
 export function useTasksList({ requestedLimit, requestedPage }: UseTasksListParams) {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -156,8 +200,13 @@ export function useCreateTask() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
 
-  const createTask = useCallback(async (data: CreateTaskData) => {
+  const createTask = useCallback(async (formData: CreateTaskFormData) => {
     const client = new TasksClient();
+    const data: CreateTaskData = {
+      ...formData,
+      children: [],
+      kind: "task",
+    };
 
     setIsCreating(true);
 

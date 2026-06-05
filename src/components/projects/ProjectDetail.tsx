@@ -1,15 +1,12 @@
 import { IoArchive, IoCalendarClearOutline, IoCheckmark } from "react-icons/io5";
 import { formatDate } from "@/src/lib/date/format";
-import type { Project } from "@/src/contexts/projects";
+import { useProject } from "@/src/contexts/projects";
 import styles from "./ProjectDetail.module.css";
-
-type ProjectDetailProps = {
-  project: Project;
-};
 
 const PROJECT_BASE_PATH = "/projects/";
 
-export function ProjectDetail({ project }: ProjectDetailProps) {
+export function ProjectDetail() {
+  const project = useProject();
   const color = project.color;
   const daysUntilDeadline = calculateDaysUntil(project.deadline);
 

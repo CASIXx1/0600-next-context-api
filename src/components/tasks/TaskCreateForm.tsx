@@ -1,16 +1,13 @@
 "use client";
 
 import { IoCaretDown } from "react-icons/io5";
-import type { Project } from "@/src/contexts/projects";
-import type { CreateTaskData } from "@/src/contexts/tasks";
+import { useProjects } from "@/src/contexts/projects";
+import { useCreateTask, type CreateTaskFormData } from "@/src/contexts/tasks";
 import styles from "./TaskCreateForm.module.css";
 
 type TaskCreateFormProps = {
-  errorMessage: string | null;
-  isSubmitting: boolean;
   onCancel: () => void;
-  onSubmit: (data: CreateTaskData) => Promise<void>;
-  projects: Project[];
+  onCreated: () => void;
 };
 
 const DEFAULT_DEADLINE_OFFSET_DAYS = 7;
@@ -29,26 +26,31 @@ const TASK_STATUS_OPTIONS = [
   },
 ] as const satisfies ReadonlyArray<{
   label: string;
-  value: CreateTaskData["status"];
+  value: CreateTaskFormData["status"];
 }>;
 
-export function TaskCreateForm({ errorMessage, isSubmitting, onCancel, onSubmit, projects }: TaskCreateFormProps) {
+export function TaskCreateForm({ onCancel, onCreated }: TaskCreateFormProps) {
+  const projects = useProjects();
+  const { createTask, errorMessage, isCreating } = useCreateTask();
+
   return (
     <form
       className={styles.form}
-      onSubmit={(event) => {
+      onSubmit={async (event) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
 
-        void onSubmit({
-          children: [],
+        const isSuccess = await createTask({
           deadline: String(formData.get("deadline") ?? ""),
           description: String(formData.get("description") ?? ""),
-          kind: "task",
           projectId: String(formData.get("projectId") ?? ""),
           status: toTaskStatus(String(formData.get("status") ?? "")),
           title: String(formData.get("title") ?? ""),
         });
+
+        if (isSuccess) {
+          onCreated();
+        }
       }}
     >
       <h2 className={styles.title}>タスクを追加</h2>
@@ -183,14 +185,14 @@ export function TaskCreateForm({ errorMessage, isSubmitting, onCancel, onSubmit,
         <button
           className={styles.primaryButton}
           type="submit"
-          disabled={isSubmitting}
+          disabled={isCreating}
         >
-          {isSubmitting ? "作成中" : "作成"}
+          {isCreating ? "作成中" : "作成"}
         </button>
         <button
           className={styles.secondaryButton}
           type="button"
-          disabled={isSubmitting}
+          disabled={isCreating}
           onClick={onCancel}
         >
           キャンセル
@@ -210,8 +212,8 @@ function getDefaultDeadlineValue() {
   return `${year}-${month}-${day}`;
 }
 
-function toTaskStatus(value: string): CreateTaskData["status"] {
+function toTaskStatus(value: string): CreateTaskFormData["status"] {
   return TASK_STATUS_OPTIONS.some((option) => option.value === value)
-    ? (value as CreateTaskData["status"])
+    ? (value as CreateTaskFormData["status"])
     : "scheduled";
 }

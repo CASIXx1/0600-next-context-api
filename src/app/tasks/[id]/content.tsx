@@ -1,8 +1,8 @@
 "use client";
 
+import { useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { useProjects } from "@/src/contexts/projects";
-import { useDeleteTask, useTaskDetail } from "@/src/contexts/tasks";
+import { TaskDetailProvider, useDeleteTask, useTaskDetail } from "@/src/contexts/tasks";
 import { TaskDetailForm } from "@/src/components/tasks/TaskDetailForm";
 import styles from "./content.module.css";
 
@@ -12,19 +12,31 @@ type TaskDetailContentProps = {
 
 export function TaskDetailContent({ taskId }: TaskDetailContentProps) {
   const router = useRouter();
-  const projects = useProjects();
   const { deleteTask, errorMessage, isDeleting } = useDeleteTask();
-  const {
-    errorMessage: taskErrorMessage,
-    isTaskLoaded,
-    isUpdating,
-    task,
-    updateErrorMessage,
-    updateSuccessMessage,
-    updateTask,
-  } = useTaskDetail({
+  const taskDetailState = useTaskDetail({
     taskId,
   });
+  const { errorMessage: taskErrorMessage, isTaskLoaded, task } = taskDetailState;
+  const deleteCurrentTask = useCallback(async () => {
+    if (!task) {
+      return;
+    }
+
+    const isSuccess = await deleteTask(task.id);
+
+    if (isSuccess) {
+      router.replace("/tasks");
+    }
+  }, [deleteTask, router, task]);
+  const taskDetailContextValue = useMemo(
+    () => ({
+      ...taskDetailState,
+      deleteErrorMessage: errorMessage,
+      deleteTask: deleteCurrentTask,
+      isDeleting,
+    }),
+    [deleteCurrentTask, errorMessage, isDeleting, taskDetailState],
+  );
 
   return (
     <section className={styles.container}>
@@ -50,23 +62,9 @@ export function TaskDetailContent({ taskId }: TaskDetailContentProps) {
         ) : null}
 
         {isTaskLoaded && task ? (
-          <TaskDetailForm
-            deleteErrorMessage={errorMessage}
-            isDeleting={isDeleting}
-            isUpdating={isUpdating}
-            projects={projects}
-            task={task}
-            onDelete={async () => {
-              const isSuccess = await deleteTask(task.id);
-
-              if (isSuccess) {
-                router.replace("/tasks");
-              }
-            }}
-            onUpdate={updateTask}
-            updateErrorMessage={updateErrorMessage}
-            updateSuccessMessage={updateSuccessMessage}
-          />
+          <TaskDetailProvider value={taskDetailContextValue}>
+            <TaskDetailForm />
+          </TaskDetailProvider>
         ) : null}
       </div>
     </section>

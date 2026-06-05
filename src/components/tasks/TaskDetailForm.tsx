@@ -2,21 +2,9 @@
 
 import Link from "next/link";
 import { IoCaretDown, IoTrashOutline } from "react-icons/io5";
-import type { Project } from "@/src/contexts/projects";
-import type { Task, UpdateTaskData } from "@/src/contexts/tasks";
+import { useProjects } from "@/src/contexts/projects";
+import { useTaskDetailContext, type Task } from "@/src/contexts/tasks";
 import styles from "./TaskDetailForm.module.css";
-
-type TaskDetailFormProps = {
-  deleteErrorMessage: string | null;
-  isDeleting: boolean;
-  isUpdating: boolean;
-  onDelete: () => Promise<void>;
-  onUpdate: (data: UpdateTaskData) => Promise<boolean>;
-  projects: Project[];
-  task: Task;
-  updateErrorMessage: string | null;
-  updateSuccessMessage: string | null;
-};
 
 const TASK_STATUS_OPTIONS = [
   {
@@ -36,17 +24,23 @@ const TASK_STATUS_OPTIONS = [
   value: Task["status"];
 }>;
 
-export function TaskDetailForm({
-  deleteErrorMessage,
-  isDeleting,
-  isUpdating,
-  onDelete,
-  onUpdate,
-  projects,
-  task,
-  updateErrorMessage,
-  updateSuccessMessage,
-}: TaskDetailFormProps) {
+export function TaskDetailForm() {
+  const projects = useProjects();
+  const {
+    deleteErrorMessage,
+    deleteTask,
+    isDeleting,
+    isUpdating,
+    task,
+    updateErrorMessage,
+    updateSuccessMessage,
+    updateTask,
+  } = useTaskDetailContext();
+
+  if (!task) {
+    return null;
+  }
+
   const projectOptions = projects.length > 0 ? projects : [task.project];
   const errorMessage = deleteErrorMessage ?? updateErrorMessage;
 
@@ -67,7 +61,7 @@ export function TaskDetailForm({
           aria-label="タスクを削除"
           disabled={isDeleting}
           onClick={() => {
-            void onDelete();
+            void deleteTask();
           }}
         >
           <IoTrashOutline aria-hidden="true" />
@@ -98,7 +92,7 @@ export function TaskDetailForm({
           event.preventDefault();
           const formData = new FormData(event.currentTarget);
 
-          void onUpdate({
+          void updateTask({
             deadline: toDateInputValue(String(formData.get("deadline") ?? "")),
             description: String(formData.get("description") ?? ""),
             projectId: String(formData.get("projectId") ?? ""),

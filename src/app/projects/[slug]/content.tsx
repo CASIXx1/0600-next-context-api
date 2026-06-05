@@ -1,6 +1,6 @@
 "use client";
 
-import { useProjectDetail } from "@/src/contexts/projects";
+import { ProjectProvider, useProjectDetail } from "@/src/contexts/projects";
 import { ProjectDetail } from "@/src/components/projects/ProjectDetail";
 import styles from "./content.module.css";
 
@@ -38,7 +38,11 @@ export function ProjectDetailContent({ slug }: ProjectDetailContentProps) {
           </p>
         ) : null}
 
-        {showDetail ? <ProjectDetail project={project} /> : null}
+        {showDetail ? (
+          <ProjectProvider project={project}>
+            <ProjectDetail />
+          </ProjectProvider>
+        ) : null}
       </div>
     </section>
   );

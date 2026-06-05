@@ -8,14 +8,24 @@ import type { Project } from "@/src/requests/projects/schema";
 export type { PageInfo, Project };
 
 const ProjectsContext = createContext<Project[] | null>(null);
+const ProjectContext = createContext<Project | null>(null);
 
 type ProjectsProviderProps = {
   children: ReactNode;
   projects: Project[];
 };
 
+type ProjectProviderProps = {
+  children: ReactNode;
+  project: Project;
+};
+
 export function ProjectsProvider({ children, projects }: ProjectsProviderProps) {
   return <ProjectsContext value={projects}>{children}</ProjectsContext>;
+}
+
+export function ProjectProvider({ children, project }: ProjectProviderProps) {
+  return <ProjectContext value={project}>{children}</ProjectContext>;
 }
 
 export function useProjects(): Project[] {
@@ -26,6 +36,16 @@ export function useProjects(): Project[] {
   }
 
   return projects;
+}
+
+export function useProject(): Project {
+  const project = useContext(ProjectContext);
+
+  if (!project) {
+    throw new Error("useProject must be used within ProjectProvider");
+  }
+
+  return project;
 }
 
 type UseProjectsListParams = {

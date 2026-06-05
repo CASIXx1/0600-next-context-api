@@ -2,14 +2,10 @@
 
 import { useState } from "react";
 import { IoAdd, IoClose, IoInformationCircle, IoLogOut, IoNotifications, IoPerson } from "react-icons/io5";
-import { useProjects } from "@/src/contexts/projects";
-import { useCreateTask } from "@/src/contexts/tasks";
 import { TaskCreateForm } from "@/src/components/tasks/TaskCreateForm";
 import styles from "./index.module.css";
 
 export function Header() {
-  const projects = useProjects();
-  const { createTask, errorMessage: createTaskErrorMessage, isCreating } = useCreateTask();
   const [isTaskFormOpen, setIsTaskFormOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
@@ -103,17 +99,8 @@ export function Header() {
             </header>
             <div className={styles.modalBody}>
               <TaskCreateForm
-                errorMessage={createTaskErrorMessage}
-                isSubmitting={isCreating}
-                projects={projects}
                 onCancel={() => setIsTaskFormOpen(false)}
-                onSubmit={async (data) => {
-                  const isSuccess = await createTask(data);
-
-                  if (isSuccess) {
-                    setIsTaskFormOpen(false);
-                  }
-                }}
+                onCreated={() => setIsTaskFormOpen(false)}
               />
             </div>
           </section>
