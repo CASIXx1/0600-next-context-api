@@ -3,15 +3,19 @@
 import Link from "next/link";
 import { IoCaretDown, IoTrashOutline } from "react-icons/io5";
 import type { Project } from "@/src/contexts/projects";
-import type { Task } from "@/src/contexts/tasks";
+import type { Task, UpdateTaskData } from "@/src/contexts/tasks";
 import styles from "./TaskDetailForm.module.css";
 
 type TaskDetailFormProps = {
   deleteErrorMessage: string | null;
   isDeleting: boolean;
+  isUpdating: boolean;
   onDelete: () => Promise<void>;
+  onUpdate: (data: UpdateTaskData) => Promise<boolean>;
   projects: Project[];
   task: Task;
+  updateErrorMessage: string | null;
+  updateSuccessMessage: string | null;
 };
 
 const TASK_STATUS_OPTIONS = [
@@ -27,10 +31,24 @@ const TASK_STATUS_OPTIONS = [
     label: "アーカイブ",
     value: "archived",
   },
-] as const;
+] as const satisfies ReadonlyArray<{
+  label: string;
+  value: Task["status"];
+}>;
 
-export function TaskDetailForm({ deleteErrorMessage, isDeleting, onDelete, projects, task }: TaskDetailFormProps) {
+export function TaskDetailForm({
+  deleteErrorMessage,
+  isDeleting,
+  isUpdating,
+  onDelete,
+  onUpdate,
+  projects,
+  task,
+  updateErrorMessage,
+  updateSuccessMessage,
+}: TaskDetailFormProps) {
   const projectOptions = projects.length > 0 ? projects : [task.project];
+  const errorMessage = deleteErrorMessage ?? updateErrorMessage;
 
   return (
     <article className={styles.detail}>
@@ -56,12 +74,21 @@ export function TaskDetailForm({ deleteErrorMessage, isDeleting, onDelete, proje
         </button>
       </header>
 
-      {deleteErrorMessage ? (
+      {errorMessage ? (
         <p
           className={styles.errorMessage}
           role="alert"
         >
-          {deleteErrorMessage}
+          {errorMessage}
+        </p>
+      ) : null}
+
+      {updateSuccessMessage ? (
+        <p
+          className={styles.successMessage}
+          role="status"
+        >
+          {updateSuccessMessage}
         </p>
       ) : null}
 
@@ -69,6 +96,14 @@ export function TaskDetailForm({ deleteErrorMessage, isDeleting, onDelete, proje
         className={styles.form}
         onSubmit={(event) => {
           event.preventDefault();
+          const formData = new FormData(event.currentTarget);
+
+          void onUpdate({
+            deadline: toDateInputValue(String(formData.get("deadline") ?? "")),
+            description: String(formData.get("description") ?? ""),
+            projectId: String(formData.get("projectId") ?? ""),
+            status: toTaskStatus(String(formData.get("status") ?? "")),
+          });
         }}
       >
         <div className={styles.field}>
@@ -82,6 +117,7 @@ export function TaskDetailForm({ deleteErrorMessage, isDeleting, onDelete, proje
             <select
               className={styles.select}
               id="detail-project"
+              name="projectId"
               defaultValue={task.project.id}
             >
               {projectOptions.map((project) => (
@@ -111,6 +147,7 @@ export function TaskDetailForm({ deleteErrorMessage, isDeleting, onDelete, proje
             <input
               className={styles.input}
               id="detail-deadline"
+              name="deadline"
               type="text"
               defaultValue={formatDateForDisplay(task.deadline)}
             />
@@ -128,6 +165,7 @@ export function TaskDetailForm({ deleteErrorMessage, isDeleting, onDelete, proje
             <select
               className={styles.select}
               id="detail-status"
+              name="status"
               defaultValue={task.status}
             >
               {TASK_STATUS_OPTIONS.map((option) => (
@@ -156,6 +194,7 @@ export function TaskDetailForm({ deleteErrorMessage, isDeleting, onDelete, proje
           <textarea
             className={styles.textarea}
             id="detail-description"
+            name="description"
             defaultValue={task.description}
             placeholder="タスクの説明・メモ"
             rows={6}
@@ -166,12 +205,14 @@ export function TaskDetailForm({ deleteErrorMessage, isDeleting, onDelete, proje
           <button
             className={styles.primaryButton}
             type="submit"
+            disabled={isUpdating || isDeleting}
           >
             更新
           </button>
           <button
             className={styles.secondaryButton}
             type="reset"
+            disabled={isUpdating || isDeleting}
           >
             リセット
           </button>
@@ -194,4 +235,12 @@ function formatDateForDisplay(value: string) {
   }
 
   return value.slice(0, 10).replaceAll("-", "/");
+}
+
+function toDateInputValue(value: string) {
+  return value.replaceAll("/", "-");
+}
+
+function toTaskStatus(value: string): Task["status"] {
+  return TASK_STATUS_OPTIONS.some((option) => option.value === value) ? (value as Task["status"]) : "scheduled";
 }

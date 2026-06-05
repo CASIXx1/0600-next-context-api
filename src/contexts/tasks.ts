@@ -21,7 +21,11 @@ type UseTaskDetailParams = {
 type TaskDetailState = {
   errorMessage: string | null;
   isTaskLoaded: boolean;
+  isUpdating: boolean;
   task: Task | null;
+  updateErrorMessage: string | null;
+  updateSuccessMessage: string | null;
+  updateTask: (data: UpdateTaskData) => Promise<boolean>;
 };
 
 const TASK_PROJECTS_LIMIT = 100;
@@ -32,6 +36,7 @@ const FETCH_TASKS_ERROR_MESSAGE = "タスクの取得に失敗しました。時
 const CREATE_TASK_ERROR_MESSAGE = "タスクの作成に失敗しました。入力内容を確認して再度お試しください。";
 const DELETE_TASK_ERROR_MESSAGE = "タスクの削除に失敗しました。時間をおいて再度お試しください。";
 const UPDATE_TASK_ERROR_MESSAGE = "タスクの更新に失敗しました。時間をおいて再度お試しください。";
+const UPDATE_TASK_SUCCESS_MESSAGE = "タスクを更新しました。";
 
 export function useTasksList({ requestedLimit, requestedPage }: UseTasksListParams) {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -180,7 +185,10 @@ export function useCreateTask() {
 export function useTaskDetail({ taskId }: UseTaskDetailParams): TaskDetailState {
   const [task, setTask] = useState<Task | null>(null);
   const [isTaskLoaded, setIsTaskLoaded] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [updateErrorMessage, setUpdateErrorMessage] = useState<string | null>(null);
+  const [updateSuccessMessage, setUpdateSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const client = new TasksClient();
@@ -193,6 +201,8 @@ export function useTaskDetail({ taskId }: UseTaskDetailParams): TaskDetailState 
 
       setTask(task);
       setErrorMessage(errorMessage);
+      setUpdateErrorMessage(null);
+      setUpdateSuccessMessage(null);
       setIsTaskLoaded(true);
     }
 
@@ -203,10 +213,40 @@ export function useTaskDetail({ taskId }: UseTaskDetailParams): TaskDetailState 
     };
   }, [taskId]);
 
+  const updateTask = useCallback(
+    async (data: UpdateTaskData) => {
+      const client = new TasksClient();
+
+      setIsUpdating(true);
+
+      const result = await client.updateTask(taskId, data);
+      const updatedTask = result.status === "success" ? result.data.data : null;
+      const errorMessage = result.status === "error" ? UPDATE_TASK_ERROR_MESSAGE : null;
+      const successMessage = result.status === "success" ? UPDATE_TASK_SUCCESS_MESSAGE : null;
+      const isSuccess = result.status === "success";
+
+      if (updatedTask) {
+        setTask(updatedTask);
+        window.dispatchEvent(new Event(TASKS_CHANGED_EVENT));
+      }
+
+      setUpdateErrorMessage(errorMessage);
+      setUpdateSuccessMessage(successMessage);
+      setIsUpdating(false);
+
+      return isSuccess;
+    },
+    [taskId],
+  );
+
   return {
     errorMessage,
     isTaskLoaded,
+    isUpdating,
     task,
+    updateErrorMessage,
+    updateSuccessMessage,
+    updateTask,
   };
 }
 

@@ -17,7 +17,11 @@ export function TaskDetailContent({ taskId }: TaskDetailContentProps) {
   const {
     errorMessage: taskErrorMessage,
     isTaskLoaded,
+    isUpdating,
     task,
+    updateErrorMessage,
+    updateSuccessMessage,
+    updateTask,
   } = useTaskDetail({
     taskId,
   });
@@ -49,6 +53,7 @@ export function TaskDetailContent({ taskId }: TaskDetailContentProps) {
           <TaskDetailForm
             deleteErrorMessage={errorMessage}
             isDeleting={isDeleting}
+            isUpdating={isUpdating}
             projects={projects}
             task={task}
             onDelete={async () => {
@@ -58,6 +63,9 @@ export function TaskDetailContent({ taskId }: TaskDetailContentProps) {
                 router.replace("/tasks");
               }
             }}
+            onUpdate={updateTask}
+            updateErrorMessage={updateErrorMessage}
+            updateSuccessMessage={updateSuccessMessage}
           />
         ) : null}
       </div>

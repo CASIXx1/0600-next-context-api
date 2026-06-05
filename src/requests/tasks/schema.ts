@@ -26,7 +26,7 @@ export type FetchTaskResponse = {
   data: Task;
 };
 
-export type UpdateTaskData = Partial<Pick<Task, "deadline" | "title">> & {
+export type UpdateTaskData = Partial<Pick<Task, "deadline" | "description" | "title">> & {
   projectId?: string;
   status?: TaskStatus;
 };
