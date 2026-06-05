@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { IoCaretDown, IoTrashOutline } from "react-icons/io5";
 import { useProjects } from "@/src/contexts/projects";
 import { useTaskDetailContext, type Task } from "@/src/contexts/tasks";
@@ -33,6 +33,16 @@ const TASK_STATUS_OPTIONS = [
 }>;
 
 export function TaskDetailForm() {
+  const { task } = useTaskDetailContext();
+
+  if (!task) {
+    return null;
+  }
+
+  return <TaskDetailFormFields key={`${task.id}-${task.updatedAt}`} />;
+}
+
+function TaskDetailFormFields() {
   const projects = useProjects();
   const {
     deleteErrorMessage,
@@ -45,10 +55,7 @@ export function TaskDetailForm() {
     updateTask,
   } = useTaskDetailContext();
   const [formData, setFormData] = useState<TaskDetailFormData>(() => createInitialFormData(task));
-
-  useEffect(() => {
-    setFormData(createInitialFormData(task));
-  }, [task]);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
 
   const updateFormData = <Key extends keyof TaskDetailFormData>(key: Key, value: TaskDetailFormData[Key]) => {
     setFormData((current) => ({
@@ -79,14 +86,61 @@ export function TaskDetailForm() {
           className={styles.deleteButton}
           type="button"
           aria-label="タスクを削除"
-          disabled={isDeleting}
+          aria-expanded={isDeleteConfirmOpen}
+          disabled={isDeleting || isUpdating}
           onClick={() => {
-            void deleteTask();
+            setIsDeleteConfirmOpen(true);
           }}
         >
           <IoTrashOutline aria-hidden="true" />
         </button>
       </header>
+
+      {isDeleteConfirmOpen ? (
+        <div
+          className={styles.deleteConfirm}
+          role="group"
+          aria-labelledby="delete-confirm-title"
+          aria-describedby="delete-confirm-description"
+        >
+          <div>
+            <h2
+              className={styles.deleteConfirmTitle}
+              id="delete-confirm-title"
+            >
+              タスクを削除しますか？
+            </h2>
+            <p
+              className={styles.deleteConfirmDescription}
+              id="delete-confirm-description"
+            >
+              「{task.title}」を削除します。この操作は取り消せません。
+            </p>
+          </div>
+          <div className={styles.deleteConfirmActions}>
+            <button
+              className={styles.deleteConfirmButton}
+              type="button"
+              disabled={isDeleting}
+              onClick={() => {
+                void deleteTask();
+              }}
+            >
+              削除する
+            </button>
+            <button
+              className={styles.deleteCancelButton}
+              type="button"
+              disabled={isDeleting}
+              onClick={() => {
+                setIsDeleteConfirmOpen(false);
+              }}
+            >
+              キャンセル
+            </button>
+          </div>
+        </div>
+      ) : null}
 
       {errorMessage ? (
         <p

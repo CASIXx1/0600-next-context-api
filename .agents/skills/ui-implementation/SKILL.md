@@ -36,6 +36,7 @@ description: UI コンポーネント、CSS module、デザイン再現、画面
 - Header のプラスボタンなどから開く作成フォームは、開閉状態を Header 側で持ち、フォーム本体は `src/components/<domain>` に置く。フォームを中央寄せにする要望がある場合は modal content の幅と `margin` で調整し、フォーム部品には表示責務を寄せすぎない。
 - full-width の input スタイル内で締切日など特定フィールドだけ幅を変える場合は、input への単純な width 上書きではなく、専用 wrapper class で幅を制御する。
 - 更新完了後の遷移はユーザー要件に従う。指定がなければ同一詳細ページに残し、`role="status"` の通知で完了を伝える。処理が一瞬の操作では「更新中」ラベルを出さず、ボタン disabled だけで多重送信を防ぐ。
+- リソース削除は破壊的操作なので、削除 API 実行前に確認 UI を挟む。削除対象名、取り消せないこと、実行ボタン、キャンセルボタンを表示し、確認なしで即削除しない。
 - 削除後は削除済み詳細へ戻れないよう、詳細画面から離れる navigation では `push` より `replace` を優先する。
 - table/list 行の中に dropdown や popover を置く場合は、開いている項目を親側で管理し、開いている行だけ z-index を上げる。行 hover の `transform` は stacking context を作るため、dropdown 展開中の行や背面行が前面化しないよう hover/transform 条件を分ける。
 - dropdown option の選択が背面要素に抜ける場合は、`pointerdown` で先に選択を確定し、`preventDefault()` / `stopPropagation()` で背面クリックを防ぐ。`click` 側にも最低限の伝播停止を残す。
