@@ -1,0 +1,37 @@
+.container {
+  min-height: 100%;
+  padding: var(--space-6);
+  background: var(--background-color);
+}
+
+.body {
+  width: 100%;
+}
+
+.statePanel {
+  padding: var(--space-5);
+  border: 1px solid var(--weak-border-color);
+  border-radius: 4px;
+  background: var(--background-color);
+  color: var(--font-color-weak);
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.errorPanel {
+  border-color: color-mix(in srgb, var(--danger-color) 35%, transparent);
+  background: color-mix(in srgb, var(--danger-color) 8%, var(--background-color));
+  color: var(--danger-color);
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: var(--space-4);
+  }
+
+  .statePanel {
+    padding: var(--space-4);
+  }
+}

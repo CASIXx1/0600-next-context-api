@@ -1,23 +1,86 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  createElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 import { ProjectsClient } from "@/src/requests/projects/client";
 import { TasksClient } from "@/src/requests/tasks/client";
 import type { PageInfo } from "@/src/requests/schema";
 import type { Project } from "@/src/requests/projects/schema";
-import type { Task, UpdateTaskData } from "@/src/requests/tasks/schema";
+import type { CreateTaskData, Task, TaskStatus, UpdateTaskData } from "@/src/requests/tasks/schema";
 
-export type { PageInfo, Project, Task, UpdateTaskData };
+export type { PageInfo, Project, Task, TaskStatus, UpdateTaskData };
+
+export type CreateTaskFormData = {
+  deadline: string;
+  description: string;
+  projectId: string;
+  status: TaskStatus;
+  title: string;
+};
 
 type UseTasksListParams = {
   requestedLimit: number;
   requestedPage: number;
 };
 
+type UseTaskDetailParams = {
+  taskId: string;
+};
+
+type TaskDetailState = {
+  errorMessage: string | null;
+  isTaskLoaded: boolean;
+  isUpdating: boolean;
+  task: Task | null;
+  updateErrorMessage: string | null;
+  updateSuccessMessage: string | null;
+  updateTask: (data: UpdateTaskData) => Promise<boolean>;
+};
+
+type TaskDetailViewState = TaskDetailState & {
+  deleteErrorMessage: string | null;
+  deleteTask: () => Promise<void>;
+  isDeleting: boolean;
+};
+
+type TaskDetailProviderProps = {
+  children: ReactNode;
+  value: TaskDetailViewState;
+};
+
+const TaskDetailContext = createContext<TaskDetailViewState | null>(null);
+
 const TASK_PROJECTS_LIMIT = 100;
 const TASK_LIST_STATUS = "scheduled";
+const TASKS_CHANGED_EVENT = "tasks:changed";
+const FETCH_TASK_ERROR_MESSAGE = "タスク詳細の取得に失敗しました。時間をおいて再度お試しください。";
 const FETCH_TASKS_ERROR_MESSAGE = "タスクの取得に失敗しました。時間をおいて再度お試しください。";
+const CREATE_TASK_ERROR_MESSAGE = "タスクの作成に失敗しました。入力内容を確認して再度お試しください。";
+const DELETE_TASK_ERROR_MESSAGE = "タスクの削除に失敗しました。時間をおいて再度お試しください。";
 const UPDATE_TASK_ERROR_MESSAGE = "タスクの更新に失敗しました。時間をおいて再度お試しください。";
+const UPDATE_TASK_SUCCESS_MESSAGE = "タスクを更新しました。";
+
+export function TaskDetailProvider({ children, value }: TaskDetailProviderProps) {
+  return createElement(TaskDetailContext.Provider, { value }, children);
+}
+
+export function useTaskDetailContext(): TaskDetailViewState {
+  const state = useContext(TaskDetailContext);
+
+  if (!state) {
+    throw new Error("useTaskDetailContext must be used within TaskDetailProvider");
+  }
+
+  return state;
+}
 
 export function useTasksList({ requestedLimit, requestedPage }: UseTasksListParams) {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -26,6 +89,25 @@ export function useTasksList({ requestedLimit, requestedPage }: UseTasksListPara
   const [limit, setLimit] = useState(requestedLimit);
   const [isTasksLoaded, setIsTasksLoaded] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const refetchTasks = useCallback(async () => {
+    const client = new TasksClient();
+
+    const result = await client.fetchTasks({
+      page: requestedPage,
+      limit,
+      status: TASK_LIST_STATUS,
+    });
+
+    const tasks = result.status === "success" ? result.data.data : [];
+    const pageInfo = result.status === "success" ? result.data.pageInfo : createInitialPageInfo(requestedPage, limit);
+    const errorMessage = result.status === "error" ? FETCH_TASKS_ERROR_MESSAGE : null;
+
+    setTasks(tasks);
+    setPageInfo(pageInfo);
+    setIsTasksLoaded(true);
+    setErrorMessage(errorMessage);
+  }, [limit, requestedPage]);
 
   useEffect(() => {
     const client = new ProjectsClient();
@@ -75,6 +157,14 @@ export function useTasksList({ requestedLimit, requestedPage }: UseTasksListPara
     };
   }, [limit, requestedPage]);
 
+  useEffect(() => {
+    window.addEventListener(TASKS_CHANGED_EVENT, refetchTasks);
+
+    return () => {
+      window.removeEventListener(TASKS_CHANGED_EVENT, refetchTasks);
+    };
+  }, [refetchTasks]);
+
   const pageCount = useMemo(() => {
     return Math.max(1, Math.ceil(pageInfo.totalCount / pageInfo.limit));
   }, [pageInfo.limit, pageInfo.totalCount]);
@@ -103,6 +193,139 @@ export function useTasksList({ requestedLimit, requestedPage }: UseTasksListPara
     setLimit,
     tasks,
     updateTaskById,
+  };
+}
+
+export function useCreateTask() {
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
+
+  const createTask = useCallback(async (formData: CreateTaskFormData) => {
+    const client = new TasksClient();
+    const data: CreateTaskData = {
+      ...formData,
+      children: [],
+      kind: "task",
+    };
+
+    setIsCreating(true);
+
+    const result = await client.createTask(data);
+    const errorMessage = result.status === "error" ? CREATE_TASK_ERROR_MESSAGE : null;
+    const isSuccess = result.status === "success";
+
+    setErrorMessage(errorMessage);
+    setIsCreating(false);
+
+    if (isSuccess) {
+      window.dispatchEvent(new Event(TASKS_CHANGED_EVENT));
+    }
+
+    return isSuccess;
+  }, []);
+
+  return {
+    createTask,
+    errorMessage,
+    isCreating,
+  };
+}
+
+export function useTaskDetail({ taskId }: UseTaskDetailParams): TaskDetailState {
+  const [task, setTask] = useState<Task | null>(null);
+  const [isTaskLoaded, setIsTaskLoaded] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [updateErrorMessage, setUpdateErrorMessage] = useState<string | null>(null);
+  const [updateSuccessMessage, setUpdateSuccessMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    const client = new TasksClient();
+
+    async function init() {
+      const result = await client.fetchTask(taskId);
+
+      const task = result.status === "success" ? result.data.data : null;
+      const errorMessage = result.status === "error" ? FETCH_TASK_ERROR_MESSAGE : null;
+
+      setTask(task);
+      setErrorMessage(errorMessage);
+      setUpdateErrorMessage(null);
+      setUpdateSuccessMessage(null);
+      setIsTaskLoaded(true);
+    }
+
+    void init();
+
+    return () => {
+      client.abort();
+    };
+  }, [taskId]);
+
+  const updateTask = useCallback(
+    async (data: UpdateTaskData) => {
+      const client = new TasksClient();
+
+      setIsUpdating(true);
+
+      const result = await client.updateTask(taskId, data);
+      const updatedTask = result.status === "success" ? result.data.data : null;
+      const errorMessage = result.status === "error" ? UPDATE_TASK_ERROR_MESSAGE : null;
+      const successMessage = result.status === "success" ? UPDATE_TASK_SUCCESS_MESSAGE : null;
+      const isSuccess = result.status === "success";
+
+      if (updatedTask) {
+        setTask(updatedTask);
+        window.dispatchEvent(new Event(TASKS_CHANGED_EVENT));
+      }
+
+      setUpdateErrorMessage(errorMessage);
+      setUpdateSuccessMessage(successMessage);
+      setIsUpdating(false);
+
+      return isSuccess;
+    },
+    [taskId],
+  );
+
+  return {
+    errorMessage,
+    isTaskLoaded,
+    isUpdating,
+    task,
+    updateErrorMessage,
+    updateSuccessMessage,
+    updateTask,
+  };
+}
+
+export function useDeleteTask() {
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const deleteTask = useCallback(async (taskId: string) => {
+    const client = new TasksClient();
+
+    setIsDeleting(true);
+
+    const result = await client.deleteTask(taskId);
+    const errorMessage = result.status === "error" ? DELETE_TASK_ERROR_MESSAGE : null;
+    const isSuccess = result.status === "success";
+
+    setErrorMessage(errorMessage);
+    setIsDeleting(false);
+
+    if (isSuccess) {
+      window.dispatchEvent(new Event(TASKS_CHANGED_EVENT));
+    }
+
+    return isSuccess;
+  }, []);
+
+  return {
+    deleteTask,
+    errorMessage,
+    isDeleting,
   };
 }
 

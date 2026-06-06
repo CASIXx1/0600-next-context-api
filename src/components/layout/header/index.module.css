@@ -99,28 +99,32 @@
   position: fixed;
   inset: 0;
   z-index: var(--z-index-modal);
-  background: var(--overlay-color);
+  background: #22222220;
 }
 
 .taskFormModal {
-  width: min(640px, calc(100vw - var(--space-6)));
-  min-height: 240px;
-  margin: 8vh auto 0;
+  width: min(60vw, 768px);
+  max-width: calc(100vw - 88px);
+  height: calc(100vh - 124px);
+  margin: 62px auto 0;
+  overflow-y: auto;
   background: var(--bg-color-light);
-  box-shadow: var(--shadow-md);
+  box-shadow: 1px 2px 6px 4px #22222230;
 }
 
 .modalHeader {
+  position: sticky;
+  top: 0;
+  z-index: 1;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   padding: var(--space-4);
+  background: var(--bg-color-light);
 }
 
-.modalHeader h2 {
-  color: var(--font-color-dark);
-  font-size: 14px;
-  font-weight: 300;
+.modalBody {
+  min-height: calc(100% - 48px);
 }
 
 .closeButton {
@@ -133,4 +137,28 @@
   background: transparent;
   color: var(--font-color-dark);
   font-size: 18px;
+}
+
+@media (max-width: 900px) {
+  .taskFormModal {
+    width: calc(100vw - var(--space-6));
+    max-width: none;
+    margin: var(--space-6) auto;
+  }
+}
+
+@media (max-width: 520px) {
+  .right {
+    margin-right: 0;
+  }
+
+  .menuItem {
+    margin-right: var(--space-2);
+  }
+
+  .taskFormModal {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+  }
 }

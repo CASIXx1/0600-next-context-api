@@ -16,6 +16,10 @@
   transform: scale(1.05);
 }
 
+.link {
+  display: block;
+}
+
 .header {
   display: flex;
   align-items: center;

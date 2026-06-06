@@ -1,0 +1,34 @@
+.container {
+  min-height: 100%;
+  background: var(--background-color);
+}
+
+.content {
+  padding: 72px var(--space-6) var(--space-6);
+}
+
+.statePanel {
+  width: min(640px, 100%);
+  margin: 0 auto;
+  padding: var(--space-5);
+  border: 1px solid var(--weak-border-color);
+  border-radius: var(--border-radius-sm);
+  background: var(--background-color);
+  color: var(--font-color-weak);
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.errorPanel {
+  border-color: color-mix(in srgb, var(--danger-color) 35%, transparent);
+  background: color-mix(in srgb, var(--danger-color) 8%, var(--background-color));
+  color: var(--danger-color);
+}
+
+@media (max-width: 720px) {
+  .content {
+    padding: var(--space-6) var(--space-4);
+  }
+}

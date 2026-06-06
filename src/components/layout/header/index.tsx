@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { IoAdd, IoClose, IoInformationCircle, IoLogOut, IoNotifications, IoPerson } from "react-icons/io5";
+import { TaskCreateForm } from "@/src/components/tasks/TaskCreateForm";
 import styles from "./index.module.css";
 
 export function Header() {
@@ -82,10 +83,11 @@ export function Header() {
         >
           <section
             className={styles.taskFormModal}
+            role="dialog"
+            aria-modal="true"
             aria-label="タスク追加フォーム"
           >
             <header className={styles.modalHeader}>
-              <h2>タスクを追加</h2>
               <button
                 className={styles.closeButton}
                 type="button"
@@ -95,6 +97,12 @@ export function Header() {
                 <IoClose aria-hidden="true" />
               </button>
             </header>
+            <div className={styles.modalBody}>
+              <TaskCreateForm
+                onCancel={() => setIsTaskFormOpen(false)}
+                onCreated={() => setIsTaskFormOpen(false)}
+              />
+            </div>
           </section>
         </div>
       ) : null}
