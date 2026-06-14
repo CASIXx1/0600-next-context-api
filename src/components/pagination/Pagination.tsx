@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
+import { PageButtonLink } from "../atoms/PageButtonLink";
 import styles from "./Pagination.module.css";
 
 type PaginationProps = {
@@ -19,37 +19,36 @@ export function Pagination({ getPageHref, page, pageCount }: PaginationProps) {
       aria-label="ページネーション"
     >
       <li>
-        <Link
-          className={`${styles.pageButton} ${styles.arrowButton}`}
-          aria-label="前のページ"
-          aria-disabled={page <= 1}
+        <PageButtonLink
+          ariaLabel="前のページ"
           href={getPageHref(Math.max(1, page - 1))}
+          isArrow
+          isDisabled={page <= 1}
         >
           <IoChevronBack aria-hidden="true" />
-        </Link>
+        </PageButtonLink>
       </li>
 
       {pages.map((pageNumber) => (
         <li key={pageNumber}>
-          <Link
-            className={`${styles.pageButton} ${pageNumber === page ? styles.activePage : ""}`}
-            aria-current={pageNumber === page ? "page" : undefined}
+          <PageButtonLink
             href={getPageHref(pageNumber)}
+            isActive={pageNumber === page}
           >
             {pageNumber}
-          </Link>
+          </PageButtonLink>
         </li>
       ))}
 
       <li>
-        <Link
-          className={`${styles.pageButton} ${styles.arrowButton}`}
-          aria-label="次のページ"
-          aria-disabled={page >= pageCount}
+        <PageButtonLink
+          ariaLabel="次のページ"
           href={getPageHref(Math.min(pageCount, page + 1))}
+          isArrow
+          isDisabled={page >= pageCount}
         >
           <IoChevronForward aria-hidden="true" />
-        </Link>
+        </PageButtonLink>
       </li>
     </ul>
   );
