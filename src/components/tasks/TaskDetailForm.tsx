@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { IoCaretDown, IoTrashOutline } from "react-icons/io5";
+import { Button } from "@/src/components/atoms/Button";
 import { IconButton } from "@/src/components/atoms/IconButton";
 import { useProjects } from "@/src/contexts/projects";
 import { useTaskDetailContext, type Task } from "@/src/contexts/tasks";
@@ -280,23 +281,23 @@ function TaskDetailFormFields() {
         </div>
 
         <div className={styles.actions}>
-          <button
-            className={styles.primaryButton}
+          <Button
             type="submit"
+            variant="primary"
             disabled={isUpdating || isDeleting}
           >
             更新
-          </button>
-          <button
-            className={styles.secondaryButton}
+          </Button>
+          <Button
             type="button"
+            variant="secondary"
             disabled={isUpdating || isDeleting}
             onClick={() => {
               setFormData(createInitialFormData(task));
             }}
           >
             リセット
-          </button>
+          </Button>
         </div>
       </form>
 

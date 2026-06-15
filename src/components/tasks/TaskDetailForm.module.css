@@ -207,44 +207,6 @@
   margin-top: var(--space-7);
 }
 
-.primaryButton,
-.secondaryButton {
-  min-height: 48px;
-  border: 0;
-  border-radius: var(--border-radius-sm);
-  box-shadow: 2px 2px 4px 1px var(--button-shadow, #22222220);
-  color: var(--font-color-light);
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 1.4px;
-  transition:
-    box-shadow 0.5s,
-    opacity 0.5s,
-    background 0.5s;
-}
-
-.primaryButton {
-  background: var(--primary-color);
-}
-
-.primaryButton:hover {
-  background: var(--primary-color-darker);
-}
-
-.secondaryButton {
-  background: var(--secondary-color);
-}
-
-.secondaryButton:hover {
-  opacity: 0.8;
-}
-
-.primaryButton:disabled,
-.secondaryButton:disabled {
-  cursor: not-allowed;
-  opacity: 0.65;
-}
-
 .backLink {
   display: inline-block;
   margin-top: var(--space-6);
