@@ -28,8 +28,7 @@
 }
 
 .input,
-.select,
-.textarea {
+.select {
   width: 100%;
   border: 0;
   border-radius: var(--border-radius-sm);
@@ -46,14 +45,12 @@
   padding: var(--space-2) var(--space-3);
 }
 
-.input::placeholder,
-.textarea::placeholder {
+.input::placeholder {
   color: var(--border-color);
 }
 
 .input:focus,
-.select:focus,
-.textarea:focus {
+.select:focus {
   outline: 1.5px solid var(--input-outline-color, #22222240);
 }
 
@@ -73,13 +70,6 @@
   color: var(--font-color-dark);
   pointer-events: none;
   transform: translateY(-50%);
-}
-
-.textarea {
-  min-height: 144px;
-  padding: var(--space-4);
-  line-height: 1.6;
-  resize: vertical;
 }
 
 .dateInput {

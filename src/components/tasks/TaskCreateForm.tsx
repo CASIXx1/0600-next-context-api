@@ -4,6 +4,7 @@ import { useState } from "react";
 import { IoCaretDown } from "react-icons/io5";
 import { Button } from "@/src/components/atoms/Button";
 import { FormMessage } from "@/src/components/atoms/FormMessage";
+import { Textarea } from "@/src/components/atoms/Textarea";
 import { TextInput } from "@/src/components/atoms/TextInput";
 import { useProjects } from "@/src/contexts/projects";
 import { useCreateTask, type CreateTaskFormData } from "@/src/contexts/tasks";
@@ -129,8 +130,7 @@ export function TaskCreateForm({ onCancel, onCreated }: TaskCreateFormProps) {
         >
           説明・メモ
         </label>
-        <textarea
-          className={styles.textarea}
+        <Textarea
           id="task-description"
           name="description"
           value={formData.description}
