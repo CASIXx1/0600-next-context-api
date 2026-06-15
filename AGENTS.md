@@ -8,6 +8,15 @@
 
 実装手順や作業フローだけを、必要に応じて対応する skill に置きます。
 
+## Plans
+
+- 大きい全体プランと細かい個別プランがある場合は、同じファイルに混ぜず、`.agents/plans` 配下で分けて管理します。
+- 全体方針、移行順序、共通ルールは `.agents/plans/<topic>.md` に置きます。
+- 個別対象ごとの詳細、進捗、Acceptance Criteria、Verification は `.agents/plans/<topic>/` または `.agents/plans/<category>/` 配下の別ファイルに置きます。
+- 個別プランが複数ある場合は README などの索引ファイルを置き、詳細ファイルへのリンクと進捗を一覧化します。
+- `.agents/project.md` には長期の設計方針だけを残し、作業計画や進捗の詳細は混ぜません。
+- skill には実装手順や判断フローだけを置き、プロジェクト固有の長期計画や進捗管理は置きません。
+
 ## Skills
 
 - UI 実装、デザイン再現、コンポーネントや CSS module の変更では `ui-implementation` を使います。
