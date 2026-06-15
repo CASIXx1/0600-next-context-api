@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { IoCaretDown } from "react-icons/io5";
+import { Button } from "@/src/components/atoms/Button";
 import { useProjects } from "@/src/contexts/projects";
 import { useCreateTask, type CreateTaskFormData } from "@/src/contexts/tasks";
 import styles from "./TaskCreateForm.module.css";
@@ -202,21 +203,21 @@ export function TaskCreateForm({ onCancel, onCreated }: TaskCreateFormProps) {
       </div>
 
       <div className={styles.actions}>
-        <button
-          className={styles.primaryButton}
+        <Button
           type="submit"
+          variant="primary"
           disabled={isCreating}
         >
           {isCreating ? "作成中" : "作成"}
-        </button>
-        <button
-          className={styles.secondaryButton}
+        </Button>
+        <Button
           type="button"
+          variant="secondary"
           disabled={isCreating}
           onClick={onCancel}
         >
           キャンセル
-        </button>
+        </Button>
       </div>
     </form>
   );
