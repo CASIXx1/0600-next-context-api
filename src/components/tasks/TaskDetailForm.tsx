@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { IoCaretDown, IoTrashOutline } from "react-icons/io5";
+import { IconButton } from "@/src/components/atoms/IconButton";
 import { useProjects } from "@/src/contexts/projects";
 import { useTaskDetailContext, type Task } from "@/src/contexts/tasks";
 import styles from "./TaskDetailForm.module.css";
@@ -82,18 +83,16 @@ function TaskDetailFormFields() {
           </p>
         </div>
 
-        <button
-          className={styles.deleteButton}
-          type="button"
-          aria-label="タスクを削除"
-          aria-expanded={isDeleteConfirmOpen}
+        <IconButton
+          ariaLabel="タスクを削除"
+          ariaExpanded={isDeleteConfirmOpen}
           disabled={isDeleting || isUpdating}
           onClick={() => {
             setIsDeleteConfirmOpen(true);
           }}
         >
           <IoTrashOutline aria-hidden="true" />
-        </button>
+        </IconButton>
       </header>
 
       {isDeleteConfirmOpen ? (

@@ -28,23 +28,6 @@
   font-weight: 300;
 }
 
-.deleteButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border: 0;
-  background: transparent;
-  color: var(--font-color-dark);
-  font-size: 16px;
-}
-
-.deleteButton:disabled {
-  cursor: not-allowed;
-  opacity: 0.65;
-}
-
 .deleteConfirm {
   display: grid;
   grid-template-columns: 1fr auto;
