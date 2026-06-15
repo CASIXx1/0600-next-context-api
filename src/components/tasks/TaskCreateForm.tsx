@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { IoCaretDown } from "react-icons/io5";
 import { Button } from "@/src/components/atoms/Button";
+import { FormMessage } from "@/src/components/atoms/FormMessage";
 import { useProjects } from "@/src/contexts/projects";
 import { useCreateTask, type CreateTaskFormData } from "@/src/contexts/tasks";
 import styles from "./TaskCreateForm.module.css";
@@ -59,14 +60,7 @@ export function TaskCreateForm({ onCancel, onCreated }: TaskCreateFormProps) {
     >
       <h2 className={styles.title}>タスクを追加</h2>
 
-      {errorMessage ? (
-        <p
-          className={styles.errorMessage}
-          role="alert"
-        >
-          {errorMessage}
-        </p>
-      ) : null}
+      {errorMessage ? <FormMessage tone="error">{errorMessage}</FormMessage> : null}
 
       <div className={styles.field}>
         <label

@@ -10,17 +10,6 @@
   font-weight: 300;
 }
 
-.errorMessage {
-  margin-bottom: var(--space-5);
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid color-mix(in srgb, var(--danger-color) 35%, transparent);
-  border-radius: var(--border-radius-sm);
-  background: color-mix(in srgb, var(--danger-color) 8%, var(--background-color));
-  color: var(--danger-color);
-  font-size: 12px;
-  font-weight: 300;
-}
-
 .field {
   margin-bottom: var(--space-6);
 }

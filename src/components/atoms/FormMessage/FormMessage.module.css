@@ -1,0 +1,19 @@
+.message {
+  margin-bottom: var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--border-radius-sm);
+  font-size: 12px;
+  font-weight: 300;
+}
+
+.error {
+  border: 1px solid color-mix(in srgb, var(--danger-color) 35%, transparent);
+  background: color-mix(in srgb, var(--danger-color) 8%, var(--background-color));
+  color: var(--danger-color);
+}
+
+.success {
+  border: 1px solid color-mix(in srgb, var(--success-color) 40%, transparent);
+  background: color-mix(in srgb, var(--success-color) 10%, var(--background-color));
+  color: var(--success-color);
+}
