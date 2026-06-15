@@ -4,6 +4,7 @@ import { useState } from "react";
 import { IoCaretDown } from "react-icons/io5";
 import { Button } from "@/src/components/atoms/Button";
 import { FormMessage } from "@/src/components/atoms/FormMessage";
+import { TextInput } from "@/src/components/atoms/TextInput";
 import { useProjects } from "@/src/contexts/projects";
 import { useCreateTask, type CreateTaskFormData } from "@/src/contexts/tasks";
 import styles from "./TaskCreateForm.module.css";
@@ -109,11 +110,9 @@ export function TaskCreateForm({ onCancel, onCreated }: TaskCreateFormProps) {
         >
           タスク
         </label>
-        <input
-          className={styles.input}
+        <TextInput
           id="task-title"
           name="title"
-          type="text"
           value={formData.title}
           placeholder="タスクを入力。例）英会話レッスンの予約、React公式ドキュメントを1ページ読む"
           required
