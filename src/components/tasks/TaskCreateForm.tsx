@@ -4,6 +4,7 @@ import { useState } from "react";
 import { IoCaretDown } from "react-icons/io5";
 import { Button } from "@/src/components/atoms/Button";
 import { FormMessage } from "@/src/components/atoms/FormMessage";
+import { Select } from "@/src/components/atoms/Select";
 import { Textarea } from "@/src/components/atoms/Textarea";
 import { TextInput } from "@/src/components/atoms/TextInput";
 import { useProjects } from "@/src/contexts/projects";
@@ -71,37 +72,30 @@ export function TaskCreateForm({ onCancel, onCreated }: TaskCreateFormProps) {
         >
           プロジェクト
         </label>
-        <div className={styles.selectContainer}>
-          <select
-            className={styles.select}
-            id="task-project"
-            name="projectId"
-            value={formData.projectId}
-            required
-            onChange={(event) => {
-              updateFormData("projectId", event.target.value);
-            }}
+        <Select
+          id="task-project"
+          name="projectId"
+          value={formData.projectId}
+          required
+          onChange={(event) => {
+            updateFormData("projectId", event.target.value);
+          }}
+        >
+          <option
+            value=""
+            disabled
           >
+            プログラムを選択してください
+          </option>
+          {projects.map((project) => (
             <option
-              value=""
-              disabled
+              key={project.id}
+              value={project.id}
             >
-              プログラムを選択してください
+              {project.name}
             </option>
-            {projects.map((project) => (
-              <option
-                key={project.id}
-                value={project.id}
-              >
-                {project.name}
-              </option>
-            ))}
-          </select>
-          <IoCaretDown
-            className={styles.selectIcon}
-            aria-hidden="true"
-          />
-        </div>
+          ))}
+        </Select>
       </div>
 
       <div className={styles.field}>
