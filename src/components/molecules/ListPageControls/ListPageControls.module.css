@@ -1,0 +1,26 @@
+.number {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+}
+
+.pageIndex,
+.displayPageCount,
+.total {
+  margin-right: var(--space-4);
+}
+
+.displayPageCount {
+  display: flex;
+  align-items: center;
+}
+
+.selectContainer {
+  display: inline-flex;
+}
+
+.select {
+  width: auto;
+  height: auto;
+  padding: var(--space-1) var(--space-2);
+}
