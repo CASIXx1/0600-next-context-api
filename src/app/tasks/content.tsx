@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { FormMessage } from "@/src/components/atoms/FormMessage";
 import { useTasksList } from "@/src/contexts/tasks";
-import { Pagination } from "@/src/components/pagination/Pagination";
+import { Pagination } from "@/src/components/molecules/Pagination";
 import { TaskListHeader } from "@/src/components/tasks/TaskListHeader";
 import { TaskTable } from "@/src/components/tasks/TaskTable";
 import styles from "./content.module.css";

@@ -2,7 +2,7 @@
 
 import { FormMessage } from "@/src/components/atoms/FormMessage";
 import { ProjectsProvider, useProjectsList } from "@/src/contexts/projects";
-import { Pagination } from "@/src/components/pagination/Pagination";
+import { Pagination } from "@/src/components/molecules/Pagination";
 import { ProjectList } from "@/src/components/projects/ProjectList";
 import styles from "./content.module.css";
 

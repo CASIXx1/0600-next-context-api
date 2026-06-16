@@ -28,42 +28,6 @@
   font-weight: 300;
 }
 
-.deleteConfirm {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: var(--space-4);
-  align-items: center;
-  margin-bottom: var(--space-5);
-  padding: var(--space-4);
-  border: 1px solid color-mix(in srgb, var(--danger-color) 30%, transparent);
-  border-radius: var(--border-radius-sm);
-  background: color-mix(in srgb, var(--danger-color) 7%, var(--background-color));
-}
-
-.deleteConfirmTitle {
-  margin-bottom: var(--space-2);
-  color: var(--danger-color);
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.deleteConfirmDescription {
-  color: var(--font-color-dark);
-  font-size: 12px;
-  font-weight: 300;
-  line-height: 1.6;
-}
-
-.deleteConfirmActions {
-  display: flex;
-  gap: var(--space-3);
-}
-
-.deleteConfirmButton,
-.deleteCancelButton {
-  min-width: 96px;
-}
-
 .form {
   width: 100%;
 }
@@ -106,13 +70,5 @@
 
   .actions {
     grid-template-columns: 1fr;
-  }
-
-  .deleteConfirm {
-    grid-template-columns: 1fr;
-  }
-
-  .deleteConfirmActions {
-    flex-direction: column;
   }
 }

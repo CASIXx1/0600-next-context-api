@@ -9,6 +9,7 @@ import { IconButton } from "@/src/components/atoms/IconButton";
 import { Select } from "@/src/components/atoms/Select";
 import { Textarea } from "@/src/components/atoms/Textarea";
 import { TextInput } from "@/src/components/atoms/TextInput";
+import { ConfirmPanel } from "@/src/components/molecules/ConfirmPanel";
 import { FormField } from "@/src/components/molecules/FormField";
 import { useProjects } from "@/src/contexts/projects";
 import { useTaskDetailContext, type Task } from "@/src/contexts/tasks";
@@ -102,53 +103,21 @@ function TaskDetailFormFields() {
       </header>
 
       {isDeleteConfirmOpen ? (
-        <div
-          className={styles.deleteConfirm}
-          role="group"
-          aria-labelledby="delete-confirm-title"
-          aria-describedby="delete-confirm-description"
-        >
-          <div>
-            <h2
-              className={styles.deleteConfirmTitle}
-              id="delete-confirm-title"
-            >
-              タスクを削除しますか？
-            </h2>
-            <p
-              className={styles.deleteConfirmDescription}
-              id="delete-confirm-description"
-            >
-              「{task.title}」を削除します。この操作は取り消せません。
-            </p>
-          </div>
-          <div className={styles.deleteConfirmActions}>
-            <Button
-              className={styles.deleteConfirmButton}
-              type="button"
-              variant="danger"
-              size="small"
-              disabled={isDeleting}
-              onClick={() => {
-                void deleteTask();
-              }}
-            >
-              削除する
-            </Button>
-            <Button
-              className={styles.deleteCancelButton}
-              type="button"
-              variant="secondary"
-              size="small"
-              disabled={isDeleting}
-              onClick={() => {
-                setIsDeleteConfirmOpen(false);
-              }}
-            >
-              キャンセル
-            </Button>
-          </div>
-        </div>
+        <ConfirmPanel
+          titleId="delete-confirm-title"
+          descriptionId="delete-confirm-description"
+          title="タスクを削除しますか？"
+          description={`「${task.title}」を削除します。この操作は取り消せません。`}
+          confirmLabel="削除する"
+          cancelLabel="キャンセル"
+          disabled={isDeleting}
+          onConfirm={() => {
+            void deleteTask();
+          }}
+          onCancel={() => {
+            setIsDeleteConfirmOpen(false);
+          }}
+        />
       ) : null}
 
       {errorMessage ? <FormMessage tone="error">{errorMessage}</FormMessage> : null}

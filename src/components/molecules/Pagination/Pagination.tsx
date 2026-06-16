@@ -1,7 +1,7 @@
 "use client";
 
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
-import { PageButtonLink } from "../atoms/PageButtonLink";
+import { PageButtonLink } from "@/src/components/atoms/PageButtonLink";
 import styles from "./Pagination.module.css";
 
 type PaginationProps = {
