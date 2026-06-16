@@ -1,27 +1,22 @@
-import type { MouseEventHandler, ReactNode } from "react";
+import type { ComponentPropsWithoutRef } from "react";
 import styles from "./Button.module.css";
 
-type ButtonVariant = "primary" | "secondary";
+type ButtonVariant = "primary" | "secondary" | "danger";
+type ButtonSize = "medium" | "small";
 
-type ButtonProps = {
-  children: ReactNode;
-  disabled?: boolean;
-  onClick?: MouseEventHandler<HTMLButtonElement>;
-  type?: "button" | "submit" | "reset";
+type ButtonProps = ComponentPropsWithoutRef<"button"> & {
+  size?: ButtonSize;
   variant?: ButtonVariant;
 };
 
-export function Button({ children, disabled = false, onClick, type = "button", variant = "primary" }: ButtonProps) {
-  const className = [styles.button, styles[variant]].join(" ");
+export function Button({ className, size = "medium", type = "button", variant = "primary", ...props }: ButtonProps) {
+  const buttonClassName = [styles.button, styles[variant], styles[size], className].filter(Boolean).join(" ");
 
   return (
     <button
-      className={className}
+      className={buttonClassName}
       type={type}
-      disabled={disabled}
-      onClick={onClick}
-    >
-      {children}
-    </button>
+      {...props}
+    />
   );
 }

@@ -1,33 +1,28 @@
-import type { MouseEventHandler, ReactNode } from "react";
+import type { ComponentPropsWithoutRef } from "react";
 import styles from "./IconButton.module.css";
 
-type IconButtonProps = {
+type IconButtonProps = ComponentPropsWithoutRef<"button"> & {
   ariaExpanded?: boolean;
   ariaLabel: string;
-  children: ReactNode;
-  disabled?: boolean;
-  onClick?: MouseEventHandler<HTMLButtonElement>;
-  type?: "button" | "submit" | "reset";
 };
 
 export function IconButton({
   ariaExpanded,
+  "aria-expanded": ariaExpandedAttribute,
   ariaLabel,
-  children,
-  disabled = false,
-  onClick,
+  className,
   type = "button",
+  ...props
 }: IconButtonProps) {
+  const buttonClassName = [styles.button, className].filter(Boolean).join(" ");
+
   return (
     <button
-      className={styles.button}
+      className={buttonClassName}
       type={type}
       aria-label={ariaLabel}
-      aria-expanded={ariaExpanded}
-      disabled={disabled}
-      onClick={onClick}
-    >
-      {children}
-    </button>
+      aria-expanded={ariaExpanded ?? ariaExpandedAttribute}
+      {...props}
+    />
   );
 }

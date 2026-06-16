@@ -1,27 +1,20 @@
-import type { ChangeEventHandler } from "react";
+import { forwardRef, type ComponentPropsWithoutRef } from "react";
 import styles from "./TextInput.module.css";
 
-type TextInputProps = {
-  id: string;
-  name: string;
-  onChange: ChangeEventHandler<HTMLInputElement>;
-  placeholder?: string;
-  required?: boolean;
-  type?: "text" | "date";
-  value: string;
-};
+type TextInputProps = ComponentPropsWithoutRef<"input">;
 
-export function TextInput({ id, name, onChange, placeholder, required = false, type = "text", value }: TextInputProps) {
+export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(function TextInput(
+  { className, type = "text", ...props },
+  ref,
+) {
+  const inputClassName = [styles.input, className].filter(Boolean).join(" ");
+
   return (
     <input
-      className={styles.input}
-      id={id}
-      name={name}
+      ref={ref}
+      className={inputClassName}
       type={type}
-      value={value}
-      placeholder={placeholder}
-      required={required}
-      onChange={onChange}
+      {...props}
     />
   );
-}
+});

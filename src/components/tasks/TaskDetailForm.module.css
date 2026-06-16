@@ -62,57 +62,6 @@
 .deleteConfirmButton,
 .deleteCancelButton {
   min-width: 96px;
-  min-height: 36px;
-  border: 0;
-  border-radius: var(--border-radius-sm);
-  box-shadow: 2px 2px 4px 1px var(--button-shadow, #22222220);
-  color: var(--font-color-light);
-  font-size: 12px;
-  font-weight: 700;
-  transition:
-    opacity 0.5s,
-    background 0.5s;
-}
-
-.deleteConfirmButton {
-  background: var(--danger-color);
-}
-
-.deleteCancelButton {
-  background: var(--secondary-color);
-}
-
-.deleteConfirmButton:hover,
-.deleteCancelButton:hover {
-  opacity: 0.8;
-}
-
-.deleteConfirmButton:disabled,
-.deleteCancelButton:disabled {
-  cursor: not-allowed;
-  opacity: 0.65;
-}
-
-.errorMessage {
-  margin-bottom: var(--space-5);
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid color-mix(in srgb, var(--danger-color) 35%, transparent);
-  border-radius: var(--border-radius-sm);
-  background: color-mix(in srgb, var(--danger-color) 8%, var(--background-color));
-  color: var(--danger-color);
-  font-size: 12px;
-  font-weight: 300;
-}
-
-.successMessage {
-  margin-bottom: var(--space-5);
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid color-mix(in srgb, var(--success-color) 40%, transparent);
-  border-radius: var(--border-radius-sm);
-  background: color-mix(in srgb, var(--success-color) 10%, var(--background-color));
-  color: var(--success-color);
-  font-size: 12px;
-  font-weight: 300;
 }
 
 .form {
@@ -136,68 +85,12 @@
   color: var(--danger-color);
 }
 
-.input,
-.select,
-.textarea {
-  width: 100%;
-  border: 0;
-  border-radius: var(--border-radius-sm);
-  background: var(--background-color);
-  box-shadow: 0 0 4px 1px #22222210;
-  color: var(--font-color-dark);
-  font-size: 12px;
-  font-weight: 300;
-}
-
-.input,
-.select {
-  height: 36px;
-  padding: var(--space-2) var(--space-3);
-}
-
-.input:focus,
-.select:focus,
-.textarea:focus {
-  outline: 1.5px solid var(--input-outline-color, #22222240);
-}
-
-.selectContainer {
-  position: relative;
-}
-
-.select {
-  appearance: none;
-  padding-right: var(--space-6);
-}
-
-.selectIcon {
-  position: absolute;
-  top: 50%;
-  right: var(--space-3);
-  color: var(--font-color-dark);
-  pointer-events: none;
-  transform: translateY(-50%);
-}
-
 .dateInputContainer {
   width: 128px;
 }
 
-.dateInputContainer .input {
+.dateInputContainer input {
   width: 100%;
-}
-
-.textarea {
-  min-height: 140px;
-  padding: var(--space-4);
-  line-height: 1.6;
-  resize: vertical;
-}
-
-.textarea::placeholder {
-  color: var(--font-color-dark);
-  font-size: 14px;
-  font-weight: 700;
 }
 
 .actions {

@@ -1,5 +1,6 @@
 "use client";
 
+import { FormMessage } from "@/src/components/atoms/FormMessage";
 import { ProjectsProvider, useProjectsList } from "@/src/contexts/projects";
 import { Pagination } from "@/src/components/pagination/Pagination";
 import { ProjectList } from "@/src/components/projects/ProjectList";
@@ -21,12 +22,12 @@ export function ProjectsContent({ requestedPage }: ProjectsContentProps) {
 
         <div className={styles.body}>
           {errorMessage ? (
-            <p
+            <FormMessage
               className={styles.errorMessage}
-              role="alert"
+              tone="error"
             >
               {errorMessage}
-            </p>
+            </FormMessage>
           ) : null}
 
           <div className={styles.projectsHeader}>

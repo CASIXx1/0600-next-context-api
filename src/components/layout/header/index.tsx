@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { IoAdd, IoClose, IoInformationCircle, IoLogOut, IoNotifications, IoPerson } from "react-icons/io5";
+import { IconButton } from "@/src/components/atoms/IconButton";
 import { TaskCreateForm } from "@/src/components/tasks/TaskCreateForm";
 import styles from "./index.module.css";
 
@@ -23,39 +24,35 @@ export function Header() {
               className={styles.menu}
               aria-label="Header actions"
             >
-              <button
+              <IconButton
                 className={styles.menuItem}
-                type="button"
-                aria-label="タスクを追加"
+                ariaLabel="タスクを追加"
                 onClick={() => setIsTaskFormOpen(true)}
               >
                 <IoAdd aria-hidden="true" />
-              </button>
-              <button
+              </IconButton>
+              <IconButton
                 className={styles.menuItem}
-                type="button"
-                aria-label="情報"
+                ariaLabel="情報"
               >
                 <IoInformationCircle aria-hidden="true" />
-              </button>
-              <button
+              </IconButton>
+              <IconButton
                 className={styles.menuItem}
-                type="button"
-                aria-label="通知"
+                ariaLabel="通知"
               >
                 <IoNotifications aria-hidden="true" />
-              </button>
+              </IconButton>
             </nav>
             <div className={styles.userMenuContainer}>
-              <button
+              <IconButton
                 className={styles.avatarButton}
-                type="button"
-                aria-label="ユーザーメニュー"
-                aria-expanded={isUserMenuOpen}
+                ariaLabel="ユーザーメニュー"
+                ariaExpanded={isUserMenuOpen}
                 onClick={() => setIsUserMenuOpen((current) => !current)}
               >
                 <IoPerson aria-hidden="true" />
-              </button>
+              </IconButton>
               {isUserMenuOpen ? (
                 <div className={styles.userMenu}>
                   <button type="button">
@@ -88,14 +85,13 @@ export function Header() {
             aria-label="タスク追加フォーム"
           >
             <header className={styles.modalHeader}>
-              <button
+              <IconButton
                 className={styles.closeButton}
-                type="button"
-                aria-label="閉じる"
+                ariaLabel="閉じる"
                 onClick={() => setIsTaskFormOpen(false)}
               >
                 <IoClose aria-hidden="true" />
-              </button>
+              </IconButton>
             </header>
             <div className={styles.modalBody}>
               <TaskCreateForm

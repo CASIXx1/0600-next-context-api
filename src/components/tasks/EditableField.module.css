@@ -21,24 +21,8 @@
 .textInput {
   width: 100%;
   padding: var(--space-2) var(--space-3);
-  border: 0;
-  border-radius: var(--border-radius-sm);
-  background: var(--background-color);
-  box-shadow: 0 0 4px 1px #22222210;
-  color: var(--font-color-dark);
-  font-size: 12px;
-  font-weight: 300;
 }
 
 .dateInput {
   padding: var(--space-1) var(--space-3);
-  border: 0;
-  border-radius: var(--border-radius-sm);
-  background: var(--background-color);
-  box-shadow: 0 0 4px 1px #22222210;
-}
-
-.textInput:focus,
-.dateInput:focus {
-  outline: 1.5px solid var(--input-outline-color, #22222240);
 }

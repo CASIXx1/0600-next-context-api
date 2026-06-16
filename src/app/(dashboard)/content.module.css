@@ -21,13 +21,7 @@
 
 .errorMessage {
   margin: 0 var(--space-8);
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid color-mix(in srgb, var(--danger-color) 35%, transparent);
-  border-radius: 4px;
-  background: color-mix(in srgb, var(--danger-color) 8%, var(--background-color));
-  color: var(--danger-color);
   font-size: 13px;
-  font-weight: 300;
 }
 
 .projectList {

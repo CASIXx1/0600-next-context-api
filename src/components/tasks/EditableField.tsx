@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { TextInput } from "@/src/components/atoms/TextInput";
 import styles from "./EditableField.module.css";
 
 type EditableFieldProps = {
@@ -39,7 +40,7 @@ export function EditableField({ defaultValue, inputValue, label, onCommit, type 
     >
       {isEditing ? (
         <div className={styles.editableInputContainer}>
-          <input
+          <TextInput
             ref={inputRef}
             aria-label={label}
             className={type === "date" ? styles.dateInput : styles.textInput}

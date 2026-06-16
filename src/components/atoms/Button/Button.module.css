@@ -1,5 +1,4 @@
 .button {
-  min-height: 48px;
   border: 0;
   border-radius: var(--border-radius-sm);
   box-shadow: 2px 2px 4px 1px var(--button-shadow, #22222220);
@@ -11,6 +10,16 @@
     box-shadow 0.5s,
     opacity 0.5s,
     background 0.5s;
+}
+
+.medium {
+  min-height: 48px;
+}
+
+.small {
+  min-height: 36px;
+  font-size: 12px;
+  letter-spacing: 0;
 }
 
 .primary {
@@ -26,6 +35,14 @@
 }
 
 .secondary:hover {
+  opacity: 0.8;
+}
+
+.danger {
+  background: var(--danger-color);
+}
+
+.danger:hover {
   opacity: 0.8;
 }
 

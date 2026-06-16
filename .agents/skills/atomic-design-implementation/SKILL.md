@@ -15,8 +15,6 @@ description: Atomic Design を導入し、atoms/molecules/organisms/templates/pa
 ## 導入方針
 
 - 既存 UI を一括移動しない。新規作成・変更対象から段階的に Atomic Design へ寄せる。
-- 1 回の移行では、まず 1 種類の atom または molecule だけを作る。利用箇所は最大 1-2 箇所で確認し、残りの置換は次フェーズに分ける。
-- Button と Input のような複数種類の部品を同時に大量移行しない。最初は Button だけ、次に FieldLabel だけ、のようにレビュー可能な単位へ分割する。
 - 分類は見た目の小ささだけでなく、依存方向と再利用範囲で決める。
 - `src/app` は App Router の page/content orchestration に限定し、Atomic Design の `pages` は原則 `src/app` で表現する。
 - API 実行、Context API、router 操作、URL query 操作は atoms/molecules に入れない。必要なら organisms 以上、または route content 側に置く。
@@ -42,15 +40,14 @@ description: Atomic Design を導入し、atoms/molecules/organisms/templates/pa
 ## 移行手順
 
 1. 変更対象コンポーネントの責務を読む。
-2. 今回作る atom/molecule を 1 種類だけ選び、利用箇所を 1-2 箇所に絞る。
-3. atoms/molecules に切り出せる純粋 UI を先に分離する。
-4. 選んだ atom/molecule と同じ粒度の CSS module は同一作業で移動してよい。
-5. domain data や context hook を読む部分は organisms に残す。
-6. route params/search params、Provider 合成、navigation は `src/app/<route>/content.tsx` に残す。
-7. import path を更新し、CSS module も移動先コンポーネントと同じ粒度にする。
-8. 既存 UI の見た目を変えない。Atomic Design 移行とデザイン変更を同時に行わない。
-9. 残った利用箇所や別種類の atom/molecule は次フェーズの作業として記録し、同じ変更に含めない。
-10. 移行後は `rg` で旧 import と旧ファイル参照が残っていないか確認する。
+2. atoms/molecules に切り出せる純粋 UI を先に分離する。
+3. 選んだ atom/molecule と同じ粒度の CSS module は同一作業で移動してよい。
+4. domain data や context hook を読む部分は organisms に残す。
+5. route params/search params、Provider 合成、navigation は `src/app/<route>/content.tsx` に残す。
+6. import path を更新し、CSS module も移動先コンポーネントと同じ粒度にする。
+7. 既存 UI の見た目を変えない。Atomic Design 移行とデザイン変更を同時に行わない。
+8. 残った利用箇所や別種類の atom/molecule は次フェーズの作業として記録し、同じ変更に含めない。
+9. 移行後は `rg` で旧 import と旧ファイル参照が残っていないか確認する。
 
 ## 判断例
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { FormMessage } from "@/src/components/atoms/FormMessage";
 import { useTasksList } from "@/src/contexts/tasks";
 import { Pagination } from "@/src/components/pagination/Pagination";
 import { TaskListHeader } from "@/src/components/tasks/TaskListHeader";
@@ -32,12 +33,12 @@ export function TasksContent({ requestedLimit, requestedPage }: TasksContentProp
         {isTasksLoaded ? (
           <div className={styles.tasks}>
             {errorMessage ? (
-              <p
+              <FormMessage
                 className={styles.errorMessage}
-                role="alert"
+                tone="error"
               >
                 {errorMessage}
-              </p>
+              </FormMessage>
             ) : null}
 
             <TaskListHeader

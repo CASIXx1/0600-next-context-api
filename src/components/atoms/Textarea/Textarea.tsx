@@ -1,25 +1,15 @@
-import type { ChangeEventHandler } from "react";
+import type { ComponentPropsWithoutRef } from "react";
 import styles from "./Textarea.module.css";
 
-type TextareaProps = {
-  id: string;
-  name: string;
-  onChange: ChangeEventHandler<HTMLTextAreaElement>;
-  placeholder?: string;
-  rows?: number;
-  value: string;
-};
+type TextareaProps = ComponentPropsWithoutRef<"textarea">;
 
-export function Textarea({ id, name, onChange, placeholder, rows, value }: TextareaProps) {
+export function Textarea({ className, ...props }: TextareaProps) {
+  const textareaClassName = [styles.textarea, className].filter(Boolean).join(" ");
+
   return (
     <textarea
-      className={styles.textarea}
-      id={id}
-      name={name}
-      value={value}
-      placeholder={placeholder}
-      rows={rows}
-      onChange={onChange}
+      className={textareaClassName}
+      {...props}
     />
   );
 }

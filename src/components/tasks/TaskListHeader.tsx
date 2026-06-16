@@ -1,5 +1,6 @@
 "use client";
 
+import { Select } from "@/src/components/atoms/Select";
 import styles from "./TaskListHeader.module.css";
 
 type TaskListHeaderProps = {
@@ -22,10 +23,11 @@ export function TaskListHeader({ limit, onLimitChange, page, pageCount, totalCou
 
         <div className={styles.displayPageCount}>
           <label htmlFor="task-limit">表示件数 : </label>
-          <select
+          <Select
             id="task-limit"
+            containerClassName={styles.selectContainer}
             className={styles.select}
-            value={limit}
+            value={String(limit)}
             onChange={(event) => {
               onLimitChange(Number(event.target.value));
             }}
@@ -33,7 +35,7 @@ export function TaskListHeader({ limit, onLimitChange, page, pageCount, totalCou
             <option value="20">20 件</option>
             <option value="50">50 件</option>
             <option value="100">100 件</option>
-          </select>
+          </Select>
         </div>
 
         <div>

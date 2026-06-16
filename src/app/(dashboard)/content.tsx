@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { IoArrowForward } from "react-icons/io5";
+import { FormMessage } from "@/src/components/atoms/FormMessage";
 import { useProjectsList } from "@/src/contexts/projects";
 import { useStats } from "@/src/contexts/stats";
 import { useTasksList } from "@/src/contexts/tasks";
@@ -40,12 +41,12 @@ export function DashboardContent() {
     <section className={styles.container}>
       <div className={styles.content}>
         {errorMessage ? (
-          <p
+          <FormMessage
             className={styles.errorMessage}
-            role="alert"
+            tone="error"
           >
             {errorMessage}
-          </p>
+          </FormMessage>
         ) : null}
 
         <div className={styles.projects}>

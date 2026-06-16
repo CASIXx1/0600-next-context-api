@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { IoCaretDown } from "react-icons/io5";
 import { Button } from "@/src/components/atoms/Button";
 import { FormMessage } from "@/src/components/atoms/FormMessage";
 import { Select } from "@/src/components/atoms/Select";
@@ -143,8 +142,8 @@ export function TaskCreateForm({ onCancel, onCreated }: TaskCreateFormProps) {
         >
           締切日
         </label>
-        <input
-          className={`${styles.input} ${styles.dateInput}`}
+        <TextInput
+          className={styles.dateInput}
           id="task-deadline"
           name="deadline"
           type="date"
@@ -163,30 +162,23 @@ export function TaskCreateForm({ onCancel, onCreated }: TaskCreateFormProps) {
         >
           ステータス
         </label>
-        <div className={styles.selectContainer}>
-          <select
-            className={styles.select}
-            id="task-status"
-            name="status"
-            value={formData.status}
-            onChange={(event) => {
-              updateFormData("status", toTaskStatus(event.target.value));
-            }}
-          >
-            {TASK_STATUS_OPTIONS.map((option) => (
-              <option
-                key={option.value}
-                value={option.value}
-              >
-                {option.label}
-              </option>
-            ))}
-          </select>
-          <IoCaretDown
-            className={styles.selectIcon}
-            aria-hidden="true"
-          />
-        </div>
+        <Select
+          id="task-status"
+          name="status"
+          value={formData.status}
+          onChange={(event) => {
+            updateFormData("status", toTaskStatus(event.target.value));
+          }}
+        >
+          {TASK_STATUS_OPTIONS.map((option) => (
+            <option
+              key={option.value}
+              value={option.value}
+            >
+              {option.label}
+            </option>
+          ))}
+        </Select>
       </div>
 
       <div className={styles.actions}>

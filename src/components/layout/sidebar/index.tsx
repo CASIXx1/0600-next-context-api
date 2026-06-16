@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import type { ReactNode } from "react";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
+import { IconButton } from "@/src/components/atoms/IconButton";
 import { ProjectMenu } from "./ProjectMenu";
 import styles from "./index.module.css";
 
@@ -38,15 +39,14 @@ export function Sidebar() {
     <aside className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ""}`}>
       <div className={styles.content}>
         <div className={styles.header}>
-          <button
+          <IconButton
             className={styles.toggle}
-            type="button"
-            aria-label={isCollapsed ? "サイドバーを開く" : "サイドバーを閉じる"}
-            aria-expanded={!isCollapsed}
+            ariaLabel={isCollapsed ? "サイドバーを開く" : "サイドバーを閉じる"}
+            ariaExpanded={!isCollapsed}
             onClick={() => setIsCollapsed((current) => !current)}
           >
             {isCollapsed ? <IoChevronForward aria-hidden="true" /> : <IoChevronBack aria-hidden="true" />}
-          </button>
+          </IconButton>
         </div>
         <div
           className={styles.body}

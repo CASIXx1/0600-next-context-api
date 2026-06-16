@@ -1,6 +1,7 @@
 import { IoArchive, IoCalendarClearOutline, IoCheckmark } from "react-icons/io5";
-import { formatDate } from "@/src/lib/date/format";
+import { TextInput } from "@/src/components/atoms/TextInput";
 import { useProject } from "@/src/contexts/projects";
+import { formatDate } from "@/src/lib/date/format";
 import styles from "./ProjectDetail.module.css";
 
 const PROJECT_BASE_PATH = "/projects/";
@@ -58,7 +59,7 @@ export function ProjectDetail() {
           <label className={styles.label}>スラッグ: </label>
           <p className={`${styles.text} ${styles.slug}`}>
             <span className={styles.slugBasePath}>{PROJECT_BASE_PATH}</span>
-            <input
+            <TextInput
               className={styles.slugInput}
               type="text"
               value={project.slug}

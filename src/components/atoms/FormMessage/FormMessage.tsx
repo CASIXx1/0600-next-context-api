@@ -1,23 +1,21 @@
-import type { ReactNode } from "react";
+import type { ComponentPropsWithoutRef } from "react";
 import styles from "./FormMessage.module.css";
 
 type FormMessageTone = "error" | "success";
 
-type FormMessageProps = {
-  children: ReactNode;
+type FormMessageProps = ComponentPropsWithoutRef<"p"> & {
   tone: FormMessageTone;
 };
 
-export function FormMessage({ children, tone }: FormMessageProps) {
-  const className = [styles.message, styles[tone]].join(" ");
-  const role = tone === "error" ? "alert" : "status";
+export function FormMessage({ className, role, tone, ...props }: FormMessageProps) {
+  const messageClassName = [styles.message, styles[tone], className].filter(Boolean).join(" ");
+  const messageRole = role ?? (tone === "error" ? "alert" : "status");
 
   return (
     <p
-      className={className}
-      role={role}
-    >
-      {children}
-    </p>
+      className={messageClassName}
+      role={messageRole}
+      {...props}
+    />
   );
 }
