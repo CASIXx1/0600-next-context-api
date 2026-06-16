@@ -9,6 +9,7 @@ import { IconButton } from "@/src/components/atoms/IconButton";
 import { Select } from "@/src/components/atoms/Select";
 import { Textarea } from "@/src/components/atoms/Textarea";
 import { TextInput } from "@/src/components/atoms/TextInput";
+import { FormField } from "@/src/components/molecules/FormField";
 import { useProjects } from "@/src/contexts/projects";
 import { useTaskDetailContext, type Task } from "@/src/contexts/tasks";
 import styles from "./TaskDetailForm.module.css";
@@ -167,13 +168,11 @@ function TaskDetailFormFields() {
           });
         }}
       >
-        <div className={styles.field}>
-          <label
-            className={`${styles.label} ${styles.required}`}
-            htmlFor="detail-project"
-          >
-            プロジェクト
-          </label>
+        <FormField
+          htmlFor="detail-project"
+          label="プロジェクト"
+          required
+        >
           <Select
             id="detail-project"
             name="projectId"
@@ -191,15 +190,13 @@ function TaskDetailFormFields() {
               </option>
             ))}
           </Select>
-        </div>
+        </FormField>
 
-        <div className={styles.field}>
-          <label
-            className={`${styles.label} ${styles.required}`}
-            htmlFor="detail-deadline"
-          >
-            締切日
-          </label>
+        <FormField
+          htmlFor="detail-deadline"
+          label="締切日"
+          required
+        >
           <div className={styles.dateInputContainer}>
             <TextInput
               id="detail-deadline"
@@ -211,15 +208,12 @@ function TaskDetailFormFields() {
               }}
             />
           </div>
-        </div>
+        </FormField>
 
-        <div className={styles.field}>
-          <label
-            className={styles.label}
-            htmlFor="detail-status"
-          >
-            ステータス
-          </label>
+        <FormField
+          htmlFor="detail-status"
+          label="ステータス"
+        >
           <Select
             id="detail-status"
             name="status"
@@ -237,15 +231,12 @@ function TaskDetailFormFields() {
               </option>
             ))}
           </Select>
-        </div>
+        </FormField>
 
-        <div className={styles.field}>
-          <label
-            className={styles.label}
-            htmlFor="detail-description"
-          >
-            説明・メモ
-          </label>
+        <FormField
+          htmlFor="detail-description"
+          label="説明・メモ"
+        >
           <Textarea
             id="detail-description"
             name="description"
@@ -256,7 +247,7 @@ function TaskDetailFormFields() {
               updateFormData("description", event.target.value);
             }}
           />
-        </div>
+        </FormField>
 
         <div className={styles.actions}>
           <Button

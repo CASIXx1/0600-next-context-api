@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { IoArrowForward } from "react-icons/io5";
-import { EditableField } from "./EditableField";
+import { EditableField } from "@/src/components/molecules/EditableField";
 import { TaskSelect, type SelectOption } from "./TaskSelect";
 import type { Project, Task, UpdateTaskData } from "@/src/contexts/tasks";
 import styles from "./TaskRow.module.css";

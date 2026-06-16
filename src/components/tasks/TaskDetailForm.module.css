@@ -68,23 +68,6 @@
   width: 100%;
 }
 
-.field {
-  margin-bottom: var(--space-6);
-}
-
-.label {
-  display: inline-block;
-  margin-bottom: var(--space-2);
-  color: var(--font-color-dark);
-  font-size: 16px;
-  font-weight: 300;
-}
-
-.required::after {
-  content: "*";
-  color: var(--danger-color);
-}
-
 .dateInputContainer {
   width: 128px;
 }
