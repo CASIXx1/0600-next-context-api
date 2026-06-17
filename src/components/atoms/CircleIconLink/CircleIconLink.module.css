@@ -1,0 +1,14 @@
+.link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  box-shadow: 2px 2px 4px 1px #22222210;
+}
+
+.icon {
+  display: flex;
+  color: var(--font-color-dark);
+}
