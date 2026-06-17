@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { IoCalendarClear, IoDocument, IoGitCommit } from "react-icons/io5";
+import { StatIcon } from "@/src/components/atoms/StatIcon";
+import { IconStatList } from "@/src/components/molecules/IconStatList";
 import { formatDate } from "@/src/lib/date/format";
 import type { Project } from "@/src/contexts/projects";
 import styles from "./ProjectCard.module.css";
@@ -45,28 +47,32 @@ export function ProjectCard({ project }: ProjectCardProps) {
         </div>
 
         <footer className={styles.footer}>
-          <div className={styles.stats}>
-            <p className={styles.stat}>
-              <IoGitCommit
-                className={styles.icon}
-                aria-hidden="true"
-                color={color}
-                size="12px"
-                style={{ color }}
-              />
-              <span>{project.stats.kinds.milestone}</span>
-            </p>
-            <p className={styles.stat}>
-              <IoDocument
-                className={styles.icon}
-                aria-hidden="true"
-                color={color}
-                size="12px"
-                style={{ color }}
-              />
-              <span>{project.stats.kinds.task}</span>
-            </p>
-          </div>
+          <IconStatList
+            variant="card"
+            color={color}
+            items={[
+              {
+                icon: (
+                  <StatIcon
+                    icon={IoGitCommit}
+                    color={color}
+                  />
+                ),
+                value: project.stats.kinds.milestone,
+                ariaLabel: `マイルストーン数: ${project.stats.kinds.milestone}`,
+              },
+              {
+                icon: (
+                  <StatIcon
+                    icon={IoDocument}
+                    color={color}
+                  />
+                ),
+                value: project.stats.kinds.task,
+                ariaLabel: `タスク数: ${project.stats.kinds.task}`,
+              },
+            ]}
+          />
         </footer>
       </Link>
     </article>
