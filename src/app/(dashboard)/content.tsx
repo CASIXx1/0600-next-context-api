@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { IoArrowForward } from "react-icons/io5";
 import { FormMessage } from "@/src/components/atoms/FormMessage";
+import { ArrowTextLink } from "@/src/components/molecules/ArrowTextLink";
 import { useProjectsList } from "@/src/contexts/projects";
 import { useStats } from "@/src/contexts/stats";
 import { useTasksList } from "@/src/contexts/tasks";
@@ -85,16 +85,7 @@ export function DashboardContent() {
           <section className={styles.todos}>
             <header className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle}>タスク</h2>
-              <Link
-                className={styles.link}
-                href="/tasks"
-              >
-                タスク一覧
-                <IoArrowForward
-                  className={styles.linkIcon}
-                  aria-hidden="true"
-                />
-              </Link>
+              <ArrowTextLink href="/tasks">タスク一覧</ArrowTextLink>
             </header>
 
             <div className={styles.sectionContent}>
@@ -108,16 +99,7 @@ export function DashboardContent() {
             </div>
             <div className={styles.sectionFooter}>
               {remainingTasksPageCount > 0 ? (
-                <Link
-                  className={styles.remainingPageLink}
-                  href="/tasks"
-                >
-                  あと {remainingTasksPageCount} ページ
-                  <IoArrowForward
-                    className={styles.linkIcon}
-                    aria-hidden="true"
-                  />
-                </Link>
+                <ArrowTextLink href="/tasks">あと {remainingTasksPageCount} ページ</ArrowTextLink>
               ) : null}
             </div>
           </section>
