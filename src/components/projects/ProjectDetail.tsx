@@ -52,13 +52,10 @@ export function ProjectDetail() {
 
         <div className={styles.border} />
 
-        <div className={styles.detailRow}>
-          <label
-            className={styles.detailLabel}
-            htmlFor={PROJECT_SLUG_INPUT_ID}
-          >
-            スラッグ:{" "}
-          </label>
+        <DetailField
+          label="スラッグ: "
+          labelHtmlFor={PROJECT_SLUG_INPUT_ID}
+        >
           <p className={`${styles.text} ${styles.slug}`}>
             <span className={styles.slugBasePath}>{PROJECT_BASE_PATH}</span>
             <TextInput
@@ -70,7 +67,7 @@ export function ProjectDetail() {
               readOnly
             />
           </p>
-        </div>
+        </DetailField>
 
         <div className={styles.detailRow}>
           <IconStatList
