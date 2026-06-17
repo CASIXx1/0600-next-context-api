@@ -1,0 +1,38 @@
+.field {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: var(--space-4) 0;
+  padding: var(--space-4);
+  font-size: 14px;
+}
+
+.label {
+  display: flex;
+  flex: 0 0 15%;
+  min-width: 15%;
+  margin-right: var(--space-4);
+  color: var(--font-color-dark);
+  font-size: 12px;
+  font-weight: 300;
+  letter-spacing: 0.1rem;
+}
+
+.labelText {
+  position: relative;
+  top: 2px;
+  margin-right: var(--space-6);
+}
+
+@media (max-width: 780px) {
+  .field {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .label {
+    flex-basis: auto;
+    min-width: 0;
+  }
+}
