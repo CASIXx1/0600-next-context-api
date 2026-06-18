@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { TableHeader, type TableHeaderColumn } from "@/src/components/molecules/TableHeader";
 import { TaskRow } from "./TaskRow";
 import type { Project, Task, UpdateTaskData } from "@/src/contexts/tasks";
 import styles from "./TaskTable.module.css";
@@ -11,18 +12,20 @@ type TaskTableProps = {
   updateTaskById: (taskId: string, data: UpdateTaskData) => Promise<void>;
 };
 
+const TASK_TABLE_COLUMNS = [
+  { label: "タスク", className: styles.titleCell },
+  { label: "プロジェクト", className: styles.projectCell },
+  { label: "ステータス", className: styles.statusHeaderCell },
+  { label: "期限日" },
+  { className: styles.detailCell },
+] satisfies readonly TableHeaderColumn[];
+
 export function TaskTable({ projects, tasks, updateTaskById }: TaskTableProps) {
   const [openTaskId, setOpenTaskId] = useState<string | null>(null);
 
   return (
     <div className={styles.table}>
-      <div className={styles.tableHeader}>
-        <div className={`${styles.tableHeaderCell} ${styles.titleCell}`}>タスク</div>
-        <div className={`${styles.tableHeaderCell} ${styles.projectCell}`}>プロジェクト</div>
-        <div className={`${styles.tableHeaderCell} ${styles.statusHeaderCell}`}>ステータス</div>
-        <div className={styles.tableHeaderCell}>期限日</div>
-        <div className={`${styles.tableHeaderCell} ${styles.detailCell}`} />
-      </div>
+      <TableHeader columns={TASK_TABLE_COLUMNS} />
 
       <div>
         {tasks.length === 0 ? (

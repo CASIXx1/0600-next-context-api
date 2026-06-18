@@ -2,18 +2,6 @@
   width: 100%;
 }
 
-.tableHeader {
-  display: flex;
-  border-bottom: 1px solid var(--table-border-color);
-}
-
-.tableHeaderCell {
-  width: 10%;
-  padding: var(--space-1);
-  font-size: 10px;
-  font-weight: 700;
-}
-
 .tableRow {
   position: relative;
   display: flex;
