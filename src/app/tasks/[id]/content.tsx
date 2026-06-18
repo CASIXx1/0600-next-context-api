@@ -3,7 +3,7 @@
 import { useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { TaskDetailProvider, useDeleteTask, useTaskDetail } from "@/src/contexts/tasks";
-import { TaskDetailForm } from "@/src/components/tasks/TaskDetailForm";
+import { TaskDetailForm } from "@/src/components/organisms/tasks/TaskDetailForm";
 import styles from "./content.module.css";
 
 type TaskDetailContentProps = {

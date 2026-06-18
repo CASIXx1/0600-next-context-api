@@ -63,5 +63,4 @@ description: Atomic Design を導入し、atoms/molecules/organisms/templates/pa
 
 - Atomic Design 移行を理由に `src/contexts` や `src/requests` の責務を UI コンポーネントへ戻さない。
 - atoms/molecules から `src/requests`、`src/app/api`、datastore を import しない。
-- 大量のファイル移動を一度に行わない。レビュー可能な単位で移行する。
 - 名前だけ atoms/molecules にして責務が変わっていない移動は避ける。

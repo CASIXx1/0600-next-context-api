@@ -6,9 +6,9 @@ import { ArrowTextLink } from "@/src/components/molecules/ArrowTextLink";
 import { useProjectsList } from "@/src/contexts/projects";
 import { useStats } from "@/src/contexts/stats";
 import { useTasksList } from "@/src/contexts/tasks";
-import { ProgressChart } from "@/src/components/progress/ProgressChart";
-import { ProjectCard } from "@/src/components/projects/ProjectCard";
-import { TaskTable } from "@/src/components/tasks/TaskTable";
+import { ProgressChart } from "@/src/components/organisms/progress/ProgressChart";
+import { ProjectCard } from "@/src/components/organisms/projects/ProjectCard";
+import { TaskTable } from "@/src/components/organisms/tasks/TaskTable";
 import styles from "./content.module.css";
 
 const DASHBOARD_PROJECTS_PAGE = 1;

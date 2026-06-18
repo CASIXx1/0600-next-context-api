@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { TableEmptyState } from "@/src/components/molecules/TableEmptyState";
 import { TableHeader, type TableHeaderColumn } from "@/src/components/molecules/TableHeader";
-import { TaskRow } from "./TaskRow";
+import { TaskRow } from "../TaskRow";
 import type { Project, Task, UpdateTaskData } from "@/src/contexts/tasks";
 import styles from "./TaskTable.module.css";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { ProjectProvider, useProjectDetail } from "@/src/contexts/projects";
-import { ProjectDetail } from "@/src/components/projects/ProjectDetail";
+import { ProjectDetail } from "@/src/components/organisms/projects/ProjectDetail";
 import styles from "./content.module.css";
 
 type ProjectDetailContentProps = {

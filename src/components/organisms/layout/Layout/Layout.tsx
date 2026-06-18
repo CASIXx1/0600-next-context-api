@@ -2,9 +2,9 @@
 
 import { type ReactNode } from "react";
 import { ProjectsProvider, useProjectMenuProjects } from "@/src/contexts/projects";
-import styles from "./index.module.css";
-import { Header } from "./header";
-import { Sidebar } from "./sidebar";
+import styles from "./Layout.module.css";
+import { Header } from "../Header";
+import { Sidebar } from "../Sidebar";
 
 type LayoutProps = {
   children: ReactNode;

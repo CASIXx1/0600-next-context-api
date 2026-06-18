@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { IoAdd, IoClose, IoInformationCircle, IoLogOut, IoNotifications, IoPerson } from "react-icons/io5";
 import { IconButton } from "@/src/components/atoms/IconButton";
-import { TaskCreateForm } from "@/src/components/tasks/TaskCreateForm";
-import styles from "./index.module.css";
+import { TaskCreateForm } from "@/src/components/organisms/tasks/TaskCreateForm";
+import styles from "./Header.module.css";
 
 export function Header() {
   const [isTaskFormOpen, setIsTaskFormOpen] = useState(false);

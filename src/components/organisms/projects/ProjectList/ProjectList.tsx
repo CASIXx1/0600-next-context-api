@@ -1,6 +1,6 @@
 "use client";
 
-import { ProjectCard } from "./ProjectCard";
+import { ProjectCard } from "../ProjectCard";
 import { useProjects } from "@/src/contexts/projects";
 import styles from "./ProjectList.module.css";
 

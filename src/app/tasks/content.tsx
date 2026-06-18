@@ -5,7 +5,7 @@ import { FormMessage } from "@/src/components/atoms/FormMessage";
 import { useTasksList } from "@/src/contexts/tasks";
 import { ListPageControls } from "@/src/components/molecules/ListPageControls";
 import { Pagination } from "@/src/components/molecules/Pagination";
-import { TaskTable } from "@/src/components/tasks/TaskTable";
+import { TaskTable } from "@/src/components/organisms/tasks/TaskTable";
 import styles from "./content.module.css";
 
 type TasksContentProps = {

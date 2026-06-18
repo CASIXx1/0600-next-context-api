@@ -6,8 +6,8 @@ import { useState } from "react";
 import type { ReactNode } from "react";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import { IconButton } from "@/src/components/atoms/IconButton";
-import { ProjectMenu } from "./ProjectMenu";
-import styles from "./index.module.css";
+import { ProjectMenu } from "../ProjectMenu";
+import styles from "./Sidebar.module.css";
 
 type MenuItem = {
   children?: ReactNode;
