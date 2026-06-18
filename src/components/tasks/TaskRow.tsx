@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { IoArrowForward } from "react-icons/io5";
 import { CircleIconLink } from "@/src/components/atoms/CircleIconLink";
 import { EditableField } from "@/src/components/molecules/EditableField";
@@ -97,8 +98,13 @@ export function TaskRow({ isSelectOpen, onSelectOpenChange, projects, task, upda
 
       <div className={`${styles.tableCell} ${styles.detailCell}`}>
         <CircleIconLink
-          href={`/tasks/${task.id}`}
           ariaLabel={`${task.title} の詳細`}
+          renderLink={(linkProps) => (
+            <Link
+              {...linkProps}
+              href={`/tasks/${task.id}`}
+            />
+          )}
         >
           <IoArrowForward aria-hidden="true" />
         </CircleIconLink>
