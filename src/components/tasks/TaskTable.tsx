@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { TableEmptyState } from "@/src/components/molecules/TableEmptyState";
 import { TableHeader, type TableHeaderColumn } from "@/src/components/molecules/TableHeader";
 import { TaskRow } from "./TaskRow";
 import type { Project, Task, UpdateTaskData } from "@/src/contexts/tasks";
@@ -28,11 +29,7 @@ export function TaskTable({ projects, tasks, updateTaskById }: TaskTableProps) {
       <TableHeader columns={TASK_TABLE_COLUMNS} />
 
       <div>
-        {tasks.length === 0 ? (
-          <div className={styles.tableRow}>
-            <div className={styles.empty}>タスクが登録されていません</div>
-          </div>
-        ) : null}
+        {tasks.length === 0 ? <TableEmptyState message="タスクが登録されていません" /> : null}
 
         {tasks.map((task) => (
           <TaskRow

@@ -2,20 +2,6 @@
   width: 100%;
 }
 
-.tableRow {
-  position: relative;
-  display: flex;
-  padding: var(--space-2) 0;
-  transition:
-    box-shadow 0.5s,
-    transform 0.5s;
-}
-
-.tableRow:hover {
-  transform: scale(1.01);
-  box-shadow: var(--shadow-sm);
-}
-
 .titleCell {
   width: 50%;
 }
@@ -30,9 +16,4 @@
 
 .detailCell {
   width: 8%;
-}
-
-.empty {
-  padding: var(--space-2);
-  font-size: 12px;
 }
