@@ -3,8 +3,8 @@
 import { useRouter } from "next/navigation";
 import { FormMessage } from "@/src/components/atoms/FormMessage";
 import { useTasksList } from "@/src/contexts/tasks";
+import { ListPageControls } from "@/src/components/molecules/ListPageControls";
 import { Pagination } from "@/src/components/molecules/Pagination";
-import { TaskListHeader } from "@/src/components/tasks/TaskListHeader";
 import { TaskTable } from "@/src/components/tasks/TaskTable";
 import styles from "./content.module.css";
 
@@ -41,16 +41,19 @@ export function TasksContent({ requestedLimit, requestedPage }: TasksContentProp
               </FormMessage>
             ) : null}
 
-            <TaskListHeader
-              limit={limit}
-              page={pageInfo.page}
-              pageCount={pageCount}
-              totalCount={pageInfo.totalCount}
-              onLimitChange={(nextLimit) => {
-                setLimit(nextLimit);
-                router.replace(createTasksPageHref(1, nextLimit));
-              }}
-            />
+            <div className={styles.listHeader}>
+              <ListPageControls
+                id="task-limit"
+                limit={limit}
+                page={pageInfo.page}
+                pageCount={pageCount}
+                totalCount={pageInfo.totalCount}
+                onLimitChange={(nextLimit) => {
+                  setLimit(nextLimit);
+                  router.replace(createTasksPageHref(1, nextLimit));
+                }}
+              />
+            </div>
 
             <TaskTable
               projects={projects}
