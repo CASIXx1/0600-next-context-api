@@ -74,7 +74,10 @@ function TaskDetailFormFields() {
     return null;
   }
 
-  const projectOptions = projects.length > 0 ? projects : [task.project];
+  const projectOptions = (projects.length > 0 ? projects : [task.project]).map((project) => ({
+    label: project.name,
+    value: project.id,
+  }));
   const errorMessage = deleteErrorMessage ?? updateErrorMessage;
 
   return (
@@ -178,19 +181,11 @@ function TaskDetailFormFields() {
             id="detail-project"
             name="projectId"
             value={formData.projectId}
+            options={projectOptions}
             onChange={(event) => {
               updateFormData("projectId", event.target.value);
             }}
-          >
-            {projectOptions.map((project) => (
-              <option
-                key={project.id}
-                value={project.id}
-              >
-                {project.name}
-              </option>
-            ))}
-          </Select>
+          />
         </div>
 
         <div className={styles.field}>
@@ -224,19 +219,11 @@ function TaskDetailFormFields() {
             id="detail-status"
             name="status"
             value={formData.status}
+            options={TASK_STATUS_OPTIONS}
             onChange={(event) => {
               updateFormData("status", toTaskStatus(event.target.value));
             }}
-          >
-            {TASK_STATUS_OPTIONS.map((option) => (
-              <option
-                key={option.value}
-                value={option.value}
-              >
-                {option.label}
-              </option>
-            ))}
-          </Select>
+          />
         </div>
 
         <div className={styles.field}>

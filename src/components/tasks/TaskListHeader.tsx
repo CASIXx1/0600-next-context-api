@@ -11,6 +11,21 @@ type TaskListHeaderProps = {
   totalCount: number;
 };
 
+const LIMIT_OPTIONS = [
+  {
+    label: "20 件",
+    value: "20",
+  },
+  {
+    label: "50 件",
+    value: "50",
+  },
+  {
+    label: "100 件",
+    value: "100",
+  },
+] as const;
+
 export function TaskListHeader({ limit, onLimitChange, page, pageCount, totalCount }: TaskListHeaderProps) {
   return (
     <div className={styles.listHeader}>
@@ -28,14 +43,11 @@ export function TaskListHeader({ limit, onLimitChange, page, pageCount, totalCou
             containerClassName={styles.selectContainer}
             className={styles.select}
             value={String(limit)}
+            options={LIMIT_OPTIONS}
             onChange={(event) => {
               onLimitChange(Number(event.target.value));
             }}
-          >
-            <option value="20">20 件</option>
-            <option value="50">50 件</option>
-            <option value="100">100 件</option>
-          </Select>
+          />
         </div>
 
         <div>

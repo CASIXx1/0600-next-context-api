@@ -38,6 +38,10 @@ export function TaskCreateForm({ onCancel, onCreated }: TaskCreateFormProps) {
   const projects = useProjects();
   const { createTask, errorMessage, isCreating } = useCreateTask();
   const [formData, setFormData] = useState<CreateTaskFormData>(() => createInitialFormData());
+  const projectOptions = projects.map((project) => ({
+    label: project.name,
+    value: project.id,
+  }));
 
   const updateFormData = <Key extends keyof CreateTaskFormData>(key: Key, value: CreateTaskFormData[Key]) => {
     setFormData((current) => ({
@@ -76,25 +80,12 @@ export function TaskCreateForm({ onCancel, onCreated }: TaskCreateFormProps) {
           name="projectId"
           value={formData.projectId}
           required
+          placeholder="プログラムを選択してください"
+          options={projectOptions}
           onChange={(event) => {
             updateFormData("projectId", event.target.value);
           }}
-        >
-          <option
-            value=""
-            disabled
-          >
-            プログラムを選択してください
-          </option>
-          {projects.map((project) => (
-            <option
-              key={project.id}
-              value={project.id}
-            >
-              {project.name}
-            </option>
-          ))}
-        </Select>
+        />
       </div>
 
       <div className={styles.field}>
@@ -166,19 +157,11 @@ export function TaskCreateForm({ onCancel, onCreated }: TaskCreateFormProps) {
           id="task-status"
           name="status"
           value={formData.status}
+          options={TASK_STATUS_OPTIONS}
           onChange={(event) => {
             updateFormData("status", toTaskStatus(event.target.value));
           }}
-        >
-          {TASK_STATUS_OPTIONS.map((option) => (
-            <option
-              key={option.value}
-              value={option.value}
-            >
-              {option.label}
-            </option>
-          ))}
-        </Select>
+        />
       </div>
 
       <div className={styles.actions}>
