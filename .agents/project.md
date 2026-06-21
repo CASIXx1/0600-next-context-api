@@ -31,6 +31,9 @@
 
 ## コンポーネント方針
 
+- Atomic Design は段階的に導入する。既存の `src/components/<domain>` は一時的な移行元として扱い、新規作成や変更対象から `src/components/atoms`、`src/components/molecules`、`src/components/organisms`、`src/components/templates` へ寄せる。
+- Atomic Design 移行は原則として 1 回の作業で 1 種類の atom または molecule と、その利用箇所 1-2 箇所までに限定する。既存画面の大量置換や複数種類の atom/molecule の同時移行は避ける。
+- Atomic Design の分類では依存方向を優先する。atoms/molecules は Context API、router、API client に依存させず、Application 層へ接続する UI は organisms 以上または `src/app/<route>/content.tsx` に置く。
 - 重複した純粋ロジックは、コンポーネント配下ではなく `src/lib` に切り出す。
 - sidebar 専用 UI は `src/components/layout/sidebar` 配下に置く。
 - コンポーネントを切り出した場合、そのコンポーネントが所有するスタイルなら CSS module も分ける。

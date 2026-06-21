@@ -2,7 +2,13 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { IoCaretDown, IoTrashOutline } from "react-icons/io5";
+import { IoTrashOutline } from "react-icons/io5";
+import { Button } from "@/src/components/atoms/Button";
+import { FormMessage } from "@/src/components/atoms/FormMessage";
+import { IconButton } from "@/src/components/atoms/IconButton";
+import { Select } from "@/src/components/atoms/Select";
+import { Textarea } from "@/src/components/atoms/Textarea";
+import { TextInput } from "@/src/components/atoms/TextInput";
 import { useProjects } from "@/src/contexts/projects";
 import { useTaskDetailContext, type Task } from "@/src/contexts/tasks";
 import styles from "./TaskDetailForm.module.css";
@@ -68,7 +74,10 @@ function TaskDetailFormFields() {
     return null;
   }
 
-  const projectOptions = projects.length > 0 ? projects : [task.project];
+  const projectOptions = (projects.length > 0 ? projects : [task.project]).map((project) => ({
+    label: project.name,
+    value: project.id,
+  }));
   const errorMessage = deleteErrorMessage ?? updateErrorMessage;
 
   return (
@@ -82,18 +91,16 @@ function TaskDetailFormFields() {
           </p>
         </div>
 
-        <button
-          className={styles.deleteButton}
-          type="button"
-          aria-label="タスクを削除"
-          aria-expanded={isDeleteConfirmOpen}
+        <IconButton
+          ariaLabel="タスクを削除"
+          ariaExpanded={isDeleteConfirmOpen}
           disabled={isDeleting || isUpdating}
           onClick={() => {
             setIsDeleteConfirmOpen(true);
           }}
         >
           <IoTrashOutline aria-hidden="true" />
-        </button>
+        </IconButton>
       </header>
 
       {isDeleteConfirmOpen ? (
@@ -118,47 +125,37 @@ function TaskDetailFormFields() {
             </p>
           </div>
           <div className={styles.deleteConfirmActions}>
-            <button
+            <Button
               className={styles.deleteConfirmButton}
               type="button"
+              variant="danger"
+              size="small"
               disabled={isDeleting}
               onClick={() => {
                 void deleteTask();
               }}
             >
               削除する
-            </button>
-            <button
+            </Button>
+            <Button
               className={styles.deleteCancelButton}
               type="button"
+              variant="secondary"
+              size="small"
               disabled={isDeleting}
               onClick={() => {
                 setIsDeleteConfirmOpen(false);
               }}
             >
               キャンセル
-            </button>
+            </Button>
           </div>
         </div>
       ) : null}
 
-      {errorMessage ? (
-        <p
-          className={styles.errorMessage}
-          role="alert"
-        >
-          {errorMessage}
-        </p>
-      ) : null}
+      {errorMessage ? <FormMessage tone="error">{errorMessage}</FormMessage> : null}
 
-      {updateSuccessMessage ? (
-        <p
-          className={styles.successMessage}
-          role="status"
-        >
-          {updateSuccessMessage}
-        </p>
-      ) : null}
+      {updateSuccessMessage ? <FormMessage tone="success">{updateSuccessMessage}</FormMessage> : null}
 
       <form
         className={styles.form}
@@ -180,30 +177,15 @@ function TaskDetailFormFields() {
           >
             プロジェクト
           </label>
-          <div className={styles.selectContainer}>
-            <select
-              className={styles.select}
-              id="detail-project"
-              name="projectId"
-              value={formData.projectId}
-              onChange={(event) => {
-                updateFormData("projectId", event.target.value);
-              }}
-            >
-              {projectOptions.map((project) => (
-                <option
-                  key={project.id}
-                  value={project.id}
-                >
-                  {project.name}
-                </option>
-              ))}
-            </select>
-            <IoCaretDown
-              className={styles.selectIcon}
-              aria-hidden="true"
-            />
-          </div>
+          <Select
+            id="detail-project"
+            name="projectId"
+            value={formData.projectId}
+            options={projectOptions}
+            onChange={(event) => {
+              updateFormData("projectId", event.target.value);
+            }}
+          />
         </div>
 
         <div className={styles.field}>
@@ -214,8 +196,7 @@ function TaskDetailFormFields() {
             締切日
           </label>
           <div className={styles.dateInputContainer}>
-            <input
-              className={styles.input}
+            <TextInput
               id="detail-deadline"
               name="deadline"
               type="text"
@@ -234,30 +215,15 @@ function TaskDetailFormFields() {
           >
             ステータス
           </label>
-          <div className={styles.selectContainer}>
-            <select
-              className={styles.select}
-              id="detail-status"
-              name="status"
-              value={formData.status}
-              onChange={(event) => {
-                updateFormData("status", toTaskStatus(event.target.value));
-              }}
-            >
-              {TASK_STATUS_OPTIONS.map((option) => (
-                <option
-                  key={option.value}
-                  value={option.value}
-                >
-                  {option.label}
-                </option>
-              ))}
-            </select>
-            <IoCaretDown
-              className={styles.selectIcon}
-              aria-hidden="true"
-            />
-          </div>
+          <Select
+            id="detail-status"
+            name="status"
+            value={formData.status}
+            options={TASK_STATUS_OPTIONS}
+            onChange={(event) => {
+              updateFormData("status", toTaskStatus(event.target.value));
+            }}
+          />
         </div>
 
         <div className={styles.field}>
@@ -267,8 +233,7 @@ function TaskDetailFormFields() {
           >
             説明・メモ
           </label>
-          <textarea
-            className={styles.textarea}
+          <Textarea
             id="detail-description"
             name="description"
             value={formData.description}
@@ -281,23 +246,23 @@ function TaskDetailFormFields() {
         </div>
 
         <div className={styles.actions}>
-          <button
-            className={styles.primaryButton}
+          <Button
             type="submit"
+            variant="primary"
             disabled={isUpdating || isDeleting}
           >
             更新
-          </button>
-          <button
-            className={styles.secondaryButton}
+          </Button>
+          <Button
             type="button"
+            variant="secondary"
             disabled={isUpdating || isDeleting}
             onClick={() => {
               setFormData(createInitialFormData(task));
             }}
           >
             リセット
-          </button>
+          </Button>
         </div>
       </form>
 

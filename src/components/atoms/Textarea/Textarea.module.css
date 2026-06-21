@@ -1,0 +1,22 @@
+.textarea {
+  width: 100%;
+  min-height: 144px;
+  padding: var(--space-4);
+  border: 0;
+  border-radius: var(--border-radius-sm);
+  background: var(--background-color);
+  box-shadow: 0 0 4px 1px #22222210;
+  color: var(--font-color-dark);
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.textarea::placeholder {
+  color: var(--border-color);
+}
+
+.textarea:focus {
+  outline: 1.5px solid var(--input-outline-color, #22222240);
+}

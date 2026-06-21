@@ -1,0 +1,52 @@
+.button {
+  border: 0;
+  border-radius: var(--border-radius-sm);
+  box-shadow: 2px 2px 4px 1px var(--button-shadow, #22222220);
+  color: var(--font-color-light);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  transition:
+    box-shadow 0.5s,
+    opacity 0.5s,
+    background 0.5s;
+}
+
+.medium {
+  min-height: 48px;
+}
+
+.small {
+  min-height: 36px;
+  font-size: 12px;
+  letter-spacing: 0;
+}
+
+.primary {
+  background: var(--primary-color);
+}
+
+.primary:hover {
+  background: var(--primary-color-darker);
+}
+
+.secondary {
+  background: var(--secondary-color);
+}
+
+.secondary:hover {
+  opacity: 0.8;
+}
+
+.danger {
+  background: var(--danger-color);
+}
+
+.danger:hover {
+  opacity: 0.8;
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
