@@ -2,14 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 import { IoCaretDown } from "react-icons/io5";
-import styles from "./TaskSelect.module.css";
+import styles from "./SelectMenu.module.css";
 
 export type SelectOption = {
   label: string;
   value: string;
 };
 
-type TaskSelectProps = {
+type SelectMenuProps = {
   label: string;
   onOpenChange?: (isOpen: boolean) => void;
   onSelect: (value: string) => void;
@@ -17,7 +17,7 @@ type TaskSelectProps = {
   value: string;
 };
 
-export function TaskSelect({ label, onOpenChange, onSelect, options, value }: TaskSelectProps) {
+export function SelectMenu({ label, onOpenChange, onSelect, options, value }: SelectMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const selectedOption = options.find((option) => option.value === value) ?? options[0];
