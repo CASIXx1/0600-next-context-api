@@ -24,6 +24,11 @@ export function ListPageControls({
   pageCount,
   totalCount,
 }: ListPageControlsProps) {
+  const selectOptions = limitOptions.map((option) => ({
+    label: `${option} 件`,
+    value: String(option),
+  }));
+
   return (
     <div className={styles.number}>
       <div className={styles.pageIndex}>
@@ -39,19 +44,11 @@ export function ListPageControls({
           containerClassName={styles.selectContainer}
           className={styles.select}
           value={String(limit)}
+          options={selectOptions}
           onChange={(event) => {
             onLimitChange(Number(event.target.value));
           }}
-        >
-          {limitOptions.map((option) => (
-            <option
-              key={option}
-              value={option}
-            >
-              {option} 件
-            </option>
-          ))}
-        </Select>
+        />
       </div>
 
       <div>
