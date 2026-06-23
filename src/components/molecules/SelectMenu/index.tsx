@@ -29,7 +29,7 @@ export function SelectMenu({ label, onOpenChange, onSelect, options, value }: Se
 
   useEffect(() => {
     const handleDocumentClick = (event: MouseEvent) => {
-      if (!containerRef.current?.contains(event.target as Node)) {
+      if (isOpen && !containerRef.current?.contains(event.target as Node)) {
         setIsOpen(false);
         onOpenChange?.(false);
       }
@@ -40,7 +40,7 @@ export function SelectMenu({ label, onOpenChange, onSelect, options, value }: Se
     return () => {
       document.removeEventListener("click", handleDocumentClick);
     };
-  }, [onOpenChange]);
+  }, [isOpen, onOpenChange]);
 
   return (
     <div

@@ -1,1 +1,0 @@
-export { ArrowTextLink } from "./ArrowTextLink";

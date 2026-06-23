@@ -1,1 +1,0 @@
-export { ConfirmPanel } from "./ConfirmPanel";
