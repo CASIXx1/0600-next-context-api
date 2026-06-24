@@ -1,8 +1,9 @@
 "use client";
 
-import Link from "next/link";
+import NextLink from "next/link";
+import { IoArrowForward } from "react-icons/io5";
 import { FormMessage } from "@/src/components/atoms/FormMessage";
-import { ArrowTextLink } from "@/src/components/molecules/ArrowTextLink";
+import { Link } from "@/src/components/atoms/Link";
 import { useProjectsList } from "@/src/contexts/projects";
 import { useStats } from "@/src/contexts/stats";
 import { useTasksList } from "@/src/contexts/tasks";
@@ -64,12 +65,12 @@ export function DashboardContent() {
               </div>
 
               <div className={styles.projectListFooter}>
-                <Link
+                <NextLink
                   className={styles.projectListLink}
                   href="/projects"
                 >
                   プロジェクト一覧
-                </Link>
+                </NextLink>
               </div>
             </section>
 
@@ -85,7 +86,14 @@ export function DashboardContent() {
           <section className={styles.todos}>
             <header className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle}>タスク</h2>
-              <ArrowTextLink href="/tasks">タスク一覧</ArrowTextLink>
+              <Link
+                href="/tasks"
+                endIcon={<IoArrowForward aria-hidden="true" />}
+                size="small"
+                variant="text"
+              >
+                タスク一覧
+              </Link>
             </header>
 
             <div className={styles.sectionContent}>
@@ -99,7 +107,14 @@ export function DashboardContent() {
             </div>
             <div className={styles.sectionFooter}>
               {remainingTasksPageCount > 0 ? (
-                <ArrowTextLink href="/tasks">あと {remainingTasksPageCount} ページ</ArrowTextLink>
+                <Link
+                  href="/tasks"
+                  endIcon={<IoArrowForward aria-hidden="true" />}
+                  size="small"
+                  variant="text"
+                >
+                  あと {remainingTasksPageCount} ページ
+                </Link>
               ) : null}
             </div>
           </section>

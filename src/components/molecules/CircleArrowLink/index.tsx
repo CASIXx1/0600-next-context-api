@@ -1,6 +1,6 @@
-import Link, { type LinkProps } from "next/link";
+import type { LinkProps } from "next/link";
 import { IoArrowForward } from "react-icons/io5";
-import { CircleIconLink } from "@/src/components/atoms/CircleIconLink";
+import { Link } from "@/src/components/atoms/Link";
 
 type CircleArrowLinkProps = {
   ariaLabel: string;
@@ -11,18 +11,15 @@ type CircleArrowLinkProps = {
 
 export function CircleArrowLink({ ariaLabel, className, href, iconClassName }: CircleArrowLinkProps) {
   return (
-    <CircleIconLink
+    <Link
+      href={href}
       ariaLabel={ariaLabel}
       className={className}
+      endIcon={<IoArrowForward aria-hidden="true" />}
       iconClassName={iconClassName}
-      renderLink={(linkProps) => (
-        <Link
-          {...linkProps}
-          href={href}
-        />
-      )}
-    >
-      <IoArrowForward aria-hidden="true" />
-    </CircleIconLink>
+      shape="circle"
+      size="medium"
+      variant="plain"
+    />
   );
 }

@@ -1,0 +1,50 @@
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import NextLink, { type LinkProps as NextLinkProps } from "next/link";
+import styles from "./Link.module.css";
+
+type LinkVariant = "text" | "plain";
+type LinkShape = "default" | "circle";
+type LinkSize = "small" | "medium";
+
+type LinkProps = Omit<ComponentPropsWithoutRef<typeof NextLink>, "aria-label" | "children" | "className" | "href"> & {
+  ariaLabel?: string;
+  children?: ReactNode;
+  className?: string;
+  endIcon?: ReactNode;
+  href: NextLinkProps["href"];
+  iconClassName?: string;
+  shape?: LinkShape;
+  size?: LinkSize;
+  startIcon?: ReactNode;
+  variant?: LinkVariant;
+};
+
+export function Link({
+  ariaLabel,
+  children,
+  className,
+  endIcon,
+  iconClassName,
+  shape = "default",
+  size = "small",
+  startIcon,
+  variant = "text",
+  ...props
+}: LinkProps) {
+  const linkClassName = [styles.root, styles[variant], styles[shape], styles[size], className]
+    .filter(Boolean)
+    .join(" ");
+  const iconClassNames = [styles.icon, iconClassName].filter(Boolean).join(" ");
+
+  return (
+    <NextLink
+      className={linkClassName}
+      aria-label={ariaLabel}
+      {...props}
+    >
+      {startIcon ? <span className={iconClassNames}>{startIcon}</span> : null}
+      {children}
+      {endIcon ? <span className={iconClassNames}>{endIcon}</span> : null}
+    </NextLink>
+  );
+}
