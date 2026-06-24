@@ -40,9 +40,17 @@
 .text .icon {
   position: relative;
   top: -1px;
+}
+
+.text .startIcon {
+  margin-right: var(--space-1);
+}
+
+.text .endIcon {
   margin-left: var(--space-1);
 }
 
-.circle .icon {
-  margin-left: 0;
+.circle .startIcon,
+.circle .endIcon {
+  margin: 0;
 }

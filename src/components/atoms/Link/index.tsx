@@ -34,7 +34,8 @@ export function Link({
   const linkClassName = [styles.root, styles[variant], styles[shape], styles[size], className]
     .filter(Boolean)
     .join(" ");
-  const iconClassNames = [styles.icon, iconClassName].filter(Boolean).join(" ");
+  const startIconClassName = [styles.icon, styles.startIcon, iconClassName].filter(Boolean).join(" ");
+  const endIconClassName = [styles.icon, styles.endIcon, iconClassName].filter(Boolean).join(" ");
 
   return (
     <NextLink
@@ -42,9 +43,9 @@ export function Link({
       aria-label={ariaLabel}
       {...props}
     >
-      {startIcon ? <span className={iconClassNames}>{startIcon}</span> : null}
+      {startIcon ? <span className={startIconClassName}>{startIcon}</span> : null}
       {children}
-      {endIcon ? <span className={iconClassNames}>{endIcon}</span> : null}
+      {endIcon ? <span className={endIconClassName}>{endIcon}</span> : null}
     </NextLink>
   );
 }
