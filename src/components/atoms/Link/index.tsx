@@ -1,4 +1,4 @@
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { AnchorHTMLAttributes, ReactNode } from "react";
 import NextLink, { type LinkProps as NextLinkProps } from "next/link";
 import styles from "./Link.module.css";
 
@@ -6,7 +6,10 @@ type LinkVariant = "text" | "plain";
 type LinkShape = "default" | "circle";
 type LinkSize = "small" | "medium";
 
-type LinkProps = Omit<ComponentPropsWithoutRef<typeof NextLink>, "aria-label" | "children" | "className" | "href"> & {
+type LinkProps = Omit<
+  NextLinkProps & AnchorHTMLAttributes<HTMLAnchorElement>,
+  "aria-label" | "children" | "className" | "href"
+> & {
   ariaLabel?: string;
   children?: ReactNode;
   className?: string;

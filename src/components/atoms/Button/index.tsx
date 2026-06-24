@@ -1,10 +1,10 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { ButtonHTMLAttributes } from "react";
 import styles from "./Button.module.css";
 
 type ButtonVariant = "primary" | "secondary" | "danger";
 type ButtonSize = "medium" | "small";
 
-type ButtonProps = ComponentPropsWithoutRef<"button"> & {
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   size?: ButtonSize;
   variant?: ButtonVariant;
 };

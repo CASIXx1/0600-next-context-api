@@ -1,7 +1,7 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { ButtonHTMLAttributes } from "react";
 import styles from "./IconButton.module.css";
 
-type IconButtonProps = ComponentPropsWithoutRef<"button"> & {
+type IconButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   ariaExpanded?: boolean;
   ariaLabel: string;
 };

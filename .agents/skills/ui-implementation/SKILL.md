@@ -31,6 +31,7 @@ description: UI コンポーネント、CSS module、デザイン再現、画面
 - UI 部品は原則 `src/components/<domain>` に置く。画面固有に見えても、一覧、行、フォーム部品、セレクト、ページネーション、グラフなど独立した部品は route 配下に置かない。
 - UI 部品は責務ごとに 1 ファイル 1 コンポーネントで切り出し、所有する CSS module も同じ粒度で分ける。
 - コンポーネント用ディレクトリでは本体を `index.tsx` に置き、import パスをディレクトリ名で揃える。re-export だけの `index.ts` と `Component.tsx` の組み合わせは新規作成しない。
+- コンポーネント props では `ComponentPropsWithoutRef` を使わない。HTML 要素の属性を受ける場合は `ButtonHTMLAttributes<HTMLButtonElement>`、`InputHTMLAttributes<HTMLInputElement>`、`TextareaHTMLAttributes<HTMLTextAreaElement>`、`SelectHTMLAttributes<HTMLSelectElement>`、`HTMLAttributes<HTMLElement>` など、対象要素が明確な React 型を使う。
 - Pagination は `src/components/pagination` を使い、URL 生成や query 条件は `getPageHref` などの props で外から渡す。
 - 画面内の固定値や magic number は意味が分かる定数にする。同じ対象の固定値は近くに並べ、`PAGE`、`LIMIT` のように関連する値は対象ごとに順序を揃える。
 - 小さな純粋ヘルパーやそのファイル内だけで使う型は、可読性を損なわない範囲で近くに置いてよい。複数コンポーネントで共有する純粋ロジックは `src/lib` へ切り出す。

@@ -20,6 +20,7 @@ description: Atomic Design を導入し、atoms/molecules/organisms/templates/pa
 - API 実行、Context API、router 操作、URL query 操作は atoms/molecules に入れない。必要なら organisms 以上、または route content 側に置く。
 - CSS module はコンポーネント所有で同じ粒度に置く。移動時は import path と CSS module 名を合わせる。
 - Atomic Design 配下のコンポーネントはディレクトリを import 境界にし、本体を `index.tsx` に置く。`Component.tsx` を `index.ts` で re-export する構成は使わない。
+- atoms/molecules の props では `ComponentPropsWithoutRef` を使わない。HTML 要素の属性を受ける場合は対象要素ごとの React 型を明示し、独自 props と交差させる。
 
 ## 配置
 

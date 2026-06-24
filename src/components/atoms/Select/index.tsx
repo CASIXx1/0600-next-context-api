@@ -1,4 +1,4 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { SelectHTMLAttributes } from "react";
 import { IoCaretDown } from "react-icons/io5";
 import styles from "./Select.module.css";
 
@@ -8,7 +8,7 @@ export type SelectOption = {
   value: string;
 };
 
-type SelectProps = Omit<ComponentPropsWithoutRef<"select">, "children"> & {
+type SelectProps = Omit<SelectHTMLAttributes<HTMLSelectElement>, "children"> & {
   containerClassName?: string;
   options: readonly SelectOption[];
   placeholder?: string;
