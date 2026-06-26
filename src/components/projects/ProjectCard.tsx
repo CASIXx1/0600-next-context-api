@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { IoCalendarClear, IoDocument, IoGitCommit } from "react-icons/io5";
+import { IoCalendarClear } from "react-icons/io5";
 import { StatIcon } from "@/src/components/atoms/StatIcon";
 import { IconStatList } from "@/src/components/molecules/IconStatList";
 import { formatDate } from "@/src/lib/date/format";
@@ -54,7 +54,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
               {
                 icon: (
                   <StatIcon
-                    icon={IoGitCommit}
+                    iconKey="milestone"
                     color={color}
                   />
                 ),
@@ -64,7 +64,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
               {
                 icon: (
                   <StatIcon
-                    icon={IoDocument}
+                    iconKey="document"
                     color={color}
                   />
                 ),
