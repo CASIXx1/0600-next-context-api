@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Button } from "@/src/components/atoms/Button";
-import styles from "./ConfirmPanel.module.css";
+import styles from "./index.module.css";
 
 type ConfirmPanelProps = {
   cancelLabel: string;

@@ -1,6 +1,6 @@
 import type { AnchorHTMLAttributes, ReactNode } from "react";
 import NextLink, { type LinkProps as NextLinkProps } from "next/link";
-import styles from "./Link.module.css";
+import styles from "./index.module.css";
 
 type LinkVariant = "text" | "plain";
 type LinkShape = "default" | "circle";

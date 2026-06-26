@@ -1,7 +1,7 @@
 "use client";
 
 import { Select } from "@/src/components/atoms/Select";
-import styles from "./ListPageControls.module.css";
+import styles from "./index.module.css";
 
 const DEFAULT_LIMIT_OPTIONS = [20, 50, 100] as const;
 

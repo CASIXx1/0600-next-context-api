@@ -1,5 +1,5 @@
 import type { ButtonHTMLAttributes } from "react";
-import styles from "./IconButton.module.css";
+import styles from "./index.module.css";
 
 type IconButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   ariaExpanded?: boolean;

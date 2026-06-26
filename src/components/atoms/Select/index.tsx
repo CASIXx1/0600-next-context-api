@@ -1,6 +1,6 @@
 import type { SelectHTMLAttributes } from "react";
 import { IoCaretDown } from "react-icons/io5";
-import styles from "./Select.module.css";
+import styles from "./index.module.css";
 
 export type SelectOption = {
   disabled?: boolean;

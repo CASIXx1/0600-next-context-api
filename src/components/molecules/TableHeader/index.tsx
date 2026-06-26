@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import styles from "./TableHeader.module.css";
+import styles from "./index.module.css";
 
 export type TableHeaderColumn = {
   label?: ReactNode;

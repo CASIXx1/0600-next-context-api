@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from "react";
-import styles from "./FormMessage.module.css";
+import styles from "./index.module.css";
 
 type FormMessageTone = "error" | "success";
 

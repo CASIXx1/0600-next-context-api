@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import styles from "./TableEmptyState.module.css";
+import styles from "./index.module.css";
 
 type TableEmptyStateProps = {
   className?: string;

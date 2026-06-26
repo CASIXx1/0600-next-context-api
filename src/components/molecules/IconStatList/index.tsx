@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
-import styles from "./IconStatList.module.css";
+import styles from "./index.module.css";
 
 type IconStatListVariant = "card" | "detail";
 

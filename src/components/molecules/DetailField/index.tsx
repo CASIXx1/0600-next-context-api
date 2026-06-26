@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import styles from "./DetailField.module.css";
+import styles from "./index.module.css";
 
 type DetailFieldProps = {
   children: ReactNode;

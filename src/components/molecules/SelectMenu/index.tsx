@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { IoCaretDown } from "react-icons/io5";
-import styles from "./SelectMenu.module.css";
+import styles from "./index.module.css";
 
 export type SelectOption = {
   label: string;

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { TextInput } from "@/src/components/atoms/TextInput";
-import styles from "./EditableField.module.css";
+import styles from "./index.module.css";
 
 type EditableFieldProps = {
   defaultValue: string;
