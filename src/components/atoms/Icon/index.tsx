@@ -1,25 +1,27 @@
 import type { IconType } from "react-icons";
 import { IoDocument, IoGitCommit } from "react-icons/io5";
 
-const STAT_ICONS = {
+const ICONS = {
   milestone: IoGitCommit,
   document: IoDocument,
 } as const satisfies Record<string, IconType>;
 
-export type StatIconKey = keyof typeof STAT_ICONS;
+export type IconName = keyof typeof ICONS;
 
-type StatIconProps = {
-  iconKey: StatIconKey;
+type IconProps = {
+  name: IconName;
   color?: string;
   size?: string;
+  className?: string;
 };
 
-export function StatIcon({ color, iconKey, size = "12px" }: StatIconProps) {
-  const Icon = STAT_ICONS[iconKey];
+export function Icon({ className, color, name, size = "12px" }: IconProps) {
+  const IconComponent = ICONS[name];
 
   return (
-    <Icon
+    <IconComponent
       aria-hidden="true"
+      className={className}
       color={color}
       size={size}
       style={{ color }}

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { IoCalendarClear } from "react-icons/io5";
-import { StatIcon } from "@/src/components/atoms/StatIcon";
+import { Icon } from "@/src/components/atoms/Icon";
 import { IconStatList } from "@/src/components/molecules/IconStatList";
 import { formatDate } from "@/src/lib/date/format";
 import type { Project } from "@/src/contexts/projects";
@@ -53,8 +53,8 @@ export function ProjectCard({ project }: ProjectCardProps) {
             items={[
               {
                 icon: (
-                  <StatIcon
-                    iconKey="milestone"
+                  <Icon
+                    name="milestone"
                     color={color}
                   />
                 ),
@@ -63,8 +63,8 @@ export function ProjectCard({ project }: ProjectCardProps) {
               },
               {
                 icon: (
-                  <StatIcon
-                    iconKey="document"
+                  <Icon
+                    name="document"
                     color={color}
                   />
                 ),
