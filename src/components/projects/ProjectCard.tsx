@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { IoCalendarClear } from "react-icons/io5";
-import { Icon } from "@/src/components/atoms/Icon";
-import { IconStatList } from "@/src/components/molecules/IconStatList";
+import { IconList } from "@/src/components/molecules/IconList";
 import { formatDate } from "@/src/lib/date/format";
 import type { Project } from "@/src/contexts/projects";
 import styles from "./ProjectCard.module.css";
@@ -47,27 +46,16 @@ export function ProjectCard({ project }: ProjectCardProps) {
         </div>
 
         <footer className={styles.footer}>
-          <IconStatList
-            variant="card"
+          <IconList
             color={color}
             items={[
               {
-                icon: (
-                  <Icon
-                    name="milestone"
-                    color={color}
-                  />
-                ),
+                name: "milestone",
                 value: project.stats.kinds.milestone,
                 ariaLabel: `マイルストーン数: ${project.stats.kinds.milestone}`,
               },
               {
-                icon: (
-                  <Icon
-                    name="document"
-                    color={color}
-                  />
-                ),
+                name: "document",
                 value: project.stats.kinds.task,
                 ariaLabel: `タスク数: ${project.stats.kinds.task}`,
               },

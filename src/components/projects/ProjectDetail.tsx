@@ -1,7 +1,6 @@
-import { IoArchive, IoCalendarClearOutline, IoCheckmark } from "react-icons/io5";
 import { TextInput } from "@/src/components/atoms/TextInput";
 import { DetailField } from "@/src/components/molecules/DetailField";
-import { IconStatList } from "@/src/components/molecules/IconStatList";
+import { IconList } from "@/src/components/molecules/IconList";
 import { useProject } from "@/src/contexts/projects";
 import { formatDate } from "@/src/lib/date/format";
 import styles from "./ProjectDetail.module.css";
@@ -70,21 +69,21 @@ export function ProjectDetail() {
         </DetailField>
 
         <div className={styles.detailRow}>
-          <IconStatList
+          <IconList
             variant="detail"
             items={[
               {
-                icon: <IoCalendarClearOutline aria-hidden="true" />,
+                name: "calendar",
                 value: project.stats.states.scheduled,
                 ariaLabel: `予定数: ${project.stats.states.scheduled}`,
               },
               {
-                icon: <IoCheckmark aria-hidden="true" />,
+                name: "check",
                 value: project.stats.states.completed,
                 ariaLabel: `完了数: ${project.stats.states.completed}`,
               },
               {
-                icon: <IoArchive aria-hidden="true" />,
+                name: "archive",
                 value: project.stats.states.archived,
                 ariaLabel: `アーカイブ数: ${project.stats.states.archived}`,
               },
