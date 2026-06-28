@@ -1,4 +1,28 @@
-.field {
+.verticalField {
+  margin-bottom: var(--space-6);
+}
+
+.verticalLabel {
+  display: inline-block;
+  margin-bottom: var(--space-2);
+  color: var(--font-color-dark);
+  font-weight: 300;
+}
+
+.smallLabel {
+  font-size: 12px;
+}
+
+.mediumLabel {
+  font-size: 16px;
+}
+
+.required::after {
+  content: "*";
+  color: var(--danger-color);
+}
+
+.horizontalField {
   display: flex;
   align-items: center;
   width: 100%;
@@ -7,7 +31,7 @@
   font-size: 14px;
 }
 
-.label {
+.horizontalLabel {
   display: flex;
   flex: 0 0 15%;
   min-width: 15%;
@@ -18,20 +42,20 @@
   letter-spacing: 0.1rem;
 }
 
-.labelText {
+.horizontalLabelText {
   position: relative;
   top: 2px;
   margin-right: var(--space-6);
 }
 
 @media (max-width: 780px) {
-  .field {
+  .horizontalField {
     align-items: flex-start;
     flex-direction: column;
     gap: var(--space-2);
   }
 
-  .label {
+  .horizontalLabel {
     flex-basis: auto;
     min-width: 0;
   }

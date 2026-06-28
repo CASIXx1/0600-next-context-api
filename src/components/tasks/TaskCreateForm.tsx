@@ -6,7 +6,7 @@ import { FormMessage } from "@/src/components/atoms/FormMessage";
 import { Select } from "@/src/components/atoms/Select";
 import { Textarea } from "@/src/components/atoms/Textarea";
 import { TextInput } from "@/src/components/atoms/TextInput";
-import { FormField } from "@/src/components/molecules/FormField";
+import { LabeledField } from "@/src/components/molecules/LabeledField";
 import { useProjects } from "@/src/contexts/projects";
 import { useCreateTask, type CreateTaskFormData } from "@/src/contexts/tasks";
 import styles from "./TaskCreateForm.module.css";
@@ -69,7 +69,7 @@ export function TaskCreateForm({ onCancel, onCreated }: TaskCreateFormProps) {
 
       {errorMessage ? <FormMessage tone="error">{errorMessage}</FormMessage> : null}
 
-      <FormField
+      <LabeledField
         htmlFor="task-project"
         label="プロジェクト"
         labelSize="small"
@@ -86,9 +86,9 @@ export function TaskCreateForm({ onCancel, onCreated }: TaskCreateFormProps) {
             updateFormData("projectId", event.target.value);
           }}
         />
-      </FormField>
+      </LabeledField>
 
-      <FormField
+      <LabeledField
         htmlFor="task-title"
         label="タスク"
         labelSize="small"
@@ -104,9 +104,9 @@ export function TaskCreateForm({ onCancel, onCreated }: TaskCreateFormProps) {
             updateFormData("title", event.target.value);
           }}
         />
-      </FormField>
+      </LabeledField>
 
-      <FormField
+      <LabeledField
         htmlFor="task-description"
         label="説明・メモ"
         labelSize="small"
@@ -121,9 +121,9 @@ export function TaskCreateForm({ onCancel, onCreated }: TaskCreateFormProps) {
             updateFormData("description", event.target.value);
           }}
         />
-      </FormField>
+      </LabeledField>
 
-      <FormField
+      <LabeledField
         htmlFor="task-deadline"
         label="締切日"
         labelSize="small"
@@ -140,9 +140,9 @@ export function TaskCreateForm({ onCancel, onCreated }: TaskCreateFormProps) {
             updateFormData("deadline", event.target.value);
           }}
         />
-      </FormField>
+      </LabeledField>
 
-      <FormField
+      <LabeledField
         htmlFor="task-status"
         label="ステータス"
         labelSize="small"
@@ -156,7 +156,7 @@ export function TaskCreateForm({ onCancel, onCreated }: TaskCreateFormProps) {
             updateFormData("status", toTaskStatus(event.target.value));
           }}
         />
-      </FormField>
+      </LabeledField>
 
       <div className={styles.actions}>
         <Button

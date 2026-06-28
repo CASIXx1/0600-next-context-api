@@ -2,7 +2,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { Icon, type IconName } from "@/src/components/atoms/Icon";
 import styles from "./index.module.css";
 
-type IconListVariant = "card" | "detail";
+type IconListVariant = "card" | "panel";
 
 export type IconListItem = {
   name: IconName;

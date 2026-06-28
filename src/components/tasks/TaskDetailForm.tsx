@@ -10,7 +10,7 @@ import { Select } from "@/src/components/atoms/Select";
 import { Textarea } from "@/src/components/atoms/Textarea";
 import { TextInput } from "@/src/components/atoms/TextInput";
 import { ConfirmPanel } from "@/src/components/molecules/ConfirmPanel";
-import { FormField } from "@/src/components/molecules/FormField";
+import { LabeledField } from "@/src/components/molecules/LabeledField";
 import { useProjects } from "@/src/contexts/projects";
 import { useTaskDetailContext, type Task } from "@/src/contexts/tasks";
 import styles from "./TaskDetailForm.module.css";
@@ -140,7 +140,7 @@ function TaskDetailFormFields() {
           });
         }}
       >
-        <FormField
+        <LabeledField
           htmlFor="detail-project"
           label="プロジェクト"
           required
@@ -154,9 +154,9 @@ function TaskDetailFormFields() {
               updateFormData("projectId", event.target.value);
             }}
           />
-        </FormField>
+        </LabeledField>
 
-        <FormField
+        <LabeledField
           htmlFor="detail-deadline"
           label="締切日"
           required
@@ -172,9 +172,9 @@ function TaskDetailFormFields() {
               }}
             />
           </div>
-        </FormField>
+        </LabeledField>
 
-        <FormField
+        <LabeledField
           htmlFor="detail-status"
           label="ステータス"
         >
@@ -187,9 +187,9 @@ function TaskDetailFormFields() {
               updateFormData("status", toTaskStatus(event.target.value));
             }}
           />
-        </FormField>
+        </LabeledField>
 
-        <FormField
+        <LabeledField
           htmlFor="detail-description"
           label="説明・メモ"
         >
@@ -203,7 +203,7 @@ function TaskDetailFormFields() {
               updateFormData("description", event.target.value);
             }}
           />
-        </FormField>
+        </LabeledField>
 
         <div className={styles.actions}>
           <Button

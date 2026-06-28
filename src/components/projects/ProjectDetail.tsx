@@ -1,5 +1,5 @@
 import { TextInput } from "@/src/components/atoms/TextInput";
-import { DetailField } from "@/src/components/molecules/DetailField";
+import { LabeledField } from "@/src/components/molecules/LabeledField";
 import { IconList } from "@/src/components/molecules/IconList";
 import { useProject } from "@/src/contexts/projects";
 import { formatDate } from "@/src/lib/date/format";
@@ -30,7 +30,11 @@ export function ProjectDetail() {
       </header>
 
       <div className={styles.projectBody}>
-        <DetailField label="ゴール: ">
+        <LabeledField
+          layout="horizontal"
+          labelSize="small"
+          label="ゴール: "
+        >
           <div className={styles.goalContainer}>
             <p className={styles.deadline}>
               <span className={styles.fromText}>あと {daysUntilDeadline} 日</span>
@@ -43,17 +47,23 @@ export function ProjectDetail() {
             </p>
             <p className={`${styles.text} ${styles.goal}`}>{project.goal}</p>
           </div>
-        </DetailField>
+        </LabeledField>
 
-        <DetailField label="あるべき姿: ">
+        <LabeledField
+          layout="horizontal"
+          labelSize="small"
+          label="あるべき姿: "
+        >
           <p className={styles.text}>{project.shouldbe}</p>
-        </DetailField>
+        </LabeledField>
 
         <div className={styles.border} />
 
-        <DetailField
+        <LabeledField
+          layout="horizontal"
+          labelSize="small"
           label="スラッグ: "
-          labelHtmlFor={PROJECT_SLUG_INPUT_ID}
+          htmlFor={PROJECT_SLUG_INPUT_ID}
         >
           <p className={`${styles.text} ${styles.slug}`}>
             <span className={styles.slugBasePath}>{PROJECT_BASE_PATH}</span>
@@ -66,11 +76,11 @@ export function ProjectDetail() {
               readOnly
             />
           </p>
-        </DetailField>
+        </LabeledField>
 
         <div className={styles.detailRow}>
           <IconList
-            variant="detail"
+            variant="panel"
             items={[
               {
                 name: "calendar",

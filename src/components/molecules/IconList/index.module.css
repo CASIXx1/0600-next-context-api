@@ -20,7 +20,7 @@
   font-size: 12px;
 }
 
-.detailList {
+.panelList {
   position: relative;
   top: 20px;
   right: var(--space-2);
@@ -29,7 +29,7 @@
   background: var(--background-color);
 }
 
-.detailItem {
+.panelItem {
   display: flex;
   align-items: center;
   padding: 0 var(--space-4);
@@ -39,17 +39,17 @@
   font-weight: 300;
 }
 
-.detailList li:last-child .detailItem {
+.panelList li:last-child .panelItem {
   border-right: 0;
 }
 
-.detailIcon {
+.panelIcon {
   display: inline-block;
   margin-right: var(--space-2);
 }
 
 @media (max-width: 780px) {
-  .detailList {
+  .panelList {
     top: 0;
     right: 0;
   }
