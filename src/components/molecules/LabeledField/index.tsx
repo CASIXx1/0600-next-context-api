@@ -63,16 +63,12 @@ export function LabeledField({
 
   return (
     <div className={fieldClassName}>
-      {htmlFor ? (
-        <label
-          className={fieldLabelClassName}
-          htmlFor={htmlFor}
-        >
-          {labelContent}
-        </label>
-      ) : (
-        <div className={fieldLabelClassName}>{labelContent}</div>
-      )}
+      <label
+        className={fieldLabelClassName}
+        htmlFor={htmlFor}
+      >
+        {labelContent}
+      </label>
       {content}
     </div>
   );
