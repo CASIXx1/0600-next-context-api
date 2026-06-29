@@ -1,5 +1,6 @@
 import type { AnchorHTMLAttributes, ReactNode } from "react";
 import NextLink, { type LinkProps as NextLinkProps } from "next/link";
+import { Icon, type IconName } from "@/src/components/atoms/Icon";
 import styles from "./index.module.css";
 
 type LinkVariant = "text" | "plain";
@@ -14,11 +15,13 @@ type LinkProps = Omit<
   children?: ReactNode;
   className?: string;
   endIcon?: ReactNode;
+  endIconName?: IconName;
   href: NextLinkProps["href"];
   iconClassName?: string;
   shape?: LinkShape;
   size?: LinkSize;
   startIcon?: ReactNode;
+  startIconName?: IconName;
   variant?: LinkVariant;
 };
 
@@ -27,10 +30,12 @@ export function Link({
   children,
   className,
   endIcon,
+  endIconName,
   iconClassName,
   shape = "default",
   size = "small",
   startIcon,
+  startIconName,
   variant = "text",
   ...props
 }: LinkProps) {
@@ -39,6 +44,8 @@ export function Link({
     .join(" ");
   const startIconClassName = [styles.icon, styles.startIcon, iconClassName].filter(Boolean).join(" ");
   const endIconClassName = [styles.icon, styles.endIcon, iconClassName].filter(Boolean).join(" ");
+  const startIconContent = startIconName ? <Icon name={startIconName} /> : startIcon;
+  const endIconContent = endIconName ? <Icon name={endIconName} /> : endIcon;
 
   return (
     <NextLink
@@ -46,9 +53,9 @@ export function Link({
       aria-label={ariaLabel}
       {...props}
     >
-      {startIcon ? <span className={startIconClassName}>{startIcon}</span> : null}
+      {startIconContent ? <span className={startIconClassName}>{startIconContent}</span> : null}
       {children}
-      {endIcon ? <span className={endIconClassName}>{endIcon}</span> : null}
+      {endIconContent ? <span className={endIconClassName}>{endIconContent}</span> : null}
     </NextLink>
   );
 }

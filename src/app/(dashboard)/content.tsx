@@ -1,7 +1,5 @@
 "use client";
 
-import NextLink from "next/link";
-import { IoArrowForward } from "react-icons/io5";
 import { FormMessage } from "@/src/components/atoms/FormMessage";
 import { Link } from "@/src/components/atoms/Link";
 import { useProjectsList } from "@/src/contexts/projects";
@@ -65,12 +63,14 @@ export function DashboardContent() {
               </div>
 
               <div className={styles.projectListFooter}>
-                <NextLink
+                <Link
                   className={styles.projectListLink}
                   href="/projects"
+                  size="small"
+                  variant="text"
                 >
                   プロジェクト一覧
-                </NextLink>
+                </Link>
               </div>
             </section>
 
@@ -88,7 +88,7 @@ export function DashboardContent() {
               <h2 className={styles.sectionTitle}>タスク</h2>
               <Link
                 href="/tasks"
-                endIcon={<IoArrowForward aria-hidden="true" />}
+                endIconName="arrowForward"
                 size="small"
                 variant="text"
               >
@@ -109,7 +109,7 @@ export function DashboardContent() {
               {remainingTasksPageCount > 0 ? (
                 <Link
                   href="/tasks"
-                  endIcon={<IoArrowForward aria-hidden="true" />}
+                  endIconName="arrowForward"
                   size="small"
                   variant="text"
                 >

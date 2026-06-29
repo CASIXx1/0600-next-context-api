@@ -1,8 +1,16 @@
 import type { IconType } from "react-icons";
-import { IoArchive, IoCalendarClearOutline, IoCheckmark, IoDocument, IoGitCommit } from "react-icons/io5";
+import {
+  IoArchive,
+  IoArrowForward,
+  IoCalendarClearOutline,
+  IoCheckmark,
+  IoDocument,
+  IoGitCommit,
+} from "react-icons/io5";
 
 const ICONS = {
   archive: IoArchive,
+  arrowForward: IoArrowForward,
   calendar: IoCalendarClearOutline,
   check: IoCheckmark,
   milestone: IoGitCommit,
