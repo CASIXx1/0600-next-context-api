@@ -1,6 +1,6 @@
 import type { MouseEvent, ReactNode } from "react";
 import Link from "next/link";
-import styles from "./PageButtonLink.module.css";
+import styles from "./index.module.css";
 
 type PageButtonLinkProps = {
   ariaLabel?: string;

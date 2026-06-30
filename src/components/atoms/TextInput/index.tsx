@@ -1,7 +1,7 @@
-import { forwardRef, type ComponentPropsWithoutRef } from "react";
-import styles from "./TextInput.module.css";
+import { forwardRef, type InputHTMLAttributes } from "react";
+import styles from "./index.module.css";
 
-type TextInputProps = ComponentPropsWithoutRef<"input">;
+type TextInputProps = InputHTMLAttributes<HTMLInputElement>;
 
 export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(function TextInput(
   { className, type = "text", ...props },

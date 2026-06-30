@@ -9,6 +9,8 @@ import { IconButton } from "@/src/components/atoms/IconButton";
 import { Select } from "@/src/components/atoms/Select";
 import { Textarea } from "@/src/components/atoms/Textarea";
 import { TextInput } from "@/src/components/atoms/TextInput";
+import { ConfirmPanel } from "@/src/components/molecules/ConfirmPanel";
+import { LabeledField } from "@/src/components/molecules/LabeledField";
 import { useProjects } from "@/src/contexts/projects";
 import { useTaskDetailContext, type Task } from "@/src/contexts/tasks";
 import styles from "./TaskDetailForm.module.css";
@@ -104,53 +106,21 @@ function TaskDetailFormFields() {
       </header>
 
       {isDeleteConfirmOpen ? (
-        <div
-          className={styles.deleteConfirm}
-          role="group"
-          aria-labelledby="delete-confirm-title"
-          aria-describedby="delete-confirm-description"
-        >
-          <div>
-            <h2
-              className={styles.deleteConfirmTitle}
-              id="delete-confirm-title"
-            >
-              タスクを削除しますか？
-            </h2>
-            <p
-              className={styles.deleteConfirmDescription}
-              id="delete-confirm-description"
-            >
-              「{task.title}」を削除します。この操作は取り消せません。
-            </p>
-          </div>
-          <div className={styles.deleteConfirmActions}>
-            <Button
-              className={styles.deleteConfirmButton}
-              type="button"
-              variant="danger"
-              size="small"
-              disabled={isDeleting}
-              onClick={() => {
-                void deleteTask();
-              }}
-            >
-              削除する
-            </Button>
-            <Button
-              className={styles.deleteCancelButton}
-              type="button"
-              variant="secondary"
-              size="small"
-              disabled={isDeleting}
-              onClick={() => {
-                setIsDeleteConfirmOpen(false);
-              }}
-            >
-              キャンセル
-            </Button>
-          </div>
-        </div>
+        <ConfirmPanel
+          titleId="delete-confirm-title"
+          descriptionId="delete-confirm-description"
+          title="タスクを削除しますか？"
+          description={`「${task.title}」を削除します。この操作は取り消せません。`}
+          confirmLabel="削除する"
+          cancelLabel="キャンセル"
+          disabled={isDeleting}
+          onConfirm={() => {
+            void deleteTask();
+          }}
+          onCancel={() => {
+            setIsDeleteConfirmOpen(false);
+          }}
+        />
       ) : null}
 
       {errorMessage ? <FormMessage tone="error">{errorMessage}</FormMessage> : null}
@@ -170,13 +140,11 @@ function TaskDetailFormFields() {
           });
         }}
       >
-        <div className={styles.field}>
-          <label
-            className={`${styles.label} ${styles.required}`}
-            htmlFor="detail-project"
-          >
-            プロジェクト
-          </label>
+        <LabeledField
+          htmlFor="detail-project"
+          label="プロジェクト"
+          required
+        >
           <Select
             id="detail-project"
             name="projectId"
@@ -186,15 +154,13 @@ function TaskDetailFormFields() {
               updateFormData("projectId", event.target.value);
             }}
           />
-        </div>
+        </LabeledField>
 
-        <div className={styles.field}>
-          <label
-            className={`${styles.label} ${styles.required}`}
-            htmlFor="detail-deadline"
-          >
-            締切日
-          </label>
+        <LabeledField
+          htmlFor="detail-deadline"
+          label="締切日"
+          required
+        >
           <div className={styles.dateInputContainer}>
             <TextInput
               id="detail-deadline"
@@ -206,15 +172,12 @@ function TaskDetailFormFields() {
               }}
             />
           </div>
-        </div>
+        </LabeledField>
 
-        <div className={styles.field}>
-          <label
-            className={styles.label}
-            htmlFor="detail-status"
-          >
-            ステータス
-          </label>
+        <LabeledField
+          htmlFor="detail-status"
+          label="ステータス"
+        >
           <Select
             id="detail-status"
             name="status"
@@ -224,15 +187,12 @@ function TaskDetailFormFields() {
               updateFormData("status", toTaskStatus(event.target.value));
             }}
           />
-        </div>
+        </LabeledField>
 
-        <div className={styles.field}>
-          <label
-            className={styles.label}
-            htmlFor="detail-description"
-          >
-            説明・メモ
-          </label>
+        <LabeledField
+          htmlFor="detail-description"
+          label="説明・メモ"
+        >
           <Textarea
             id="detail-description"
             name="description"
@@ -243,7 +203,7 @@ function TaskDetailFormFields() {
               updateFormData("description", event.target.value);
             }}
           />
-        </div>
+        </LabeledField>
 
         <div className={styles.actions}>
           <Button

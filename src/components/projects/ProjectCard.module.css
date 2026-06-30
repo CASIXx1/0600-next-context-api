@@ -67,21 +67,3 @@
   justify-content: flex-end;
   color: var(--font-color-dark-weak);
 }
-
-.stats {
-  display: flex;
-  align-items: center;
-}
-
-.stat {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  font-size: 12px;
-}
-
-.icon {
-  margin-right: var(--space-1);
-  margin-left: var(--space-2);
-  font-size: 12px;
-}

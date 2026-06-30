@@ -1,0 +1,56 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+}
+
+.text {
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.plain {
+  color: inherit;
+}
+
+.default {
+  justify-content: flex-start;
+}
+
+.circle {
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  box-shadow: 2px 2px 4px 1px #22222210;
+  color: var(--font-color-dark);
+}
+
+.small {
+  font-size: 10px;
+}
+
+.medium {
+  font-size: 16px;
+}
+
+.icon {
+  display: flex;
+}
+
+.text .icon {
+  position: relative;
+  top: -1px;
+}
+
+.text .startIcon {
+  margin-right: var(--space-1);
+}
+
+.text .endIcon {
+  margin-left: var(--space-1);
+}
+
+.circle .startIcon,
+.circle .endIcon {
+  margin: 0;
+}

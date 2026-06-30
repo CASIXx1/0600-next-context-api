@@ -1,10 +1,12 @@
-import { IoArchive, IoCalendarClearOutline, IoCheckmark } from "react-icons/io5";
 import { TextInput } from "@/src/components/atoms/TextInput";
+import { LabeledField } from "@/src/components/molecules/LabeledField";
+import { IconList } from "@/src/components/molecules/IconList";
 import { useProject } from "@/src/contexts/projects";
 import { formatDate } from "@/src/lib/date/format";
 import styles from "./ProjectDetail.module.css";
 
 const PROJECT_BASE_PATH = "/projects/";
+const PROJECT_SLUG_INPUT_ID = "project-detail-slug";
 
 export function ProjectDetail() {
   const project = useProject();
@@ -28,10 +30,11 @@ export function ProjectDetail() {
       </header>
 
       <div className={styles.projectBody}>
-        <div className={styles.field}>
-          <label className={styles.label}>
-            <span className={styles.labelText}>ゴール: </span>
-          </label>
+        <LabeledField
+          layout="horizontal"
+          labelSize="small"
+          label="ゴール: "
+        >
           <div className={styles.goalContainer}>
             <p className={styles.deadline}>
               <span className={styles.fromText}>あと {daysUntilDeadline} 日</span>
@@ -44,22 +47,28 @@ export function ProjectDetail() {
             </p>
             <p className={`${styles.text} ${styles.goal}`}>{project.goal}</p>
           </div>
-        </div>
+        </LabeledField>
 
-        <div className={styles.field}>
-          <label className={styles.label}>
-            <span className={styles.labelText}>あるべき姿: </span>
-          </label>
+        <LabeledField
+          layout="horizontal"
+          labelSize="small"
+          label="あるべき姿: "
+        >
           <p className={styles.text}>{project.shouldbe}</p>
-        </div>
+        </LabeledField>
 
         <div className={styles.border} />
 
-        <div className={styles.field}>
-          <label className={styles.label}>スラッグ: </label>
+        <LabeledField
+          layout="horizontal"
+          labelSize="small"
+          label="スラッグ: "
+          htmlFor={PROJECT_SLUG_INPUT_ID}
+        >
           <p className={`${styles.text} ${styles.slug}`}>
             <span className={styles.slugBasePath}>{PROJECT_BASE_PATH}</span>
             <TextInput
+              id={PROJECT_SLUG_INPUT_ID}
               className={styles.slugInput}
               type="text"
               value={project.slug}
@@ -67,38 +76,29 @@ export function ProjectDetail() {
               readOnly
             />
           </p>
-        </div>
+        </LabeledField>
 
-        <div className={styles.field}>
-          <ul className={styles.stats}>
-            <li>
-              <div className={styles.stat}>
-                <IoCalendarClearOutline
-                  className={styles.statIcon}
-                  aria-hidden="true"
-                />
-                {project.stats.states.scheduled}
-              </div>
-            </li>
-            <li>
-              <div className={styles.stat}>
-                <IoCheckmark
-                  className={styles.statIcon}
-                  aria-hidden="true"
-                />
-                {project.stats.states.completed}
-              </div>
-            </li>
-            <li>
-              <div className={`${styles.stat} ${styles.lastStat}`}>
-                <IoArchive
-                  className={styles.statIcon}
-                  aria-hidden="true"
-                />
-                {project.stats.states.archived}
-              </div>
-            </li>
-          </ul>
+        <div className={styles.detailRow}>
+          <IconList
+            variant="panel"
+            items={[
+              {
+                name: "calendar",
+                value: project.stats.states.scheduled,
+                ariaLabel: `予定数: ${project.stats.states.scheduled}`,
+              },
+              {
+                name: "check",
+                value: project.stats.states.completed,
+                ariaLabel: `完了数: ${project.stats.states.completed}`,
+              },
+              {
+                name: "archive",
+                value: project.stats.states.archived,
+                ariaLabel: `アーカイブ数: ${project.stats.states.archived}`,
+              },
+            ]}
+          />
         </div>
       </div>
     </article>

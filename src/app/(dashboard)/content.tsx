@@ -1,8 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import { IoArrowForward } from "react-icons/io5";
 import { FormMessage } from "@/src/components/atoms/FormMessage";
+import { Link } from "@/src/components/atoms/Link";
 import { useProjectsList } from "@/src/contexts/projects";
 import { useStats } from "@/src/contexts/stats";
 import { useTasksList } from "@/src/contexts/tasks";
@@ -67,6 +66,8 @@ export function DashboardContent() {
                 <Link
                   className={styles.projectListLink}
                   href="/projects"
+                  size="small"
+                  variant="text"
                 >
                   プロジェクト一覧
                 </Link>
@@ -86,14 +87,12 @@ export function DashboardContent() {
             <header className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle}>タスク</h2>
               <Link
-                className={styles.link}
                 href="/tasks"
+                endIconName="arrowForward"
+                size="small"
+                variant="text"
               >
                 タスク一覧
-                <IoArrowForward
-                  className={styles.linkIcon}
-                  aria-hidden="true"
-                />
               </Link>
             </header>
 
@@ -109,14 +108,12 @@ export function DashboardContent() {
             <div className={styles.sectionFooter}>
               {remainingTasksPageCount > 0 ? (
                 <Link
-                  className={styles.remainingPageLink}
                   href="/tasks"
+                  endIconName="arrowForward"
+                  size="small"
+                  variant="text"
                 >
                   あと {remainingTasksPageCount} ページ
-                  <IoArrowForward
-                    className={styles.linkIcon}
-                    aria-hidden="true"
-                  />
                 </Link>
               ) : null}
             </div>

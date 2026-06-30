@@ -1,9 +1,9 @@
-import type { ComponentPropsWithoutRef } from "react";
-import styles from "./FormMessage.module.css";
+import type { HTMLAttributes } from "react";
+import styles from "./index.module.css";
 
 type FormMessageTone = "error" | "success";
 
-type FormMessageProps = ComponentPropsWithoutRef<"p"> & {
+type FormMessageProps = HTMLAttributes<HTMLParagraphElement> & {
   tone: FormMessageTone;
 };
 

@@ -22,6 +22,11 @@
   font-size: 13px;
 }
 
+.listHeader {
+  margin: var(--space-4) 0;
+  border-bottom: 1px solid var(--table-border-color);
+}
+
 .footer {
   display: flex;
   justify-content: flex-end;

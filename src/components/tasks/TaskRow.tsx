@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
-import { IoArrowForward } from "react-icons/io5";
-import { EditableField } from "./EditableField";
-import { TaskSelect, type SelectOption } from "./TaskSelect";
+import { CircleArrowLink } from "@/src/components/molecules/CircleArrowLink";
+import { EditableField } from "@/src/components/molecules/EditableField";
+import { SelectMenu, type SelectOption } from "@/src/components/molecules/SelectMenu";
 import type { Project, Task, UpdateTaskData } from "@/src/contexts/tasks";
 import styles from "./TaskRow.module.css";
 
@@ -44,7 +43,7 @@ export function TaskRow({ isSelectOpen, onSelectOpenChange, projects, task, upda
       </div>
 
       <div className={`${styles.tableCell} ${styles.projectCell}`}>
-        <TaskSelect
+        <SelectMenu
           label={`${task.title} のプロジェクト`}
           options={projectOptions}
           value={task.project.id}
@@ -64,7 +63,7 @@ export function TaskRow({ isSelectOpen, onSelectOpenChange, projects, task, upda
       </div>
 
       <div className={`${styles.tableCell} ${styles.statusCell}`}>
-        <TaskSelect
+        <SelectMenu
           label={`${task.title} のステータス`}
           options={STATUS_OPTIONS}
           value={task.status}
@@ -96,16 +95,10 @@ export function TaskRow({ isSelectOpen, onSelectOpenChange, projects, task, upda
       </div>
 
       <div className={`${styles.tableCell} ${styles.detailCell}`}>
-        <Link
-          className={styles.detailCircle}
+        <CircleArrowLink
           href={`/tasks/${task.id}`}
-          aria-label={`${task.title} の詳細`}
-        >
-          <IoArrowForward
-            className={styles.detailIcon}
-            aria-hidden="true"
-          />
-        </Link>
+          ariaLabel={`${task.title} の詳細`}
+        />
       </div>
     </div>
   );
